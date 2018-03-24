@@ -1,0 +1,10 @@
+<resources>
+    <string name="app_name">voicereceiveclient</string>
+    <string name="start_voice_proxy">启动语音代理服务</string>
+    <string name="radio_test">模拟发送消息收音机</string>
+    <string name="USBMusic_test">模拟发送消息本地音乐</string>
+    <string name="BTMusic_test">模拟发送消息蓝牙音乐</string>
+    <string name="BTCall_test">模拟发送消息蓝牙电话</string>
+    <string name="system_control_test">模拟发送消息系统设置</string>
+    <string name="car_control_test">模拟发送消息车辆设置</string>
+</resources>
