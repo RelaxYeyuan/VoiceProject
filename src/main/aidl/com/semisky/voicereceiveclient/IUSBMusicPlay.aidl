@@ -8,4 +8,7 @@ interface IUSBMusicPlay {
 
     //本地音乐注册语音监听
     void setOnVoiceListener(IUSBMusicListener listener);
+
+    //用于本地音乐返回搜索
+    void resultCode(int code);
 }

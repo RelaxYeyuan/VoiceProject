@@ -3,8 +3,10 @@ package com.semisky.voicereceiveclient.manager;
 import android.util.Log;
 
 import com.semisky.voicereceiveclient.appAidl.AidlManager;
+import com.semisky.voicereceiveclient.jsonEntity.RadioEntity;
 
-import org.json.JSONObject;
+import static com.semisky.voicereceiveclient.constant.AppConstant.AM_TYPE;
+import static com.semisky.voicereceiveclient.constant.AppConstant.FM_TYPE;
 
 /**
  * Created by chenhongrui on 2018/3/8
@@ -21,12 +23,25 @@ public class RadioVoiceManager {
     public RadioVoiceManager() {
     }
 
-    public void setActionJson(JSONObject actionJson) {
-        String code;
+    public void setActionJson(RadioEntity radioEntity) {
+        String code = radioEntity.getCode();
+        String waveband = radioEntity.getWaveband();
+
         try {
-            code = actionJson.getString("code");
-            Log.d(TAG, "setActionJson: " + ((Number) (Float.parseFloat(code) * 100)).intValue());
-            AidlManager.getInstance().getRadioListener().radioPlayFreq(code);
+            if (code == null) {
+                Log.d(TAG, "setActionJson: " + waveband);
+                switch (waveband) {
+                    case "fm":
+                        AidlManager.getInstance().getRadioListener().changeSwitch(FM_TYPE);
+                        break;
+                    case "am":
+                        AidlManager.getInstance().getRadioListener().changeSwitch(AM_TYPE);
+                        break;
+                }
+            } else {
+                Log.d(TAG, "setActionJson: " + ((Number) (Float.parseFloat(code) * 100)).intValue());
+                AidlManager.getInstance().getRadioListener().radioPlayFreq(code);
+            }
         } catch (Exception e) {
             e.printStackTrace();
         }

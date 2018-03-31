@@ -19,4 +19,9 @@ public class SetUSBMusicListener extends IUSBMusicPlay.Stub {
     public void setOnVoiceListener(IUSBMusicListener listener) throws RemoteException {
         AidlManager.getInstance().setUsbMusicListener(listener);
     }
+
+    @Override
+    public void resultCode(int code) throws RemoteException {
+
+    }
 }

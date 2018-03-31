@@ -6,7 +6,7 @@ import com.semisky.voicereceiveclient.jsonEntity.CallEntity;
 /**
  * Created by chenhongrui on 2018/3/8
  * <p>
- * 内容摘要：用于收音机相关操作 focus = radio
+ * 内容摘要：用于打电话相关操作
  * 版权所有：Semisky
  * 修改内容：
  * 修改日期

@@ -34,4 +34,10 @@ interface IRadioListener {
     //返回主页面
     int backLauncher();
 
+    //静音
+    int mute();
+
+    //解除静音
+    int Unmute();
+
 }
