@@ -17,8 +17,10 @@ public class AppConstant {
     public static final String CLS_RADIO = "com.semisky.autoradio.activity.main.RadioActivity";
 
     public static final String PKG_MEDIA = "com.semisky.automultimedia";
-    public static final String CLS_MEDIA = "com.semisky.automultimedia.activity.MusicPlayActivity";
-    public static final String MEDIA_ACTION = "com.semisky.action.LAUNCHER_START_MEDIA";
+    public static final String CLS_MEDIA_MUSIC = "com.semisky.automultimedia.activity.MusicPlayActivity";
+    public static final String CLS_MEDIA_VIDEO = "com.semisky.automultimedia.activity.VideoPlayActivity";
+    public static final String CLS_MEDIA_PICTURE = "com.semisky.automultimedia.activity.PicturePlayActivity";
+
 
     public static final String PKG_BTCALL = "com.semisky.cx62.bluetooth";
     public static final String CLS_BTCALL = "com.semisky.cx62.bluetooth.activity.Cx62BtActivityPhone";
@@ -28,6 +30,9 @@ public class AppConstant {
 
     public static final String PKG_NAVI = "com.winmu.autoNavi";
     public static final String CLS_NAVI = "ritu.navi.main.Navigation";
+
+    public static final String PKG_VOICE = "com.iflytek.cutefly.speechclient";
+    public static final String CLS_VOICE = "com.iflytek.autofly.activity.SpeechActivity";
 
 
     public static final int RADIO_BINDER = 1;

@@ -94,10 +94,24 @@ public class VoiceReceiveClient implements PlatformClientListener {
                 JSONObject action = new JSONObject(actionJson);
                 if ("app".equals(action.getString("focus"))) {
                     AppEntity appEntity = gson.fromJson(actionJson, AppEntity.class);
-                    appManager.setActionJson(appEntity, mContext);
+                    if (appManager.setActionJson(appEntity, mContext)) {
+                        resultJson.put("status", "success");
+                        return resultJson.toString();
+                    } else {
+                        resultJson.put("status", "fail");
+                        resultJson.put("message", "抱歉，没有可处理的操作");
+                        return resultJson.toString();
+                    }
                 } else if ("radio".equals(action.getString("focus"))) {
                     RadioEntity radioEntity = gson.fromJson(actionJson, RadioEntity.class);
-                    radioVoiceManager.setActionJson(radioEntity);
+                    if (radioVoiceManager.setActionJson(mContext, radioEntity)) {
+                        resultJson.put("status", "success");
+                        return resultJson.toString();
+                    } else {
+                        resultJson.put("status", "fail");
+                        resultJson.put("message", "抱歉，没有可处理的操作");
+                        return resultJson.toString();
+                    }
                 } else if ("music".equals(action.getString("focus"))) {
                     if (!ToolUtils.isSdOrUsbMounted(mContext, "/storage/udisk")) {
                         try {
@@ -123,13 +137,12 @@ public class VoiceReceiveClient implements PlatformClientListener {
                         }
                         return resultJson.toString();
                     }
-                    cmdVoiceManager.setActionJson(cmdEntity);
+                    cmdVoiceManager.setActionJson(cmdEntity, mContext);
 
-
-                } else if ("cmd".equals(action.getString("airControl"))) {
+                } else if ("airControl".equals(action.getString("focus"))) {
                     AirControlEntity airEntity = gson.fromJson(actionJson, AirControlEntity.class);
                     airVoiceManager.setActionJson(airEntity);
-                } else if ("cmd".equals(action.getString("carControl"))) {
+                } else if ("carControl".equals(action.getString("focus"))) {
                     CarControlEntity carEntity = gson.fromJson(actionJson, CarControlEntity.class);
                     carVoiceManager.setActionJson(carEntity);
                 }

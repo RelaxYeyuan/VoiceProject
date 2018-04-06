@@ -1,8 +1,12 @@
 package com.semisky.voicereceiveclient.manager;
 
+import android.content.ContentResolver;
+import android.content.Context;
+import android.provider.Settings;
 import android.util.Log;
 
 import com.semisky.autoservice.manager.AudioManager;
+import com.semisky.autoservice.manager.AutoManager;
 import com.semisky.voicereceiveclient.appAidl.AidlManager;
 import com.semisky.voicereceiveclient.jsonEntity.CMDEntity;
 
@@ -21,11 +25,13 @@ import static com.semisky.voicereceiveclient.constant.AppConstant.SINGLE_PLAY;
 public class CMDVoiceManager {
 
     private static final String TAG = "CMDVoiceManager";
+    private Context mContext;
 
     public CMDVoiceManager() {
     }
 
-    public void setActionJson(CMDEntity cmdEntity) {
+    public void setActionJson(CMDEntity cmdEntity, Context context) {
+        mContext = context;
         String category = cmdEntity.getCategory();
         String name = cmdEntity.getName();
         String nameValue = cmdEntity.getNameValue();
@@ -91,10 +97,12 @@ public class CMDVoiceManager {
             Log.d(TAG, "setControl: " + name);
             switch (name) {
                 case "亮度+":
-//                    AidlManager.getInstance().getSystemListener().raiseLight();
+                    Log.d(TAG, "setControl: 亮度+");
+                    updateLightAdjustValue(0);
                     break;
                 case "亮度-":
-//                    AidlManager.getInstance().getSystemListener().lowerLight();
+                    Log.d(TAG, "setControl: 亮度-");
+                    updateLightAdjustValue(1);
                     break;
                 case "音量+":
                     AudioManager.getInstance().upAndDownVolume(AudioManager.VR_UP_VOLUME);
@@ -258,5 +266,48 @@ public class CMDVoiceManager {
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    private static final int LIGHT_MODE_AUTO = 0;
+    private static final int LIGHT_MODE_DAY = 1;
+    private static final int LIGHT_MODE_NIGHT = 2;
+
+    //亮度模式KEY
+    private static final String KEY_LIGHT_MODE = "light_mode";
+    //白天亮度值KEY
+    private static final String KEY_LIGHT_DAY_VALUE = "key_light_day_value";
+    // 黑夜亮度值KEY
+    private static final String KEY_LIGHT_NIGHT_VALUE = "key_light_night_value";
+
+    private void updateLightAdjustValue(int type) {
+        ContentResolver contentResolver = mContext.getContentResolver();
+        int lightAdjustDayValue = Settings.System.getInt(contentResolver, KEY_LIGHT_DAY_VALUE, 7);
+        int lightAdjustNightValue = Settings.System.getInt(contentResolver, KEY_LIGHT_NIGHT_VALUE, 3);
+        int lightModeValue = Settings.System.getInt(contentResolver, KEY_LIGHT_MODE, LIGHT_MODE_AUTO);
+
+        //增加亮度
+        if (type == 0) {
+            if (lightModeValue == LIGHT_MODE_DAY) {
+                if (lightAdjustDayValue >= 10) return;
+                //设置亮度
+                AutoManager.getInstance().setBackLight(LIGHT_MODE_DAY, lightAdjustDayValue + 1);
+            } else if (lightModeValue == LIGHT_MODE_NIGHT) {
+                if (lightAdjustNightValue >= 10) return;
+                //设置亮度
+                AutoManager.getInstance().setBackLight(LIGHT_MODE_NIGHT, lightAdjustNightValue + 1);
+            }
+            //降低亮度
+        } else if (type == 1) {
+            if (lightModeValue == LIGHT_MODE_DAY) {
+                if (lightAdjustDayValue <= 0) return;
+                //设置亮度
+                AutoManager.getInstance().setBackLight(LIGHT_MODE_DAY, lightAdjustDayValue - 1);
+            } else if (lightModeValue == LIGHT_MODE_NIGHT) {
+                if (lightAdjustNightValue <= 0) return;
+                //设置亮度
+                AutoManager.getInstance().setBackLight(LIGHT_MODE_NIGHT, lightAdjustNightValue - 1);
+            }
+        }
+
     }
 }
