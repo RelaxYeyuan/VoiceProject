@@ -29,9 +29,6 @@ public class RadioKeyModel {
     private IKeyListener iKeyListener;
     private Context mContext;
 
-    public RadioKeyModel() {
-    }
-
     public static RadioKeyModel getInstance(Context context) {
         if (INSTANCE == null) {
             synchronized (RadioKeyModel.class) {
@@ -58,7 +55,7 @@ public class RadioKeyModel {
                 Log.d(TAG, "keyCode: " + keyCode + " action: " + action);
                 switch (keyCode) {
                     case KeyManager.KEYCODE_VR:
-
+                        if (checkVoiceActivity()) return;
                         Intent intent = new Intent();
                         intent.setClassName(PKG_VOICE, CLS_VOICE);
                         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
@@ -93,8 +90,13 @@ public class RadioKeyModel {
     /**
      * 如果当前处于语音识别页面，再点击退出页面
      */
-    private void checkVoiceActivity() {
-
+    private boolean checkVoiceActivity() {
+        boolean topActivityName = getTopActivityName(mContext, PKG_VOICE);
+        if (topActivityName) {
+            VoiceWakeupScenes.closeVoiceActivity();
+            return true;
+        }
+        return false;
     }
 
     /**
@@ -102,12 +104,15 @@ public class RadioKeyModel {
      *
      * @return true属于
      */
-    public static boolean getTopActivityName(Context context, String packageName) {
+    private static boolean getTopActivityName(Context context, String packageName) {
         ActivityManager activityManager =
                 (ActivityManager) (context.getSystemService(Context.ACTIVITY_SERVICE));
-        ComponentName topActivity = activityManager.getRunningTasks(1).get(0).topActivity;
-        String topPackageName = topActivity.getPackageName();
-        Log.d(TAG, "getTopActivityName: " + topPackageName);
-        return topPackageName.equals(packageName);
+        if (activityManager != null) {
+            ComponentName topActivity = activityManager.getRunningTasks(1).get(0).topActivity;
+            String topPackageName = topActivity.getPackageName();
+            Log.d(TAG, "getTopActivityName: " + topPackageName);
+            return topPackageName.equals(packageName);
+        }
+        return false;
     }
 }

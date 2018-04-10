@@ -11,6 +11,7 @@ import com.iflytek.platform.type.PlatformCode;
 import com.iflytek.platformservice.PlatformService;
 import com.semisky.autoservice.manager.AutoConstants;
 import com.semisky.autoservice.manager.AutoManager;
+import com.semisky.voicereceiveclient.constant.AppConstant;
 import com.semisky.voicereceiveclient.jsonEntity.AirControlEntity;
 import com.semisky.voicereceiveclient.jsonEntity.AppEntity;
 import com.semisky.voicereceiveclient.jsonEntity.CMDEntity;
@@ -23,10 +24,10 @@ import com.semisky.voicereceiveclient.manager.AppVoiceManager;
 import com.semisky.voicereceiveclient.manager.BTCallVoiceManager;
 import com.semisky.voicereceiveclient.manager.CMDVoiceManager;
 import com.semisky.voicereceiveclient.manager.CarVoiceManager;
+import com.semisky.voicereceiveclient.manager.GPSManager;
 import com.semisky.voicereceiveclient.manager.MusicVoiceManager;
 import com.semisky.voicereceiveclient.manager.RadioVoiceManager;
 import com.semisky.voicereceiveclient.model.RadioBTModel;
-import com.semisky.voicereceiveclient.utils.ToolUtils;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -54,6 +55,7 @@ public class VoiceReceiveClient implements PlatformClientListener {
     private AirVoiceManager airVoiceManager;
     private CarVoiceManager carVoiceManager;
     private BTCallVoiceManager btCallVoiceManager;
+    private GPSManager gpsManager;
 
     VoiceReceiveClient(Context context) {
         super();
@@ -66,6 +68,7 @@ public class VoiceReceiveClient implements PlatformClientListener {
         airVoiceManager = new AirVoiceManager();
         carVoiceManager = new CarVoiceManager();
         btCallVoiceManager = new BTCallVoiceManager();
+        gpsManager = GPSManager.getInstance(mContext);
     }
 
     /**
@@ -94,10 +97,15 @@ public class VoiceReceiveClient implements PlatformClientListener {
                 JSONObject action = new JSONObject(actionJson);
                 if ("app".equals(action.getString("focus"))) {
                     AppEntity appEntity = gson.fromJson(actionJson, AppEntity.class);
-                    if (appManager.setActionJson(appEntity, mContext)) {
+                    int type = appManager.setActionJson(appEntity, mContext);
+                    if (type == AppConstant.MUSIC_TYPE_SUCCESS) {
                         resultJson.put("status", "success");
                         return resultJson.toString();
-                    } else {
+                    } else if (type == AppConstant.MUSIC_TYPE_DISK_MISSING) {
+                        resultJson.put("status", "fail");
+                        resultJson.put("message", "U盘未连接，请先连接U盘");
+                        return resultJson.toString();
+                    } else if (type == AppConstant.MUSIC_TYPE_FAIL) {
                         resultJson.put("status", "fail");
                         resultJson.put("message", "抱歉，没有可处理的操作");
                         return resultJson.toString();
@@ -113,17 +121,20 @@ public class VoiceReceiveClient implements PlatformClientListener {
                         return resultJson.toString();
                     }
                 } else if ("music".equals(action.getString("focus"))) {
-                    if (!ToolUtils.isSdOrUsbMounted(mContext, "/storage/udisk")) {
-                        try {
-                            resultJson.put("status", "fail");
-                            resultJson.put("message", "U盘未连接，请先连接U盘");
-                        } catch (JSONException e) {
-                            Log.e(TAG, "onNLPResult: " + e.getMessage());
-                        }
+                    MusicEntity musicEntity = gson.fromJson(actionJson, MusicEntity.class);
+                    int type = musicVoiceManager.setActionJson(mContext, musicEntity);
+                    if (type == AppConstant.MUSIC_TYPE_SUCCESS) {
+                        resultJson.put("status", "success");
+                        return resultJson.toString();
+                    } else if (type == AppConstant.MUSIC_TYPE_DISK_MISSING) {
+                        resultJson.put("status", "fail");
+                        resultJson.put("message", "U盘未连接，请先连接U盘");
+                        return resultJson.toString();
+                    } else if (type == AppConstant.MUSIC_TYPE_FAIL) {
+                        resultJson.put("status", "fail");
+                        resultJson.put("message", "抱歉，没有可处理的操作");
                         return resultJson.toString();
                     }
-                    MusicEntity musicEntity = gson.fromJson(actionJson, MusicEntity.class);
-                    musicVoiceManager.setActionJson(musicEntity);
                 } else if ("cmd".equals(action.getString("focus"))) {
                     CMDEntity cmdEntity = gson.fromJson(actionJson, CMDEntity.class);
                     String category = cmdEntity.getCategory();
@@ -265,7 +276,19 @@ public class VoiceReceiveClient implements PlatformClientListener {
     @Override
     public String onGetLocation() {
         Log.d(TAG, "onGetLocation: ");
-        return "";
+        gpsManager.getLngAndLat();
+        double latitude = gpsManager.getLatitude();
+        double longitude = gpsManager.getLongitude();
+        JSONObject jsonObject = new JSONObject();
+        try {
+            jsonObject.put("longitude", longitude);
+            jsonObject.put("latitude", latitude);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        Log.d(TAG, "onGetLocation:latitude " + latitude);
+        Log.d(TAG, "onGetLocation:longitude " + longitude);
+        return jsonObject.toString();
     }
 
     @Override
@@ -284,25 +307,33 @@ public class VoiceReceiveClient implements PlatformClientListener {
 
     private AudioManager.OnAudioFocusChangeListener mFocusChangeListener = new AudioManager.OnAudioFocusChangeListener() {
         public void onAudioFocusChange(int focusChange) {
-            AudioFocusChange(focusChange);
+            Log.d(TAG, "AudioFocusChange: " + focusChange);
+
+            switch (focusChange) {
+                case AudioManager.AUDIOFOCUS_LOSS://永久失去焦点 -1
+                    break;
+                case AudioManager.AUDIOFOCUS_LOSS_TRANSIENT://暂时失去焦点 -2
+                    abandonFocus();
+                    break;
+                case AudioManager.AUDIOFOCUS_LOSS_TRANSIENT_CAN_DUCK://duck机制 -3
+                    break;
+                case AudioManager.AUDIOFOCUS_GAIN://重获焦点 1
+
+                    break;
+            }
+
+            if (PlatformService.platformCallback == null) {
+                Log.e(TAG, "PlatformService.platformCallback == null");
+                return;
+            }
+
+            try {
+                PlatformService.platformCallback.audioFocusChange(focusChange);
+            } catch (RemoteException e) {
+                Log.e(TAG, "platformCallback audioFocusChange error:" + e.getMessage());
+            }
         }
     };
-
-    /**
-     * 客户主动回调的方法
-     */
-    private void AudioFocusChange(int focusChange) {
-        Log.d(TAG, "AudioFocusChange: ");
-        if (PlatformService.platformCallback == null) {
-            Log.e(TAG, "PlatformService.platformCallback == null");
-            return;
-        }
-        try {
-            PlatformService.platformCallback.audioFocusChange(focusChange);
-        } catch (RemoteException e) {
-            Log.e(TAG, "platformCallback audioFocusChange error:" + e.getMessage());
-        }
-    }
 
     @Override
     public void onServiceUnbind() {
@@ -339,6 +370,7 @@ public class VoiceReceiveClient implements PlatformClientListener {
      * @return true 申请成功
      */
     private int requestFocus() {
+        Log.d(TAG, "requestFocus: ");
         return audioManager.requestAudioFocus(mFocusChangeListener, AudioManager.STREAM_MUSIC,
                 AudioManager.AUDIOFOCUS_GAIN_TRANSIENT);
     }
@@ -349,8 +381,8 @@ public class VoiceReceiveClient implements PlatformClientListener {
      * @return true 释放成功
      */
     private boolean abandonFocus() {
+        Log.d(TAG, "abandonFocus: ");
         return mFocusChangeListener != null && AudioManager.AUDIOFOCUS_REQUEST_GRANTED ==
                 audioManager.abandonAudioFocus(mFocusChangeListener);
     }
-
 }

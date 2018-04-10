@@ -5,12 +5,6 @@ package com.semisky.voicereceiveclient;
 
 interface ISystemControlListener {
 
-    //打开蓝牙连接
-    int openBTCallConnect();
-
-    //关闭蓝牙连接
-    int closeBTCallConnect();
-
     //打开设置应用
     int openActivity();
 

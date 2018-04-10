@@ -2,7 +2,6 @@ package com.semisky.voicereceiveclient.manager;
 
 import android.content.Context;
 import android.content.Intent;
-import android.support.annotation.NonNull;
 import android.util.Log;
 
 import com.semisky.voicereceiveclient.appAidl.AidlManager;
@@ -61,7 +60,7 @@ public class RadioVoiceManager {
         return false;
     }
 
-    private void startActivity(@NonNull String packageName, @NonNull String className) {
+    private void startActivity(String packageName, String className) {
         Intent intent = new Intent();
         intent.setClassName(packageName, className);
         intent.setFlags(FLAG_ACTIVITY_NEW_TASK);

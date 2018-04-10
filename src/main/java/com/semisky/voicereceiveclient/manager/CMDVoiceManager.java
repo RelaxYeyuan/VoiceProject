@@ -2,6 +2,7 @@ package com.semisky.voicereceiveclient.manager;
 
 import android.content.ContentResolver;
 import android.content.Context;
+import android.content.Intent;
 import android.provider.Settings;
 import android.util.Log;
 
@@ -10,7 +11,10 @@ import com.semisky.autoservice.manager.AutoManager;
 import com.semisky.voicereceiveclient.appAidl.AidlManager;
 import com.semisky.voicereceiveclient.jsonEntity.CMDEntity;
 
+import static android.content.Intent.FLAG_ACTIVITY_NEW_TASK;
+import static com.semisky.voicereceiveclient.constant.AppConstant.CLS_BTCALL;
 import static com.semisky.voicereceiveclient.constant.AppConstant.ORDER_PLAY;
+import static com.semisky.voicereceiveclient.constant.AppConstant.PKG_BTCALL;
 import static com.semisky.voicereceiveclient.constant.AppConstant.RANDOM_PLAY;
 import static com.semisky.voicereceiveclient.constant.AppConstant.SINGLE_PLAY;
 
@@ -38,9 +42,13 @@ public class CMDVoiceManager {
 
         try {
             if (name.equals("切换模式")) {
-//            AidlManager.getInstance().getSystemListener().changeLightMode();
+                changeLightMode();
+                return;
             } else if (name.equals("返回主菜单")) {
-//                AidlManager.getInstance().getRadioListener().backLauncher();
+                skipHome();
+                return;
+            } else if (name.equals("断开连接")) {
+                return;
             }
 
             switch (category) {
@@ -65,9 +73,21 @@ public class CMDVoiceManager {
                 case "汽车控制":
                     carCommand(name, nameValue);
                     break;
+                case "电话控制":
+                    btCallOperation(name);
+                    break;
             }
         } catch (Exception e) {
             e.printStackTrace();
+        }
+    }
+
+    //{"category":"电话控制","name":"通话记录","focus":"cmd","rawText":"通话记录"}
+    private void btCallOperation(String name) {
+        switch (name) {
+            case "通话记录":
+                openBTCallConnection(5);
+                break;
         }
     }
 
@@ -308,6 +328,24 @@ public class CMDVoiceManager {
                 AutoManager.getInstance().setBackLight(LIGHT_MODE_NIGHT, lightAdjustNightValue - 1);
             }
         }
+    }
 
+    private void changeLightMode() {
+
+    }
+
+    private void skipHome() {
+        Intent homeIntent = new Intent(Intent.ACTION_MAIN);
+        homeIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        homeIntent.addCategory(Intent.CATEGORY_HOME);
+        mContext.startActivity(homeIntent);
+    }
+
+    private void openBTCallConnection(int type) {
+        Intent intent = new Intent();
+        intent.setClassName(PKG_BTCALL, CLS_BTCALL);
+        intent.putExtra("swhichfragmentid", type);
+        intent.setFlags(FLAG_ACTIVITY_NEW_TASK);
+        mContext.startActivity(intent);
     }
 }

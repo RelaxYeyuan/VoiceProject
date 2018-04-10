@@ -13,6 +13,9 @@ interface IUSBMusicListener {
     //根据歌手和歌名播放音乐
     int playByArtistAndSong(String artist,String song);
 
+    //根据专辑播放音乐
+    int playByAlbum(String album);
+
     //改变播放顺序
     //1.顺序播放 2.单曲循环 3.随机播放
     int changePlayOrder(int type);

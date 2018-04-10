@@ -40,6 +40,11 @@ public class KWMusicAPI {
         mKwapi.playClientMusics(song, artist, null);
     }
 
+    //根据专辑播放音乐
+    public void playByAlbum(String album) {
+        mKwapi.playClientMusics(null, null, album);
+    }
+
     //随便播放
     public void randomPlayMusic() {
         mKwapi.randomPlayMusic();
@@ -50,15 +55,29 @@ public class KWMusicAPI {
         mKwapi.setPlayState(PlayState.STATE_PLAY);
     }
 
+    //暂停
     public void pause() {
         mKwapi.setPlayState(PlayState.STATE_PAUSE);
     }
 
+    //上一曲
     public void lastMusic() {
         mKwapi.setPlayState(PlayState.STATE_PRE);
     }
 
+    //下一曲
     public void nextMusic() {
         mKwapi.setPlayState(PlayState.STATE_NEXT);
+    }
+
+    //进入酷我
+    public void startApp() {
+        //true 是否自动播放
+        mKwapi.startAPP(true);
+    }
+
+    //退出酷我
+    public void exitApp() {
+        mKwapi.exitAPP();
     }
 }

@@ -60,4 +60,9 @@ public class AppConstant {
     public static final int FM_TYPE = 1;
     //AM
     public static final int AM_TYPE = 2;
+
+    //music相关状态
+    public static final int MUSIC_TYPE_SUCCESS = 1;
+    public static final int MUSIC_TYPE_FAIL = 2;
+    public static final int MUSIC_TYPE_DISK_MISSING = 3;
 }

@@ -1,9 +1,9 @@
 package com.semisky.voicereceiveclient;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.RemoteException;
-import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
 
@@ -19,7 +19,7 @@ import com.semisky.voicereceiveclient.service.BinderPoolService;
  * 2.创建binder池aidl并实现查询方法
  * 3.创建并启动服务
  */
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends Activity {
 
     private static final String TAG = "MainActivity";
 
@@ -87,7 +87,7 @@ public class MainActivity extends AppCompatActivity {
         try {
             IBTCallListener btCallListener = AidlManager.getInstance().getBTCallListener();
             if (btCallListener != null) {
-                int i = btCallListener.queryCallRecords();
+                int i = btCallListener.cutBTCallConnect();
                 if (i == ResultCode.RESULT_SUCCESS) {
                     Log.d(TAG, "客户端收到指令queryCallRecords");
                 }

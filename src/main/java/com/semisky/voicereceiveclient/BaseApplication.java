@@ -33,12 +33,12 @@ public class BaseApplication extends Application {
         super.onCreate();
         //给助理传递 实现 PlatformClientListener 接口的对象
         //Application启动的时候，必须给NavigationService.naviClient赋值
+        //酷我实例
+        mKwapi = KWAPI.createKWAPI(this, "auto");
+
         VoiceReceiveClient testClient = new VoiceReceiveClient(this);
         PlatformHelp.getInstance().setPlatformClient(testClient);
         Log.d(TAG, "onCreate: setPlatformClient");
-
-        //酷我实例
-        mKwapi = KWAPI.createKWAPI(this, "auto");
 
         if (!RadioKeyModel.getInstance(this).isRegister()) {
             RadioKeyModel.getInstance(this).registerOnKeyListener();

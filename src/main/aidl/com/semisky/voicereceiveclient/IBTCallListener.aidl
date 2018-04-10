@@ -4,8 +4,11 @@ package com.semisky.voicereceiveclient;
 
 interface IBTCallListener {
 
-   //查看通话记录
-   int queryCallRecords();
+   //断开手机连接
+   int DisconnectThePhone();
+
+   //关闭蓝牙连接
+   int cutBTCallConnect();
 
    //打电话(号码)
    int callByNumber(String number);

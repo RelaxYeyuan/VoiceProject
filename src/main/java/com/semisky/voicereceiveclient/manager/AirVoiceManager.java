@@ -8,7 +8,11 @@ import com.semisky.voicereceiveclient.jsonEntity.AirControlEntity;
 import static com.semisky.autoservice.manager.ACManager.CIR_MODE_INNER;
 import static com.semisky.autoservice.manager.ACManager.CIR_MODE_OUTSIDE;
 import static com.semisky.autoservice.manager.ACManager.DEFROST_MODE_FRONT;
+import static com.semisky.autoservice.manager.ACManager.DEFROST_MODE_REAR;
 import static com.semisky.autoservice.manager.ACManager.SIDE_FL;
+import static com.semisky.autoservice.manager.ACManager.WIND_EXIT_MODE_FACE;
+import static com.semisky.autoservice.manager.ACManager.WIND_EXIT_MODE_FACE_FOOT;
+import static com.semisky.autoservice.manager.ACManager.WIND_EXIT_MODE_FOOT;
 
 /**
  * Created by chenhongrui on 2018/3/9
@@ -16,7 +20,7 @@ import static com.semisky.autoservice.manager.ACManager.SIDE_FL;
  * 内容摘要：${TODO}
  * 版权所有：Semisky
  * 修改内容：
- * 修改日期
+ * 修改日期：{"device":"空调","operation":"SET","temperature":"7","focus":"airControl","rawText":"空调温度调到七档"}
  */
 public class AirVoiceManager {
 
@@ -52,20 +56,24 @@ public class AirVoiceManager {
                     ACManager.getInstance().setAirConditionerCirMode(CIR_MODE_OUTSIDE);
                     break;
 
-                case "自动"://{"mode":"自动","operation":"SET","focus":"airControl","rawText":"打开自动模式"}
-                    ACManager.getInstance().enableAirConditionerAutoMode(true);
+                case "吹面":
+                    ACManager.getInstance().setAirConditionerWindExitMode(WIND_EXIT_MODE_FACE);
                     break;
 
-                case "手动"://{"mode":"手动","operation":"SET","focus":"airControl","rawText":"开启手动模式"}
-                    ACManager.getInstance().enableAirConditionerAutoMode(false);
+                case "吹面吹脚":
+                    ACManager.getInstance().setAirConditionerWindExitMode(WIND_EXIT_MODE_FACE_FOOT);
                     break;
 
-                case "除霜"://{"mode":"除霜","operation":"SET","focus":"airControl","rawText":"开启除霜模式"}
+                case "吹脚":
+                    ACManager.getInstance().setAirConditionerWindExitMode(WIND_EXIT_MODE_FOOT);
+                    break;
+
+                case "前除霜"://{"mode":"除霜","operation":"SET","focus":"airControl","rawText":"开启除霜模式"}
                     ACManager.getInstance().enableAirConditionerDefrost(DEFROST_MODE_FRONT, true);
                     break;
 
-                case "除雾":
-//                    ACManager.getInstance().setFrontWindshieldAutoDeforst(AUTO_DEFORST_SENSITIVITY_NORMAL);
+                case "后除霜"://{"mode":"除霜","operation":"SET","focus":"airControl","rawText":"开启除霜模式"}
+                    ACManager.getInstance().enableAirConditionerDefrost(DEFROST_MODE_REAR, true);
                     break;
 
                 default:

@@ -47,7 +47,7 @@ public class VoiceProxyReceiver extends BroadcastReceiver {
                 //true: 正在进行通话; false: 蓝牙通话结束
                 boolean callState = intent.getBooleanExtra(EXTRA_CALL_ACTIVE, false);
                 int iCallState = callState ? 1 : 0;
-                d(TAG, "蓝牙电话: " + iCallState);
+                d(TAG, "蓝牙电话:callState " + callState);
                 RadioBTModel.getInstance().setCallState(iCallState);
                 RadioBTModel.getInstance().notifyObserversBtCallStateChanged(callState);
                 if (callState) {
@@ -75,7 +75,7 @@ public class VoiceProxyReceiver extends BroadcastReceiver {
                 break;
 
             case ACTION_START_SCREEN:
-                //1 = 进入 ; 0 = 退出
+                //1 = 进入 ; 0 = 退出 屏保模式下
                 int screenStatus = intent.getIntExtra(START_SCREEN_FLAG, 1);
                 Log.d(TAG, "ACTION_START_SCREEN: screenStatus " + screenStatus);
                 if (screenStatus == 1) {
