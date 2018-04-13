@@ -63,11 +63,11 @@ public class VoiceReceiveClient implements PlatformClientListener {
         audioManager = (AudioManager) context.getSystemService(Context.AUDIO_SERVICE);
         radioVoiceManager = new RadioVoiceManager();
         appManager = new AppVoiceManager();
-        musicVoiceManager = new MusicVoiceManager();
+        musicVoiceManager = new MusicVoiceManager(mContext);
         cmdVoiceManager = new CMDVoiceManager();
         airVoiceManager = new AirVoiceManager();
         carVoiceManager = new CarVoiceManager();
-        btCallVoiceManager = new BTCallVoiceManager();
+        btCallVoiceManager = new BTCallVoiceManager(mContext);
         gpsManager = GPSManager.getInstance(mContext);
     }
 
@@ -122,7 +122,7 @@ public class VoiceReceiveClient implements PlatformClientListener {
                     }
                 } else if ("music".equals(action.getString("focus"))) {
                     MusicEntity musicEntity = gson.fromJson(actionJson, MusicEntity.class);
-                    int type = musicVoiceManager.setActionJson(mContext, musicEntity);
+                    int type = musicVoiceManager.setActionJson(musicEntity);
                     if (type == AppConstant.MUSIC_TYPE_SUCCESS) {
                         resultJson.put("status", "success");
                         return resultJson.toString();
@@ -133,6 +133,10 @@ public class VoiceReceiveClient implements PlatformClientListener {
                     } else if (type == AppConstant.MUSIC_TYPE_FAIL) {
                         resultJson.put("status", "fail");
                         resultJson.put("message", "抱歉，没有可处理的操作");
+                        return resultJson.toString();
+                    } else if (type == AppConstant.MUSIC_TYPE_NOT_CONNECTED) {
+                        resultJson.put("status", "fail");
+                        resultJson.put("message", "抱歉，网络未连接，没有找到相关歌曲");
                         return resultJson.toString();
                     }
                 } else if ("cmd".equals(action.getString("focus"))) {
@@ -202,7 +206,7 @@ public class VoiceReceiveClient implements PlatformClientListener {
 
                 if ("call".equals(action.getString("action"))) {
                     if (action.getString("param1") != null) {
-                        Log.d(TAG, "call number =" + action.getString("param1"));
+                        Log.d(TAG, "call number = " + action.getString("param1"));
                         Gson gson = new Gson();
                         CallEntity callEntity = gson.fromJson(actionJson, CallEntity.class);
                         btCallVoiceManager.setActionJson(callEntity);

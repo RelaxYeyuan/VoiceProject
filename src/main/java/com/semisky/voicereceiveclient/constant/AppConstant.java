@@ -55,6 +55,8 @@ public class AppConstant {
     //搜索不到歌曲
     public final static int RESULT_FAIL = 0x02;
 
+    public final static int RESULT_ERROR = 0x03;
+
 
     //FM
     public static final int FM_TYPE = 1;
@@ -65,4 +67,5 @@ public class AppConstant {
     public static final int MUSIC_TYPE_SUCCESS = 1;
     public static final int MUSIC_TYPE_FAIL = 2;
     public static final int MUSIC_TYPE_DISK_MISSING = 3;
+    public static final int MUSIC_TYPE_NOT_CONNECTED = 4;
 }

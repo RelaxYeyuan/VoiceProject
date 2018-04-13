@@ -4,6 +4,7 @@ import android.os.RemoteException;
 
 import com.semisky.voicereceiveclient.IUSBMusicListener;
 import com.semisky.voicereceiveclient.IUSBMusicPlay;
+import com.semisky.voicereceiveclient.manager.MusicVoiceManager;
 
 /**
  * Created by chenhongrui on 2018/3/8
@@ -22,6 +23,6 @@ public class SetUSBMusicListener extends IUSBMusicPlay.Stub {
 
     @Override
     public void resultCode(int code) throws RemoteException {
-
+        MusicVoiceManager.setResultCode(code);
     }
 }

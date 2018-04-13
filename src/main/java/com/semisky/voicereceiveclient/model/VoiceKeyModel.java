@@ -16,31 +16,31 @@ import static com.semisky.voicereceiveclient.constant.AppConstant.PKG_VOICE;
 /**
  * Created by chenhongrui on 2017/8/23
  * <p>
- * 内容摘要：收音机按键
+ * 内容摘要：按键
  * 版权所有：Semisky
  * 修改内容：
  * 修改日期
  */
-public class RadioKeyModel {
+public class VoiceKeyModel {
 
-    private static final String TAG = "RadioKeyModel";
+    private static final String TAG = "VoiceKeyModel";
 
-    private static RadioKeyModel INSTANCE;
+    private static VoiceKeyModel INSTANCE;
     private IKeyListener iKeyListener;
     private Context mContext;
 
-    public static RadioKeyModel getInstance(Context context) {
+    public static VoiceKeyModel getInstance(Context context) {
         if (INSTANCE == null) {
-            synchronized (RadioKeyModel.class) {
+            synchronized (VoiceKeyModel.class) {
                 if (INSTANCE == null) {
-                    INSTANCE = new RadioKeyModel(context);
+                    INSTANCE = new VoiceKeyModel(context);
                 }
             }
         }
         return INSTANCE;
     }
 
-    private RadioKeyModel(Context context) {
+    private VoiceKeyModel(Context context) {
         this.mContext = context;
         setOnKeyManagerListener();
     }
@@ -55,12 +55,13 @@ public class RadioKeyModel {
                 Log.d(TAG, "keyCode: " + keyCode + " action: " + action);
                 switch (keyCode) {
                     case KeyManager.KEYCODE_VR:
-                        if (checkVoiceActivity()) return;
-                        Intent intent = new Intent();
-                        intent.setClassName(PKG_VOICE, CLS_VOICE);
-                        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                        mContext.startActivity(intent);
-
+                        if (action == 1 || action == 0) {
+                            if (checkVoiceActivity()) return;
+                            Intent intent = new Intent();
+                            intent.setClassName(PKG_VOICE, CLS_VOICE);
+                            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                            mContext.startActivity(intent);
+                        }
                         break;
                 }
             }

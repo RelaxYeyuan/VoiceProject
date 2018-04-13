@@ -67,6 +67,8 @@ public class AppVoiceManager {
                 return btCallOperation(operation);
             case "蓝牙音乐":
                 return btCallOperation(operation);
+            case "蓝牙电话":
+                return openBTCall(operation);
             case "通话记录":
                 return btCallOperation(operation);
             case "通讯录":
@@ -97,6 +99,7 @@ public class AppVoiceManager {
                 return AppConstant.MUSIC_TYPE_SUCCESS;
             case "LAUNCH":
                 kwMusicAPI.startApp();
+                return AppConstant.MUSIC_TYPE_SUCCESS;
             default:
                 return AppConstant.MUSIC_TYPE_FAIL;
         }
@@ -217,6 +220,16 @@ public class AppVoiceManager {
         return AppConstant.MUSIC_TYPE_FAIL;
     }
 
+    private int openBTCall(String operation) {
+        switch (operation) {
+            case "LAUNCH":
+                openBTCallConnection();
+                return AppConstant.MUSIC_TYPE_SUCCESS;
+            default:
+                return AppConstant.MUSIC_TYPE_FAIL;
+        }
+    }
+
     private int setOperation(String operation) {
         try {
             switch (operation) {
@@ -264,18 +277,6 @@ public class AppVoiceManager {
         } else {
             Intent intent = new Intent();
             intent.putExtra("LINK_BT_CONNECTION", true);
-            intent.setClassName(PKG_BTCALL, CLS_BTCALL);
-            intent.setFlags(FLAG_ACTIVITY_NEW_TASK);
-            mContext.startActivity(intent);
-        }
-    }
-
-    private void cutBTConnection() {
-        if (RadioBTModel.getInstance().isConnectionState()) {
-            startActivity(PKG_BTCALL, CLS_BTCALL);
-        } else {
-            Intent intent = new Intent();
-            intent.putExtra("CUT_BT_CONNECTION", false);
             intent.setClassName(PKG_BTCALL, CLS_BTCALL);
             intent.setFlags(FLAG_ACTIVITY_NEW_TASK);
             mContext.startActivity(intent);

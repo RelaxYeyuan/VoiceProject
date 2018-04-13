@@ -7,7 +7,7 @@ import android.content.Intent;
 import android.util.Log;
 
 import com.semisky.voicereceiveclient.model.RadioBTModel;
-import com.semisky.voicereceiveclient.model.RadioKeyModel;
+import com.semisky.voicereceiveclient.model.VoiceKeyModel;
 import com.semisky.voicereceiveclient.model.VoiceWakeupScenes;
 
 import static android.util.Log.d;
@@ -52,11 +52,11 @@ public class VoiceProxyReceiver extends BroadcastReceiver {
                 RadioBTModel.getInstance().notifyObserversBtCallStateChanged(callState);
                 if (callState) {
                     VoiceWakeupScenes.closeVoice();
-                    RadioKeyModel.getInstance(context).unregisterOnKeyListener();
+                    VoiceKeyModel.getInstance(context).unregisterOnKeyListener();
                 } else {
                     VoiceWakeupScenes.wakeupVoice();
-                    if (!RadioKeyModel.getInstance(context).isRegister()) {
-                        RadioKeyModel.getInstance(context).registerOnKeyListener();
+                    if (!VoiceKeyModel.getInstance(context).isRegister()) {
+                        VoiceKeyModel.getInstance(context).registerOnKeyListener();
                     }
                 }
                 break;
@@ -80,11 +80,11 @@ public class VoiceProxyReceiver extends BroadcastReceiver {
                 Log.d(TAG, "ACTION_START_SCREEN: screenStatus " + screenStatus);
                 if (screenStatus == 1) {
                     VoiceWakeupScenes.closeVoice();
-                    RadioKeyModel.getInstance(context).unregisterOnKeyListener();
+                    VoiceKeyModel.getInstance(context).unregisterOnKeyListener();
                 } else {
                     VoiceWakeupScenes.wakeupVoice();
-                    if (!RadioKeyModel.getInstance(context).isRegister()) {
-                        RadioKeyModel.getInstance(context).registerOnKeyListener();
+                    if (!VoiceKeyModel.getInstance(context).isRegister()) {
+                        VoiceKeyModel.getInstance(context).registerOnKeyListener();
                     }
                 }
                 break;

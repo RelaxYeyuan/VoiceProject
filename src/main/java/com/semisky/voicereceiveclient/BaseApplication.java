@@ -4,7 +4,7 @@ import android.app.Application;
 import android.util.Log;
 
 import com.iflytek.platformservice.PlatformHelp;
-import com.semisky.voicereceiveclient.model.RadioKeyModel;
+import com.semisky.voicereceiveclient.model.VoiceKeyModel;
 
 import cn.kuwo.autosdk.api.KWAPI;
 
@@ -40,8 +40,8 @@ public class BaseApplication extends Application {
         PlatformHelp.getInstance().setPlatformClient(testClient);
         Log.d(TAG, "onCreate: setPlatformClient");
 
-        if (!RadioKeyModel.getInstance(this).isRegister()) {
-            RadioKeyModel.getInstance(this).registerOnKeyListener();
+        if (!VoiceKeyModel.getInstance(this).isRegister()) {
+            VoiceKeyModel.getInstance(this).registerOnKeyListener();
         }
     }
 }

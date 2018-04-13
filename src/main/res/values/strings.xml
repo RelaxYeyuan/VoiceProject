@@ -1,10 +1,14 @@
 <resources>
     <string name="app_name">voicereceiveclient</string>
-    <string name="start_voice_proxy">启动语音代理服务</string>
-    <string name="radio_test">模拟发送消息收音机</string>
-    <string name="USBMusic_test">模拟发送消息本地音乐</string>
-    <string name="BTMusic_test">模拟发送消息蓝牙音乐</string>
-    <string name="BTCall_test">模拟发送消息蓝牙电话</string>
-    <string name="system_control_test">模拟发送消息系统设置</string>
-    <string name="car_control_test">模拟发送消息车辆设置</string>
+    <string name="play_for_singer">根据歌手播放音乐</string>
+    <string name="play_for_name">根据歌名播放音乐</string>
+    <string name="USBMusic_test">根据歌手和歌名播放音乐</string>
+    <string name="BTMusic_test">根据专辑播放音乐</string>
+    <string name="BTCall_test">随便播放</string>
+    <string name="play">播放</string>
+    <string name="pause">暂停</string>
+    <string name="last">上一曲</string>
+    <string name="next">下一曲</string>
+    <string name="start">进入酷我</string>
+    <string name="exit">退出酷我</string>
 </resources>

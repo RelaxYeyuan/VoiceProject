@@ -3,13 +3,13 @@ package com.semisky.voicereceiveclient;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.RemoteException;
 import android.util.Log;
 import android.view.View;
 
-import com.semisky.voicereceiveclient.appAidl.AidlManager;
-import com.semisky.voicereceiveclient.jsonEntity.ResultCode;
+import com.semisky.voicereceiveclient.model.KWMusicAPI;
 import com.semisky.voicereceiveclient.service.BinderPoolService;
+
+import static com.semisky.voicereceiveclient.utils.ToolUtils.isNetworkAvailable;
 
 
 /**
@@ -23,115 +23,66 @@ public class MainActivity extends Activity {
 
     private static final String TAG = "MainActivity";
 
+    private KWMusicAPI kwMusicAPI;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        kwMusicAPI = new KWMusicAPI();
     }
 
-    public void startService(View view) {
+    public void playForSinger(View view) {
         //未来放到系统启动
         startService(new Intent(this, BinderPoolService.class));
-        Log.d(TAG, "startService: ");
+        Log.d(TAG, "playForSinger: ");
     }
 
-    public void RadioTest(View view) {
-        try {
-            IRadioListener type = AidlManager.getInstance().getRadioListener();
-            if (type != null) {
-                int i = type.openActivity();
-                if (i == ResultCode.RESULT_SUCCESS) {
-                    Log.d(TAG, "客户端收到指令打开收音机");
-                }
-            } else {
-                Log.e(TAG, "未收到客服端注册的listener");
-            }
-        } catch (RemoteException e) {
-            e.printStackTrace();
-        }
+    public void playForName(View view) {
+        kwMusicAPI.playBySong("下个路口见");
     }
 
-    public void CarControlTest(View view) {
-        try {
-            ICarControlListener carControlListener = AidlManager.getInstance().getCarControlListener();
-            if (carControlListener != null) {
-                int i = carControlListener.openCarWindow();
-                if (i == ResultCode.RESULT_SUCCESS) {
-                    Log.d(TAG, "客户端收到指令openCarWindow");
-                }
-            } else {
-                Log.e(TAG, "未收到客服端注册的listener");
-            }
-        } catch (RemoteException e) {
-            e.printStackTrace();
-        }
+    public void pause(View view) {
+        kwMusicAPI.pause();
     }
 
-    public void SystemControlTest(View view) {
-        try {
-            ISystemControlListener systemListener = AidlManager.getInstance().getSystemListener();
-            if (systemListener != null) {
-                int i = systemListener.openActivity();
-                if (i == ResultCode.RESULT_SUCCESS) {
-                    Log.d(TAG, "客户端收到指令openActivity");
-                }
-            } else {
-                Log.e(TAG, "未收到客服端注册的listener");
-            }
-        } catch (RemoteException e) {
-            e.printStackTrace();
-        }
+    public void play(View view) {
+        kwMusicAPI.play();
     }
 
-    public void BTCallTest(View view) {
-        try {
-            IBTCallListener btCallListener = AidlManager.getInstance().getBTCallListener();
-            if (btCallListener != null) {
-                int i = btCallListener.cutBTCallConnect();
-                if (i == ResultCode.RESULT_SUCCESS) {
-                    Log.d(TAG, "客户端收到指令queryCallRecords");
-                }
-            } else {
-                Log.e(TAG, "未收到客服端注册的listener");
-            }
-        } catch (RemoteException e) {
-            e.printStackTrace();
-        }
+    public void randomPlay(View view) {
+        kwMusicAPI.randomPlayMusic();
     }
 
-    public void BTMusicTest(View view) {
-        try {
-            IBTMusicListener btMusicListener = AidlManager.getInstance().getBTMusicListener();
-            if (btMusicListener != null) {
-                int i = btMusicListener.play();
-                if (i == ResultCode.RESULT_SUCCESS) {
-                    Log.d(TAG, "客户端收到指令play");
-                }
-            } else {
-                Log.e(TAG, "未收到客服端注册的listener");
-            }
-        } catch (RemoteException e) {
-            e.printStackTrace();
-        }
+    public void playForSpecial(View view) {
+        kwMusicAPI.playByAlbum("小幸运");
     }
 
-    public void USBMusicTest(View view) {
-        try {
-            IUSBMusicListener usbMusicListener = AidlManager.getInstance().getUsbMusicListener();
-            if (usbMusicListener != null) {
-                int i = usbMusicListener.play();
-                if (i == ResultCode.RESULT_SUCCESS) {
-                    Log.d(TAG, "客户端收到指令play");
-                }
-            } else {
-                Log.e(TAG, "未收到客服端注册的listener");
-            }
-        } catch (RemoteException e) {
-            e.printStackTrace();
-        }
+    public void playForNameAndSinger(View view) {
+        kwMusicAPI.playByArtistAndSong("周杰伦", "听妈妈的话");
     }
 
     public void finishActivity(View view) {
         finish();
+    }
+
+    public void exitApp(View view) {
+        kwMusicAPI.exitApp();
+    }
+
+    public void next(View view) {
+        kwMusicAPI.nextMusic();
+    }
+
+    public void startApp(View view) {
+        kwMusicAPI.startApp();
+    }
+
+    public void last(View view) {
+        kwMusicAPI.lastMusic();
+    }
+
+    public void isNetwork(View view) {
+        Log.d(TAG, "isNetwork: " + isNetworkAvailable(this));
     }
 }

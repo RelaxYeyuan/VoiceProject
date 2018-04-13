@@ -10,6 +10,7 @@ import com.semisky.autoservice.manager.AudioManager;
 import com.semisky.autoservice.manager.AutoManager;
 import com.semisky.voicereceiveclient.appAidl.AidlManager;
 import com.semisky.voicereceiveclient.jsonEntity.CMDEntity;
+import com.semisky.voicereceiveclient.model.KWMusicAPI;
 
 import static android.content.Intent.FLAG_ACTIVITY_NEW_TASK;
 import static com.semisky.voicereceiveclient.constant.AppConstant.CLS_BTCALL;
@@ -30,8 +31,10 @@ public class CMDVoiceManager {
 
     private static final String TAG = "CMDVoiceManager";
     private Context mContext;
+    private KWMusicAPI kwMusicAPI;
 
     public CMDVoiceManager() {
+        kwMusicAPI = new KWMusicAPI();
     }
 
     public void setActionJson(CMDEntity cmdEntity, Context context) {
@@ -41,14 +44,17 @@ public class CMDVoiceManager {
         String nameValue = cmdEntity.getNameValue();
 
         try {
-            if (name.equals("切换模式")) {
-                changeLightMode();
-                return;
-            } else if (name.equals("返回主菜单")) {
-                skipHome();
-                return;
-            } else if (name.equals("断开连接")) {
-                return;
+            switch (name) {
+                case "切换模式":
+                    changeLightMode();
+                    return;
+                case "返回主菜单":
+                    skipHome();
+                    return;
+                case "断开连接":
+                    //{"name":"断开连接","focus":"cmd","rawText":"断开手机连接"}
+                    AidlManager.getInstance().getBTCallListener().DisconnectThePhone();
+                    return;
             }
 
             switch (category) {
@@ -213,6 +219,9 @@ public class CMDVoiceManager {
                 case AudioManager.CARLIFE:
 
                     break;
+                case AudioManager.STREAM_KUWO:
+                    kwMusicAPI.pause();
+                    break;
                 case AudioManager.STREAM_NAVI:
 
                     break;
@@ -239,6 +248,9 @@ public class CMDVoiceManager {
                 case AudioManager.CARLIFE:
 
                     break;
+                case AudioManager.STREAM_KUWO:
+                    kwMusicAPI.play();
+                    break;
                 case AudioManager.STREAM_NAVI:
 
                     break;
@@ -259,6 +271,9 @@ public class CMDVoiceManager {
                 case AudioManager.STREAM_ANDROID:
                     AidlManager.getInstance().getUsbMusicListener().NextProgram();
                     break;
+                case AudioManager.STREAM_KUWO:
+                    kwMusicAPI.nextMusic();
+                    break;
                 case AudioManager.CARLIFE:
 
                     break;
@@ -278,6 +293,9 @@ public class CMDVoiceManager {
                     break;
                 case AudioManager.STREAM_ANDROID:
                     AidlManager.getInstance().getUsbMusicListener().lastProgram();
+                    break;
+                case AudioManager.STREAM_KUWO:
+                    kwMusicAPI.lastMusic();
                     break;
                 case AudioManager.CARLIFE:
 

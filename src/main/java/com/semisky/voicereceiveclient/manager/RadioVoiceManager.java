@@ -34,25 +34,34 @@ public class RadioVoiceManager {
         String code = radioEntity.getCode();
         String waveband = radioEntity.getWaveband();
 
+        //{"code":"555","waveband":"am","focus":"radio","rawText":"打开AM五五五"}
+        //{"waveband":"fm","focus":"radio","rawText":"打开fm"}
+        //{"code":"104.3","focus":"radio","rawText":"幺零四点三"}
         try {
-            if (code == null) {
-                Log.d(TAG, "setActionJson: " + waveband);
+            if (waveband == null) {
+                Log.d(TAG, "setActionJson:freq " + ((Number) (Float.parseFloat(code) * 100)).intValue());
+                AidlManager.getInstance().getRadioListener().radioPlayFreq(code);
+                return true;
+            } else {
+                Log.d(TAG, "setActionJson:waveband " + waveband);
                 switch (waveband) {
                     case "fm":
                         AidlManager.getInstance().getRadioListener().changeSwitch(FM_TYPE);
+                        if (code != null) {
+                            AidlManager.getInstance().getRadioListener().radioPlayFreq(code);
+                        }
                         startActivity(PKG_RADIO, CLS_RADIO);
                         return true;
                     case "am":
                         AidlManager.getInstance().getRadioListener().changeSwitch(AM_TYPE);
+                        if (code != null) {
+                            AidlManager.getInstance().getRadioListener().radioPlayFreq(code);
+                        }
                         startActivity(PKG_RADIO, CLS_RADIO);
                         return true;
                     default:
                         return false;
                 }
-            } else {
-                Log.d(TAG, "setActionJson: " + ((Number) (Float.parseFloat(code) * 100)).intValue());
-                AidlManager.getInstance().getRadioListener().radioPlayFreq(code);
-                return true;
             }
         } catch (Exception e) {
             e.printStackTrace();

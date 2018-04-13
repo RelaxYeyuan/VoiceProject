@@ -10,49 +10,79 @@
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:onClick="startService"
-        android:text="@string/start_voice_proxy"/>
+        android:onClick="playForSinger"
+        android:text="@string/play_for_singer"/>
 
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:onClick="RadioTest"
-        android:text="@string/radio_test"/>
+        android:onClick="playForName"
+        android:text="@string/play_for_name"/>
 
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:onClick="USBMusicTest"
+        android:onClick="playForNameAndSinger"
         android:text="@string/USBMusic_test"/>
 
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:onClick="BTMusicTest"
+        android:onClick="playForSpecial"
         android:text="@string/BTMusic_test"/>
 
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:onClick="BTCallTest"
+        android:onClick="randomPlay"
         android:text="@string/BTCall_test"/>
 
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:onClick="SystemControlTest"
-        android:text="@string/system_control_test"/>
+        android:onClick="play"
+        android:text="@string/play"/>
 
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:onClick="CarControlTest"
-        android:text="@string/car_control_test"/>
+        android:onClick="pause"
+        android:text="@string/pause"/>
 
     <Button
-        android:text="close activity"
-        android:onClick="finishActivity"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"/>
+        android:layout_height="wrap_content"
+        android:onClick="last"
+        android:text="@string/last"/>
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:onClick="next"
+        android:text="@string/next"/>
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:onClick="startApp"
+        android:text="@string/start"/>
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:onClick="exitApp"
+        android:text="@string/exit"/>
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:onClick="isNetwork"
+        android:text="是否连接上网络"/>
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:onClick="finishActivity"
+        android:text="close activity"/>
 
 </LinearLayout>
