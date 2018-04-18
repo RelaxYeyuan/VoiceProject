@@ -33,16 +33,25 @@ public class RadioVoiceManager {
         mContext = context;
         String code = radioEntity.getCode();
         String waveband = radioEntity.getWaveband();
+        String category = radioEntity.getCategory();
 
         //{"code":"555","waveband":"am","focus":"radio","rawText":"打开AM五五五"}
         //{"waveband":"fm","focus":"radio","rawText":"打开fm"}
         //{"code":"104.3","focus":"radio","rawText":"幺零四点三"}
+        //{"category":"收藏","focus":"radio","rawText":"我想听我收藏的电台。"}
+        //{"category":"收藏","focus":"radio","rawText":"我想听收藏的电台"}
         try {
-            if (waveband == null) {
+            if (waveband == null && code != null) {
                 Log.d(TAG, "setActionJson:freq " + ((Number) (Float.parseFloat(code) * 100)).intValue());
                 AidlManager.getInstance().getRadioListener().radioPlayFreq(code);
+                startActivity(PKG_RADIO, CLS_RADIO);
                 return true;
-            } else {
+            } else if (category != null && category.equals("收藏")) {
+                Log.d(TAG, "听收藏电台: ");
+                AidlManager.getInstance().getRadioListener().radioPlayCollect();
+                startActivity(PKG_RADIO, CLS_RADIO);
+                return true;
+            } else if (waveband != null) {
                 Log.d(TAG, "setActionJson:waveband " + waveband);
                 switch (waveband) {
                     case "fm":

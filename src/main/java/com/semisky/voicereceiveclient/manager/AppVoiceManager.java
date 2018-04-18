@@ -5,15 +5,17 @@ import android.content.Intent;
 import android.util.Log;
 
 import com.semisky.autoservice.manager.AudioManager;
+import com.semisky.autoservice.manager.AutoManager;
 import com.semisky.voicereceiveclient.appAidl.AidlManager;
 import com.semisky.voicereceiveclient.constant.AppConstant;
 import com.semisky.voicereceiveclient.jsonEntity.AppEntity;
 import com.semisky.voicereceiveclient.model.KWMusicAPI;
-import com.semisky.voicereceiveclient.model.RadioBTModel;
+import com.semisky.voicereceiveclient.model.VoiceBTModel;
 import com.semisky.voicereceiveclient.utils.ToolUtils;
 
 import static android.content.Intent.FLAG_ACTIVITY_NEW_TASK;
 import static com.semisky.voicereceiveclient.constant.AppConstant.CLS_BTCALL;
+import static com.semisky.voicereceiveclient.constant.AppConstant.CLS_BTMUSIC;
 import static com.semisky.voicereceiveclient.constant.AppConstant.CLS_MEDIA_MUSIC;
 import static com.semisky.voicereceiveclient.constant.AppConstant.CLS_MEDIA_PICTURE;
 import static com.semisky.voicereceiveclient.constant.AppConstant.CLS_MEDIA_VIDEO;
@@ -21,6 +23,7 @@ import static com.semisky.voicereceiveclient.constant.AppConstant.CLS_NAVI;
 import static com.semisky.voicereceiveclient.constant.AppConstant.CLS_RADIO;
 import static com.semisky.voicereceiveclient.constant.AppConstant.CLS_SETTINGS;
 import static com.semisky.voicereceiveclient.constant.AppConstant.PKG_BTCALL;
+import static com.semisky.voicereceiveclient.constant.AppConstant.PKG_BTMUSIC;
 import static com.semisky.voicereceiveclient.constant.AppConstant.PKG_MEDIA;
 import static com.semisky.voicereceiveclient.constant.AppConstant.PKG_NAVI;
 import static com.semisky.voicereceiveclient.constant.AppConstant.PKG_RADIO;
@@ -66,7 +69,7 @@ public class AppVoiceManager {
             case "蓝牙":
                 return btCallOperation(operation);
             case "蓝牙音乐":
-                return btCallOperation(operation);
+                return btMusicOperation(operation);
             case "蓝牙电话":
                 return openBTCall(operation);
             case "通话记录":
@@ -87,6 +90,68 @@ public class AppVoiceManager {
                 return airOperation(operation);
             case "网络音乐"://{"name":"网络音乐","operation":"LAUNCH","focus":"app","rawText":"打开网络音乐"}
                 return netMusicOperation(operation);
+            case "wifi":
+                return wifiOperation(operation);
+            case "在线电台":
+                return radioOnlineOperation(operation);
+            default:
+                return AppConstant.MUSIC_TYPE_FAIL;
+        }
+    }
+
+    /**
+     * {"name":"蓝牙音乐","operation":"LAUNCH","focus":"app","rawText":"打开蓝牙音乐"}
+     */
+    private int btMusicOperation(String operation) {
+        switch (operation) {
+            case "EXIT":
+                return AppConstant.MUSIC_TYPE_SUCCESS;
+            case "LAUNCH":
+                if (VoiceBTModel.getInstance().isConnectionState()) {
+                    startActivity(PKG_BTMUSIC, CLS_BTMUSIC);
+                }else {
+                    return AppConstant.BT_TYPE_NOT_CONNECTED;
+                }
+                return AppConstant.MUSIC_TYPE_SUCCESS;
+
+            default:
+                return AppConstant.MUSIC_TYPE_FAIL;
+        }
+    }
+
+    /**
+     * {"name":"在线电台","operation":"LAUNCH","focus":"app","rawText":"打开在线电台"}
+     * {"name":"在线电台","operation":"EXIT","focus":"app","rawText":"关闭在线电台"}
+     */
+    private int radioOnlineOperation(String operation) {
+        switch (operation) {
+            case "EXIT":
+                Log.d(TAG, "radioOnlineOperation: exit");
+                AutoManager.getInstance().setWifiState(false);
+                return AppConstant.MUSIC_TYPE_SUCCESS;
+            case "LAUNCH":
+                Log.d(TAG, "radioOnlineOperation: launch");
+                AutoManager.getInstance().setWifiState(true);
+                return AppConstant.MUSIC_TYPE_SUCCESS;
+            default:
+                return AppConstant.MUSIC_TYPE_FAIL;
+        }
+    }
+
+    /**
+     * {"name":"wifi","operation":"LAUNCH","focus":"app","rawText":"打开wifi"}
+     * {"name":"wifi","operation":"EXIT","focus":"app","rawText":"关闭wifi"}
+     */
+    private int wifiOperation(String operation) {
+        switch (operation) {
+            case "EXIT":
+                Log.d(TAG, "wifiOperation: exit");
+                AutoManager.getInstance().setWifiState(false);
+                return AppConstant.MUSIC_TYPE_SUCCESS;
+            case "LAUNCH":
+                Log.d(TAG, "wifiOperation: launch");
+                AutoManager.getInstance().setWifiState(true);
+                return AppConstant.MUSIC_TYPE_SUCCESS;
             default:
                 return AppConstant.MUSIC_TYPE_FAIL;
         }
@@ -252,7 +317,7 @@ public class AppVoiceManager {
     }
 
     private void openBTCallConnection() {
-        if (RadioBTModel.getInstance().isConnectionState()) {
+        if (VoiceBTModel.getInstance().isConnectionState()) {
             Log.d(TAG, "openBTCallConnection: 打开蓝牙拨号");
             //拨号界面传6
             openBTCallConnection(6);
@@ -272,7 +337,7 @@ public class AppVoiceManager {
     }
 
     private void linkBTConnection() {
-        if (RadioBTModel.getInstance().isConnectionState()) {
+        if (VoiceBTModel.getInstance().isConnectionState()) {
             startActivity(PKG_BTCALL, CLS_BTCALL);
         } else {
             Intent intent = new Intent();

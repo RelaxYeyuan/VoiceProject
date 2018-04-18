@@ -1,6 +1,7 @@
 package com.semisky.voicereceiveclient;
 
 import android.content.Context;
+import android.content.Intent;
 import android.media.AudioManager;
 import android.os.RemoteException;
 import android.util.Log;
@@ -27,12 +28,14 @@ import com.semisky.voicereceiveclient.manager.CarVoiceManager;
 import com.semisky.voicereceiveclient.manager.GPSManager;
 import com.semisky.voicereceiveclient.manager.MusicVoiceManager;
 import com.semisky.voicereceiveclient.manager.RadioVoiceManager;
-import com.semisky.voicereceiveclient.model.RadioBTModel;
+import com.semisky.voicereceiveclient.model.VoiceBTModel;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import static com.semisky.autoservice.manager.AudioManager.STREAM_VR;
+import static com.semisky.voicereceiveclient.constant.AppConstant.ACTION_START_VOICE;
+import static com.semisky.voicereceiveclient.constant.AppConstant.START_VOICE_FLAG;
 
 /**
  * Created by chenhongrui on 2018/1/29
@@ -109,6 +112,10 @@ public class VoiceReceiveClient implements PlatformClientListener {
                         resultJson.put("status", "fail");
                         resultJson.put("message", "抱歉，没有可处理的操作");
                         return resultJson.toString();
+                    } else if (type == AppConstant.BT_TYPE_NOT_CONNECTED) {
+                        resultJson.put("status", "fail");
+                        resultJson.put("message", "蓝牙电话未连接，请连接后重试");
+                        return resultJson.toString();
                     }
                 } else if ("radio".equals(action.getString("focus"))) {
                     RadioEntity radioEntity = gson.fromJson(actionJson, RadioEntity.class);
@@ -137,6 +144,10 @@ public class VoiceReceiveClient implements PlatformClientListener {
                     } else if (type == AppConstant.MUSIC_TYPE_NOT_CONNECTED) {
                         resultJson.put("status", "fail");
                         resultJson.put("message", "抱歉，网络未连接，没有找到相关歌曲");
+                        return resultJson.toString();
+                    } else if (type == AppConstant.BT_TYPE_NOT_CONNECTED) {
+                        resultJson.put("status", "fail");
+                        resultJson.put("message", "蓝牙电话未连接，请连接后重试");
                         return resultJson.toString();
                     }
                 } else if ("cmd".equals(action.getString("focus"))) {
@@ -262,7 +273,7 @@ public class VoiceReceiveClient implements PlatformClientListener {
         // 实际状态 需要客户读取提供
         if (arg0 == PlatformCode.STATE_BLUETOOTH_PHONE) {
             // 返回蓝牙电话状态
-            if (RadioBTModel.getInstance().isConnectionState()) {
+            if (VoiceBTModel.getInstance().isConnectionState()) {
                 return PlatformCode.STATE_OK;
             } else {
                 Log.d(TAG, "onGetState: 蓝牙状态不可用");
@@ -300,13 +311,16 @@ public class VoiceReceiveClient implements PlatformClientListener {
         Log.d(TAG, "onRequestAudioFocus: ");
         // 这里使用的 android AudioFocus的音频协调机制
         com.semisky.autoservice.manager.AudioManager.getInstance().openStreamVolume(STREAM_VR);
+        sendOpenVoiceBroadcast();
         return requestFocus();
     }
 
     @Override
     public void onAbandonAudioFocus() {
         Log.d(TAG, "onAbandonAudioFocus: ");
+        com.semisky.autoservice.manager.AudioManager.getInstance().closeStreamVolume(STREAM_VR);
         abandonFocus();
+        sendCloseVoiceBroadcast();
     }
 
     private AudioManager.OnAudioFocusChangeListener mFocusChangeListener = new AudioManager.OnAudioFocusChangeListener() {
@@ -388,5 +402,19 @@ public class VoiceReceiveClient implements PlatformClientListener {
         Log.d(TAG, "abandonFocus: ");
         return mFocusChangeListener != null && AudioManager.AUDIOFOCUS_REQUEST_GRANTED ==
                 audioManager.abandonAudioFocus(mFocusChangeListener);
+    }
+
+    private void sendOpenVoiceBroadcast() {
+        Log.d(TAG, "sendOpenVoiceBroadcast: 语音进入广播");
+        Intent intent = new Intent(ACTION_START_VOICE);
+        intent.putExtra(START_VOICE_FLAG, true);
+        mContext.sendBroadcast(intent);
+    }
+
+    private void sendCloseVoiceBroadcast() {
+        Log.d(TAG, "sendOpenVoiceBroadcast: 语音退出广播");
+        Intent intent = new Intent(ACTION_START_VOICE);
+        intent.putExtra(START_VOICE_FLAG, false);
+        mContext.sendBroadcast(intent);
     }
 }

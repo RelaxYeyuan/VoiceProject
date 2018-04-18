@@ -8,6 +8,7 @@ import com.semisky.voicereceiveclient.appAidl.AidlManager;
 import com.semisky.voicereceiveclient.constant.AppConstant;
 import com.semisky.voicereceiveclient.jsonEntity.MusicEntity;
 import com.semisky.voicereceiveclient.model.KWMusicAPI;
+import com.semisky.voicereceiveclient.model.VoiceBTModel;
 import com.semisky.voicereceiveclient.utils.ToolUtils;
 
 import static android.content.Intent.FLAG_ACTIVITY_NEW_TASK;
@@ -48,6 +49,7 @@ public class MusicVoiceManager {
             artist = musicEntity.getArtist();
             String category = musicEntity.getCategory();
             String source = musicEntity.getSource();
+            String album = musicEntity.getAlbum();
             if (category != null && category.equals("音乐列表")) {
                 if (checkDisk()) {
                     //打开音乐列表
@@ -57,18 +59,42 @@ public class MusicVoiceManager {
                     return AppConstant.MUSIC_TYPE_DISK_MISSING;
                 }
             }
+
+            //{"artist":"刘德华","operation":"","focus":"music","rawText":"刘德华的专辑。"}
+            if (operation.equals("")) {
+                if (album != null) {
+                    if (checkDisk()) {
+                        AidlManager.getInstance().getUsbMusicListener().playByAlbum(album);
+                        Log.d(TAG, "本地音乐专辑播放: ");
+                        return AppConstant.MUSIC_TYPE_SUCCESS;
+                    } else {
+                        //判断是否网络连接
+                        if (ToolUtils.isNetworkAvailable(mContext)) {
+                            kwMusicAPI.playByAlbum(album);
+                            return AppConstant.MUSIC_TYPE_SUCCESS;
+                        } else {
+                            return AppConstant.MUSIC_TYPE_NOT_CONNECTED;
+                        }
+                    }
+                }
+            }
+
             switch (operation) {
                 case "PLAY":
-                    //{"operation":"PLAY","source":"蓝牙音乐","focus":"music","rawText":"打开蓝牙音乐"}
+                    //{"operation":"PLAY","source":"蓝牙音乐","focus":"music","rawText":"播放蓝牙音乐"}
                     //{"operation":"PLAY","source":"本地","focus":"music","rawText":"打开本地歌曲"}
                     //{"operation":"PLAY","source":"网络","focus":"music","rawText":"我想听网络音乐"}
-                    //{"artist":"刘德华","operation":"PLAY","focus":"music","rawText":"来一首刘德华的歌曲"}
-                    //{"artist":"收藏","operation":"PLAY","focus":"music","rawText":"听收藏的频道"}
 
+                    //{"artist":"收藏","operation":"PLAY","focus":"music","rawText":"听收藏的频道"}
+                    //{"operation":"PLAY","source":"usb","focus":"music","rawText":"打开USB音乐"}
                     if (source != null) {
                         switch (source) {
                             case "蓝牙音乐":
-                                startActivity(PKG_BTMUSIC, CLS_BTMUSIC);
+                                if (VoiceBTModel.getInstance().isConnectionState()) {
+                                    startActivity(PKG_BTMUSIC, CLS_BTMUSIC);
+                                } else {
+                                    return AppConstant.BT_TYPE_NOT_CONNECTED;
+                                }
                                 return AppConstant.MUSIC_TYPE_SUCCESS;
                             case "本地":
                                 if (checkDisk()) {
@@ -80,8 +106,36 @@ public class MusicVoiceManager {
                             case "网络":
                                 kwMusicAPI.startApp();
                                 return AppConstant.MUSIC_TYPE_SUCCESS;
+                            case "usb":
+                                if (checkDisk()) {
+                                    startActivity(PKG_MEDIA, CLS_MEDIA_MUSIC);
+                                    return AppConstant.MUSIC_TYPE_SUCCESS;
+                                } else {
+                                    return AppConstant.MUSIC_TYPE_DISK_MISSING;
+                                }
                             default:
                                 break;
+                        }
+                    }
+
+                    //{"artist":"刘德华","operation":"PLAY","focus":"music","rawText":"来一首刘德华的歌曲"}
+                    //{"artist":"刘德华","operation":"","focus":"music","rawText":"刘德华的专辑。"}
+                    //{"album":"你到底有没有爱过我","operation":"PLAY","focus":"music","rawText":"我想听专辑,你到底有没有爱过我?"}
+                    //专辑播放
+                    if (album != null) {
+                        if (checkDisk()) {
+                            AidlManager.getInstance().getUsbMusicListener().playByAlbum(album);
+                            Log.d(TAG, "本地音乐专辑播放: ");
+                            return AppConstant.MUSIC_TYPE_SUCCESS;
+                        } else {
+                            //判断是否网络连接
+                            if (ToolUtils.isNetworkAvailable(mContext)) {
+                                Log.d(TAG, "网络电台专辑播放: ");
+                                kwMusicAPI.playByAlbum(album);
+                                return AppConstant.MUSIC_TYPE_SUCCESS;
+                            } else {
+                                return AppConstant.MUSIC_TYPE_NOT_CONNECTED;
+                            }
                         }
                     }
 
@@ -89,6 +143,7 @@ public class MusicVoiceManager {
                      * 业务流程：我要听XX歌
                      * 1.先判断本地U盘是否连接
                      * 2.再判断网络是否正常
+                     * {"operation":"PLAY","song":"你到底有没有爱过我","focus":"music","rawText":"我想听歌曲，你到底有没有爱过我?"}
                      */
                     if (checkDisk()) {
                         if (song != null && artist != null) {//根据歌名加歌手播放

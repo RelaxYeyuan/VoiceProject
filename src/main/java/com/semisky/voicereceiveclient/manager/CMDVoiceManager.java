@@ -71,13 +71,13 @@ public class CMDVoiceManager {
                     setControl(name, nameValue);
                     break;
                 case "曲目控制":
-                    videoControl(name, nameValue);
+                    videoControl(name);
                     break;
                 case "播放模式":
-                    videoControl(name, nameValue);
+                    videoControl(name);
                     break;
                 case "汽车控制":
-                    carCommand(name, nameValue);
+                    carCommand(name);
                     break;
                 case "电话控制":
                     btCallOperation(name);
@@ -97,6 +97,7 @@ public class CMDVoiceManager {
         }
     }
 
+    //{"category":"收音机控制","name":"收藏本台","focus":"cmd","rawText":"收藏这个电台"}
     private void radioControl(String name) {
         try {
             switch (name) {
@@ -158,13 +159,21 @@ public class CMDVoiceManager {
                 case "打开音量":
                     AudioManager.getInstance().setVolumeMute(false);
                     break;
+                case "关闭屏幕":
+                    //{"category":"屏幕控制","name":"关闭屏幕","focus":"cmd","rawText":"关闭屏幕"}
+                    AutoManager.getInstance().closeBackLight();
+                    break;
+                case "开启屏幕":
+                    //{"category":"屏幕控制","name":"开启屏幕","focus":"cmd","rawText":"打开屏幕"}
+                    AutoManager.getInstance().openBackLight();
+                    break;
             }
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
-    private void videoControl(String name, String nameValue) {
+    private void videoControl(String name) {
         try {
             Log.d(TAG, "videoControl: " + name);
             switch (name) {
@@ -195,7 +204,7 @@ public class CMDVoiceManager {
         }
     }
 
-    private void carCommand(String name, String nameValue) {
+    private void carCommand(String name) {
         if ("即刻出发".equals(name)) {
 
         }
@@ -219,7 +228,7 @@ public class CMDVoiceManager {
                 case AudioManager.CARLIFE:
 
                     break;
-                case AudioManager.STREAM_KUWO:
+                case AudioManager.STREAM_NETMUSIC:
                     kwMusicAPI.pause();
                     break;
                 case AudioManager.STREAM_NAVI:
@@ -248,7 +257,7 @@ public class CMDVoiceManager {
                 case AudioManager.CARLIFE:
 
                     break;
-                case AudioManager.STREAM_KUWO:
+                case AudioManager.STREAM_NETMUSIC:
                     kwMusicAPI.play();
                     break;
                 case AudioManager.STREAM_NAVI:
@@ -271,7 +280,7 @@ public class CMDVoiceManager {
                 case AudioManager.STREAM_ANDROID:
                     AidlManager.getInstance().getUsbMusicListener().NextProgram();
                     break;
-                case AudioManager.STREAM_KUWO:
+                case AudioManager.STREAM_NETMUSIC:
                     kwMusicAPI.nextMusic();
                     break;
                 case AudioManager.CARLIFE:
@@ -294,7 +303,7 @@ public class CMDVoiceManager {
                 case AudioManager.STREAM_ANDROID:
                     AidlManager.getInstance().getUsbMusicListener().lastProgram();
                     break;
-                case AudioManager.STREAM_KUWO:
+                case AudioManager.STREAM_NETMUSIC:
                     kwMusicAPI.lastMusic();
                     break;
                 case AudioManager.CARLIFE:
@@ -349,7 +358,8 @@ public class CMDVoiceManager {
     }
 
     private void changeLightMode() {
-
+//        AutoManager.getInstance().setLightMode(CarCtrlManager.LIGHT_MODE_DAY);
+        // TODO
     }
 
     private void skipHome() {

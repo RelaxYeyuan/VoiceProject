@@ -6,7 +6,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.util.Log;
 
-import com.semisky.voicereceiveclient.model.RadioBTModel;
+import com.semisky.voicereceiveclient.model.VoiceBTModel;
 import com.semisky.voicereceiveclient.model.VoiceKeyModel;
 import com.semisky.voicereceiveclient.model.VoiceWakeupScenes;
 
@@ -45,11 +45,12 @@ public class VoiceProxyReceiver extends BroadcastReceiver {
         switch (action) {
             case ACTION_CALL_STATE_CHANGED:
                 //true: 正在进行通话; false: 蓝牙通话结束
+                if (!intent.hasExtra(EXTRA_CALL_ACTIVE)) return;
                 boolean callState = intent.getBooleanExtra(EXTRA_CALL_ACTIVE, false);
                 int iCallState = callState ? 1 : 0;
                 d(TAG, "蓝牙电话:callState " + callState);
-                RadioBTModel.getInstance().setCallState(iCallState);
-                RadioBTModel.getInstance().notifyObserversBtCallStateChanged(callState);
+                VoiceBTModel.getInstance().setCallState(iCallState);
+                VoiceBTModel.getInstance().notifyObserversBtCallStateChanged(callState);
                 if (callState) {
                     VoiceWakeupScenes.closeVoice();
                     VoiceKeyModel.getInstance(context).unregisterOnKeyListener();
@@ -66,11 +67,11 @@ public class VoiceProxyReceiver extends BroadcastReceiver {
                 int state = intent.getIntExtra(EXTRA_CONNECTION_STATE,
                         BluetoothAdapter.STATE_DISCONNECTED);
                 d(TAG, "蓝牙连接状态" + state);
-                RadioBTModel.getInstance().setConnectState(state);
+                VoiceBTModel.getInstance().setConnectState(state);
                 if (state == BluetoothAdapter.STATE_CONNECTED) {
-                    RadioBTModel.getInstance().notifyObserversBtConnectionStateChanged(true);
+                    VoiceBTModel.getInstance().notifyObserversBtConnectionStateChanged(true);
                 } else if (state == BluetoothAdapter.STATE_DISCONNECTED) {
-                    RadioBTModel.getInstance().notifyObserversBtConnectionStateChanged(false);
+                    VoiceBTModel.getInstance().notifyObserversBtConnectionStateChanged(false);
                 }
                 break;
 

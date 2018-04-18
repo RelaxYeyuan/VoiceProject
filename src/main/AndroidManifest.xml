@@ -21,7 +21,6 @@
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:theme="@style/AppTheme">
-
         <service
             android:name="com.iflytek.platformservice.PlatformService"
             android:enabled="true"
@@ -32,11 +31,7 @@
         </service>
 
         <activity android:name=".MainActivity">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN"/>
 
-                <category android:name="android.intent.category.LAUNCHER"/>
-            </intent-filter>
         </activity>
 
         <service
@@ -58,6 +53,14 @@
                 <action android:name="com.semisky.broadcast.SCREEN_START_ACTIVITY"/>
             </intent-filter>
         </receiver>
+
+        <activity android:name=".utils.TestActivity">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN"/>
+
+                <category android:name="android.intent.category.LAUNCHER"/>
+            </intent-filter>
+        </activity>
     </application>
 
 </manifest>

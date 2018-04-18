@@ -55,7 +55,7 @@ public class VoiceKeyModel {
                 Log.d(TAG, "keyCode: " + keyCode + " action: " + action);
                 switch (keyCode) {
                     case KeyManager.KEYCODE_VR:
-                        if (action == 1 || action == 0) {
+                        if (action == 0) {
                             if (checkVoiceActivity()) return;
                             Intent intent = new Intent();
                             intent.setClassName(PKG_VOICE, CLS_VOICE);

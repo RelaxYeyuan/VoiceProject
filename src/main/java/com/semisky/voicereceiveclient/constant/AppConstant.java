@@ -34,6 +34,8 @@ public class AppConstant {
     public static final String PKG_VOICE = "com.iflytek.cutefly.speechclient";
     public static final String CLS_VOICE = "com.iflytek.autofly.activity.SpeechActivity";
 
+    public static final String ACTION_START_VOICE = "com.semisky.broadcast.VOICE_START_ACTIVITY";
+    public static final String START_VOICE_FLAG = "start_voice_flag";
 
     public static final int RADIO_BINDER = 1;
     public static final int USB_MUSIC_BINDER = 2;
@@ -68,4 +70,7 @@ public class AppConstant {
     public static final int MUSIC_TYPE_FAIL = 2;
     public static final int MUSIC_TYPE_DISK_MISSING = 3;
     public static final int MUSIC_TYPE_NOT_CONNECTED = 4;
+
+    //BTMusic
+    public static final int BT_TYPE_NOT_CONNECTED = 5;
 }

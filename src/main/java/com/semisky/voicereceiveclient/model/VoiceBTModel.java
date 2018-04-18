@@ -13,20 +13,20 @@ import java.util.List;
  * 修改内容：
  * 修改日期
  */
-public class RadioBTModel {
+public class VoiceBTModel {
 
-    private static RadioBTModel instance;
+    private static VoiceBTModel instance;
     private List<OnBtStateChangeListener> mBtStateListenerList = null;
 
-    private RadioBTModel() {
+    private VoiceBTModel() {
         mBtStateListenerList = new ArrayList<>();
     }
 
-    public static RadioBTModel getInstance() {
+    public static VoiceBTModel getInstance() {
         if (instance == null) {
-            synchronized (RadioBTModel.class) {
+            synchronized (VoiceBTModel.class) {
                 if (instance == null) {
-                    instance = new RadioBTModel();
+                    instance = new VoiceBTModel();
                 }
             }
         }
