@@ -43,7 +43,7 @@ public class TestActivity extends Activity {
     }
 
     public void 打开AC模式(View view) {
-        ACManager.getInstance().setAirConditionerAC(true);//开启空调
+        ACManager.getInstance().setAirConditionerAC(true);
     }
 
     public void 开启内循环模式(View view) {
@@ -208,5 +208,29 @@ public class TestActivity extends Activity {
         if (fanSpeed < 7 && fanSpeed > 0) {
             ACManager.getInstance().setAirConditionerWindValue(fanSpeed - 1);
         }
+    }
+
+    public void 打开右前车窗大一点(View view) {
+        CarCtrlManager.getInstance().setSideWindow(POSITION_FR, STATE_OPEN_80);
+    }
+
+    public void 打开右前车窗小一点(View view) {
+        CarCtrlManager.getInstance().setSideWindow(POSITION_FR, STATE_CLOSE_80);
+    }
+
+    public void 打开左后车窗大一点(View view) {
+        CarCtrlManager.getInstance().setSideWindow(POSITION_RL, STATE_OPEN_80);
+    }
+
+    public void 打开左后车窗小一点(View view) {
+        CarCtrlManager.getInstance().setSideWindow(POSITION_RL, STATE_CLOSE_80);
+    }
+
+    public void 打开右后车窗大一点(View view) {
+        CarCtrlManager.getInstance().setSideWindow(POSITION_RR, STATE_OPEN_80);
+    }
+
+    public void 打开右后车窗小一点(View view) {
+        CarCtrlManager.getInstance().setSideWindow(POSITION_RR, STATE_CLOSE_80);
     }
 }

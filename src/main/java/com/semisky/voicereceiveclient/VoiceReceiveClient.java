@@ -201,7 +201,7 @@ public class VoiceReceiveClient implements PlatformClientListener {
     @Override
     public String onDoAction(String actionJson) {
         Log.d(TAG, "onDoAction: " + actionJson);
-         /* 伪代码，实际需要客户实现 */
+        /* 伪代码，实际需要客户实现 */
         JSONObject resultJson = new JSONObject();
         if (actionJson == null) {
             try {
@@ -331,9 +331,16 @@ public class VoiceReceiveClient implements PlatformClientListener {
                 case AudioManager.AUDIOFOCUS_LOSS://永久失去焦点 -1
                     break;
                 case AudioManager.AUDIOFOCUS_LOSS_TRANSIENT://暂时失去焦点 -2
+                    /*
+                    1.正在播放收音机，车机连接上蓝牙
+                    2.进入语音识别页面
+                    3.手机拨打蓝牙电话，挂断之后。
+                    4.不会走onAbandonAudioFocus回调方法，导致收音机没有声音
+                     */
                     abandonFocus();
                     break;
                 case AudioManager.AUDIOFOCUS_LOSS_TRANSIENT_CAN_DUCK://duck机制 -3
+
                     break;
                 case AudioManager.AUDIOFOCUS_GAIN://重获焦点 1
 
@@ -342,13 +349,20 @@ public class VoiceReceiveClient implements PlatformClientListener {
 
             if (PlatformService.platformCallback == null) {
                 Log.e(TAG, "PlatformService.platformCallback == null");
-                return;
-            }
-
-            try {
-                PlatformService.platformCallback.audioFocusChange(focusChange);
-            } catch (RemoteException e) {
-                Log.e(TAG, "platformCallback audioFocusChange error:" + e.getMessage());
+            } else {
+                try {
+                    /*
+                     * 1.收音机前台播放，导航后台模拟导航
+                     2.唤醒语音，等待一会(当收到AudioFocusChange DUCK -3)
+                     3.点击back键退出语音
+                     4.收音机没有声音
+                     */
+                    if (focusChange != AudioManager.AUDIOFOCUS_LOSS_TRANSIENT_CAN_DUCK) {
+                        PlatformService.platformCallback.audioFocusChange(focusChange);
+                    }
+                } catch (RemoteException e) {
+                    Log.e(TAG, "platformCallback audioFocusChange error:" + e.getMessage());
+                }
             }
         }
     };
