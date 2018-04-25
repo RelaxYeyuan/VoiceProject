@@ -40,7 +40,7 @@ import static com.semisky.voicereceiveclient.constant.AppConstant.START_VOICE_FL
 /**
  * Created by chenhongrui on 2018/1/29
  * <p>
- * 内容摘要：${TODO}
+ * 内容摘要：
  * 版权所有：Semisky
  * 修改内容：
  * 修改日期

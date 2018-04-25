@@ -98,6 +98,7 @@ public class CMDVoiceManager {
     }
 
     //{"category":"收音机控制","name":"收藏本台","focus":"cmd","rawText":"收藏这个电台"}
+    //{"category":"收音机控制","name":"收藏本台","focus":"cmd","rawText":"收藏这个台"}
     private void radioControl(String name) {
         try {
             switch (name) {
@@ -332,27 +333,43 @@ public class CMDVoiceManager {
         int lightAdjustNightValue = Settings.System.getInt(contentResolver, KEY_LIGHT_NIGHT_VALUE, 3);
         int lightModeValue = Settings.System.getInt(contentResolver, KEY_LIGHT_MODE, LIGHT_MODE_AUTO);
 
+        Log.d(TAG, "updateLightAdjustValue:lightAdjustDayValue " + lightAdjustDayValue);
+        Log.d(TAG, "updateLightAdjustValue:lightAdjustNightValue " + lightAdjustNightValue);
+        Log.d(TAG, "updateLightAdjustValue:lightModeValue " + lightModeValue);
+
         //增加亮度
         if (type == 0) {
             if (lightModeValue == LIGHT_MODE_DAY) {
                 if (lightAdjustDayValue >= 10) return;
+                int light = lightAdjustDayValue + 1;
                 //设置亮度
-                AutoManager.getInstance().setBackLight(LIGHT_MODE_DAY, lightAdjustDayValue + 1);
+                AutoManager.getInstance().setBackLight(LIGHT_MODE_DAY, light);
+                Settings.System.putInt(contentResolver, KEY_LIGHT_DAY_VALUE, light);
+                Log.d(TAG, "setBackLight: " + light);
             } else if (lightModeValue == LIGHT_MODE_NIGHT) {
                 if (lightAdjustNightValue >= 10) return;
+                int light = lightAdjustNightValue + 1;
                 //设置亮度
-                AutoManager.getInstance().setBackLight(LIGHT_MODE_NIGHT, lightAdjustNightValue + 1);
+                AutoManager.getInstance().setBackLight(LIGHT_MODE_NIGHT, light);
+                Settings.System.putInt(contentResolver, KEY_LIGHT_NIGHT_VALUE, light);
+                Log.d(TAG, "setBackLight: " + light);
             }
             //降低亮度
         } else if (type == 1) {
             if (lightModeValue == LIGHT_MODE_DAY) {
                 if (lightAdjustDayValue <= 0) return;
+                int light = lightAdjustDayValue - 1;
                 //设置亮度
-                AutoManager.getInstance().setBackLight(LIGHT_MODE_DAY, lightAdjustDayValue - 1);
+                AutoManager.getInstance().setBackLight(LIGHT_MODE_DAY, light);
+                Settings.System.putInt(contentResolver, KEY_LIGHT_DAY_VALUE, light);
+                Log.d(TAG, "setBackLight: " + light);
             } else if (lightModeValue == LIGHT_MODE_NIGHT) {
                 if (lightAdjustNightValue <= 0) return;
+                int light = lightAdjustNightValue - 1;
                 //设置亮度
-                AutoManager.getInstance().setBackLight(LIGHT_MODE_NIGHT, lightAdjustNightValue - 1);
+                AutoManager.getInstance().setBackLight(LIGHT_MODE_NIGHT, light);
+                Settings.System.putInt(contentResolver, KEY_LIGHT_NIGHT_VALUE, light);
+                Log.d(TAG, "setBackLight: " + light);
             }
         }
     }

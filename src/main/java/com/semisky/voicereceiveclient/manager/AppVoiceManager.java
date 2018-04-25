@@ -2,6 +2,7 @@ package com.semisky.voicereceiveclient.manager;
 
 import android.content.Context;
 import android.content.Intent;
+import android.os.RemoteException;
 import android.util.Log;
 
 import com.semisky.autoservice.manager.AudioManager;
@@ -109,7 +110,7 @@ public class AppVoiceManager {
             case "LAUNCH":
                 if (VoiceBTModel.getInstance().isConnectionState()) {
                     startActivity(PKG_BTMUSIC, CLS_BTMUSIC);
-                }else {
+                } else {
                     return AppConstant.BT_TYPE_NOT_CONNECTED;
                 }
                 return AppConstant.MUSIC_TYPE_SUCCESS;
@@ -174,7 +175,7 @@ public class AppVoiceManager {
         switch (operation) {
             case "EXIT":
                 //{"name":"音乐","operation":"EXIT","focus":"app","rawText":"关闭音乐。"}
-                exitApp();
+                muteApp();
                 skipHome();
                 return AppConstant.MUSIC_TYPE_SUCCESS;
             case "LAUNCH":
@@ -193,6 +194,11 @@ public class AppVoiceManager {
                 startActivity(PKG_MEDIA, CLS_MEDIA_VIDEO);
                 return AppConstant.MUSIC_TYPE_SUCCESS;
             case "音乐":
+                try {
+                    AidlManager.getInstance().getUsbMusicListener().play();
+                } catch (RemoteException e) {
+                    e.printStackTrace();
+                }
                 startActivity(PKG_MEDIA, CLS_MEDIA_MUSIC);
                 return AppConstant.MUSIC_TYPE_SUCCESS;
             case "图片":
@@ -220,6 +226,7 @@ public class AppVoiceManager {
     private int naviOperation(String operation) {
         switch (operation) {
             case "EXIT":
+                skipHome();
                 return AppConstant.MUSIC_TYPE_SUCCESS;
             case "LAUNCH":
                 startActivity(PKG_NAVI, CLS_NAVI);
@@ -233,11 +240,12 @@ public class AppVoiceManager {
         switch (operation) {
             //退出app
             case "EXIT":
-                exitApp();
+                muteApp();
                 skipHome();
                 return AppConstant.MUSIC_TYPE_SUCCESS;
             //进入app
             case "LAUNCH":
+                unMuteApp();
                 startActivity(PKG_RADIO, CLS_RADIO);
                 return AppConstant.MUSIC_TYPE_SUCCESS;
             default:
@@ -366,10 +374,10 @@ public class AppVoiceManager {
         mContext.startActivity(intent);
     }
 
-    private void exitApp() {
+    private void muteApp() {
         try {
             int currentAudioType = AudioManager.getInstance().getCurrentAudioType();
-            Log.d(TAG, "exitApp: " + currentAudioType);
+            Log.d(TAG, "muteApp: " + currentAudioType);
             switch (currentAudioType) {
                 case AudioManager.RADIO:
                     AidlManager.getInstance().getRadioListener().mute();
@@ -379,6 +387,26 @@ public class AppVoiceManager {
                     break;
                 case AudioManager.STREAM_ANDROID:
                     AidlManager.getInstance().getUsbMusicListener().pause();
+                    break;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void unMuteApp() {
+        try {
+            int currentAudioType = AudioManager.getInstance().getCurrentAudioType();
+            Log.d(TAG, "unMuteApp: " + currentAudioType);
+            switch (currentAudioType) {
+                case AudioManager.RADIO:
+                    AidlManager.getInstance().getRadioListener().Unmute();
+                    break;
+                case AudioManager.STREAM_BT_MUSIC:
+                    AidlManager.getInstance().getBTMusicListener().play();
+                    break;
+                case AudioManager.STREAM_ANDROID:
+                    AidlManager.getInstance().getUsbMusicListener().play();
                     break;
             }
         } catch (Exception e) {
