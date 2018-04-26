@@ -1,7 +1,14 @@
 package com.semisky.voicereceiveclient.model;
 
+import android.util.Log;
+
+import com.semisky.autoservice.manager.ICMManager;
+
 import cn.kuwo.autosdk.api.KWAPI;
+import cn.kuwo.autosdk.api.OnPlayerStatusListener;
 import cn.kuwo.autosdk.api.PlayState;
+import cn.kuwo.autosdk.api.PlayerStatus;
+import cn.kuwo.base.bean.Music;
 
 /**
  * Created by chenhongrui on 2018/4/3
@@ -18,6 +25,8 @@ import cn.kuwo.autosdk.api.PlayState;
  * 5.暂停，播放，上/下一曲，进入/退出应用
  */
 public class KWMusicAPI {
+
+    private static final String TAG = "KWMusicAPI";
 
     private KWAPI mKwapi;
 
@@ -79,5 +88,23 @@ public class KWMusicAPI {
     //退出酷我
     public void exitApp() {
         mKwapi.exitAPP();
+    }
+
+    /**
+     * " 歌名：" + music.name;
+     * " 歌手：" + music.artist;
+     * " 专辑：" + music.album;
+     */
+    public void registerPlayerStatusListener() {
+        mKwapi.registerPlayerStatusListener(new OnPlayerStatusListener() {
+
+            @Override
+            public void onPlayerStatus(PlayerStatus arg0, Music music) {
+                if (music != null) {
+                    ICMManager.getInstance().setCurrentSourceName(music.name);
+                    Log.d(TAG, "onPlayerStatus: " + music.name);
+                }
+            }
+        });
     }
 }

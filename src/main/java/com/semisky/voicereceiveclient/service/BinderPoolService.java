@@ -5,6 +5,8 @@ import android.content.Intent;
 import android.os.IBinder;
 import android.util.Log;
 
+import com.semisky.voicereceiveclient.model.KWMusicAPI;
+
 public class BinderPoolService extends Service {
 
     private static final String TAG = "BinderPoolService";
@@ -17,6 +19,9 @@ public class BinderPoolService extends Service {
     @Override
     public void onCreate() {
         super.onCreate();
+
+        KWMusicAPI mKwapi = new KWMusicAPI();
+        mKwapi.registerPlayerStatusListener();
     }
 
     @Override
