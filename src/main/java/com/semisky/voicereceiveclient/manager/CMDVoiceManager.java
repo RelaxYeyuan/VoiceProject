@@ -14,6 +14,7 @@ import com.semisky.voicereceiveclient.model.KWMusicAPI;
 
 import static android.content.Intent.FLAG_ACTIVITY_NEW_TASK;
 import static com.semisky.voicereceiveclient.constant.AppConstant.CLS_BTCALL;
+import static com.semisky.voicereceiveclient.constant.AppConstant.LOOP_PLAY;
 import static com.semisky.voicereceiveclient.constant.AppConstant.ORDER_PLAY;
 import static com.semisky.voicereceiveclient.constant.AppConstant.PKG_BTCALL;
 import static com.semisky.voicereceiveclient.constant.AppConstant.RANDOM_PLAY;
@@ -185,13 +186,16 @@ public class CMDVoiceManager {
                     continuePlay();
                     break;
                 case "顺序循环":
-                    AidlManager.getInstance().getUsbMusicListener().changePlayOrder(SINGLE_PLAY);
+                    AidlManager.getInstance().getUsbMusicListener().changePlayOrder(ORDER_PLAY);
                     break;
                 case "单曲循环":
-                    AidlManager.getInstance().getUsbMusicListener().changePlayOrder(ORDER_PLAY);
+                    AidlManager.getInstance().getUsbMusicListener().changePlayOrder(SINGLE_PLAY);
                     break;
                 case "随机播放":
                     AidlManager.getInstance().getUsbMusicListener().changePlayOrder(RANDOM_PLAY);
+                    break;
+                case "循环播放":
+                    AidlManager.getInstance().getUsbMusicListener().changePlayOrder(LOOP_PLAY);
                     break;
                 case "下一首":
                     mediaNext();

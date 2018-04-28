@@ -17,7 +17,7 @@ interface IUSBMusicListener {
     int playByAlbum(String album);
 
     //改变播放顺序
-    //1.顺序播放 2.单曲循环 3.随机播放
+    //1.顺序播放 2.单曲循环 3.随机播放 4.循环播放
     int changePlayOrder(int type);
 
     //暂停
