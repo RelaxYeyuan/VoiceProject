@@ -2,6 +2,7 @@ package com.semisky.voicereceiveclient.manager;
 
 import android.content.Context;
 import android.content.Intent;
+import android.net.wifi.WifiManager;
 import android.os.RemoteException;
 import android.util.Log;
 
@@ -147,11 +148,11 @@ public class AppVoiceManager {
         switch (operation) {
             case "EXIT":
                 Log.d(TAG, "wifiOperation: exit");
-                AutoManager.getInstance().setWifiState(false);
+                closeWifiFunction();
                 return AppConstant.MUSIC_TYPE_SUCCESS;
             case "LAUNCH":
                 Log.d(TAG, "wifiOperation: launch");
-                AutoManager.getInstance().setWifiState(true);
+                openWifiFunction();
                 return AppConstant.MUSIC_TYPE_SUCCESS;
             default:
                 return AppConstant.MUSIC_TYPE_FAIL;
@@ -413,4 +414,27 @@ public class AppVoiceManager {
             e.printStackTrace();
         }
     }
+
+    private WifiManager mWifiManager;
+
+    private void openWifiFunction() {
+        if (mWifiManager == null) {
+            mWifiManager = (WifiManager) mContext.getApplicationContext().getSystemService(Context.WIFI_SERVICE);
+        }
+
+        if (mWifiManager != null && !mWifiManager.isWifiEnabled()) {
+            mWifiManager.setWifiEnabled(true);
+        }
+    }
+
+    private void closeWifiFunction() {
+        if (mWifiManager == null) {
+            mWifiManager = (WifiManager) mContext.getApplicationContext().getSystemService(Context.WIFI_SERVICE);
+        }
+
+        if (mWifiManager != null && mWifiManager.isWifiEnabled()) {
+            mWifiManager.setWifiEnabled(false);
+        }
+    }
+
 }
