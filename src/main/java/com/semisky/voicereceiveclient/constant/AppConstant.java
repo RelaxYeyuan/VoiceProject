@@ -45,14 +45,12 @@ public class AppConstant {
     public static final int IPOD_BINDER = 6;
     public static final int SYSTEM_CONTROL_BINDER = 7;
 
+    //循环播放
+    public static final int LOOP_PLAY = 1;
     //单曲播放
-    public static final int SINGLE_PLAY = 1;
-    //顺序播放
-    public static final int ORDER_PLAY = 2;
+    public static final int SINGLE_PLAY = 2;
     //随机播放
     public static final int RANDOM_PLAY = 3;
-    //循环播放
-    public static final int LOOP_PLAY = 4;
 
     //搜索到歌曲
     public final static int RESULT_SUCCESS = 0x01;
