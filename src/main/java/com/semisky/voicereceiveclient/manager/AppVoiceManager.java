@@ -18,6 +18,7 @@ import com.semisky.voicereceiveclient.utils.ToolUtils;
 import static android.content.Intent.FLAG_ACTIVITY_NEW_TASK;
 import static com.semisky.voicereceiveclient.constant.AppConstant.CLS_BTCALL;
 import static com.semisky.voicereceiveclient.constant.AppConstant.CLS_BTMUSIC;
+import static com.semisky.voicereceiveclient.constant.AppConstant.CLS_CAR_SETTINGS;
 import static com.semisky.voicereceiveclient.constant.AppConstant.CLS_MEDIA_MUSIC;
 import static com.semisky.voicereceiveclient.constant.AppConstant.CLS_MEDIA_PICTURE;
 import static com.semisky.voicereceiveclient.constant.AppConstant.CLS_MEDIA_VIDEO;
@@ -26,6 +27,7 @@ import static com.semisky.voicereceiveclient.constant.AppConstant.CLS_RADIO;
 import static com.semisky.voicereceiveclient.constant.AppConstant.CLS_SETTINGS;
 import static com.semisky.voicereceiveclient.constant.AppConstant.PKG_BTCALL;
 import static com.semisky.voicereceiveclient.constant.AppConstant.PKG_BTMUSIC;
+import static com.semisky.voicereceiveclient.constant.AppConstant.PKG_CAR_SETTINGS;
 import static com.semisky.voicereceiveclient.constant.AppConstant.PKG_MEDIA;
 import static com.semisky.voicereceiveclient.constant.AppConstant.PKG_NAVI;
 import static com.semisky.voicereceiveclient.constant.AppConstant.PKG_RADIO;
@@ -86,6 +88,8 @@ public class AppVoiceManager {
                 return mediaOperation(name, operation);
             case "图片":
                 return mediaOperation(name, operation);
+            case "图片列表":
+                return mediaOperation(name, operation);
             case "导航":
                 return naviOperation(operation);
             case "空调":
@@ -96,6 +100,23 @@ public class AppVoiceManager {
                 return wifiOperation(operation);
             case "在线电台":
                 return radioOnlineOperation(operation);
+            case "车辆设置":
+                return carOperation(operation);
+            default:
+                return AppConstant.MUSIC_TYPE_FAIL;
+        }
+    }
+
+    private int carOperation(String operation) {
+        switch (operation) {
+            case "EXIT":
+                Log.d(TAG, "carOperation: EXIT");
+
+                return AppConstant.MUSIC_TYPE_SUCCESS;
+            case "LAUNCH":
+                Log.d(TAG, "carOperation: LAUNCH");
+                startActivity(PKG_CAR_SETTINGS, CLS_CAR_SETTINGS);
+                return AppConstant.MUSIC_TYPE_SUCCESS;
             default:
                 return AppConstant.MUSIC_TYPE_FAIL;
         }
@@ -203,6 +224,9 @@ public class AppVoiceManager {
                 startActivity(PKG_MEDIA, CLS_MEDIA_MUSIC);
                 return AppConstant.MUSIC_TYPE_SUCCESS;
             case "图片":
+                startActivity(PKG_MEDIA, CLS_MEDIA_PICTURE);
+                return AppConstant.MUSIC_TYPE_SUCCESS;
+            case "图片列表":
                 startActivity(PKG_MEDIA, CLS_MEDIA_PICTURE);
                 return AppConstant.MUSIC_TYPE_SUCCESS;
             default:

@@ -11,6 +11,7 @@ import static com.semisky.autoservice.manager.CarCtrlManager.POSITION_RL;
 import static com.semisky.autoservice.manager.CarCtrlManager.POSITION_RR;
 import static com.semisky.autoservice.manager.CarCtrlManager.SKY_WINDOW_CLOSE;
 import static com.semisky.autoservice.manager.CarCtrlManager.SKY_WINDOW_OPEN;
+import static com.semisky.autoservice.manager.CarCtrlManager.SKY_WINDOW_RISE;
 import static com.semisky.autoservice.manager.CarCtrlManager.STATUS_CLOSE;
 import static com.semisky.autoservice.manager.CarCtrlManager.STATUS_OPEN;
 import static com.semisky.autoservice.manager.CarCtrlManager.TYPE_WIDTH_LAMP;
@@ -18,16 +19,17 @@ import static com.semisky.autoservice.manager.CarCtrlManager.TYPE_WIDTH_LAMP;
 /**
  * Created by chenhongrui on 2018/3/9
  * <p>
- * 内容摘要：${TODO}
+ * 内容摘要：
  * 版权所有：Semisky
  * 修改内容：
+ * <p>
+ * {"name":"车窗","operation":"OPEN","focus":"carControl","rawText":"打开全部车窗"}
+ * {"name":"车窗","operation":"CLOSE","focus":"carControl","rawText":"关闭全部车窗"}
  * {"name":"左前车窗","operation":"OPEN","focus":"carControl","rawText":"打开左前车窗"}
+ * {"name":"左前车窗","operation":"CLOSE","focus":"carControl","rawText":"关闭左前车窗"}
  * {"name":"左前车窗","operation":"OPEN","focus":"carControl","rawText":"左前车窗打开一点"}
  * {"name":"大一点左前车窗","operation":"LAUNCH","focus":"app","rawText":"打开大一点左前车窗"}
  * {"name":"小一点左前车窗","operation":"LAUNCH","focus":"app","rawText":"打开小一点左前车窗"}
- * {"name":"车窗","operation":"OPEN","focus":"carControl","rawText":"打开全部车窗"}
- * {"name":"车窗","operation":"CLOSE","focus":"carControl","rawText":"关闭全部车窗"}
- * 修改日期
  */
 public class CarVoiceManager {
 
@@ -39,6 +41,9 @@ public class CarVoiceManager {
         switch (name) {
             case "天窗":
                 setSkyLight(operation);
+                break;
+            case "天窗翘起":
+                setSkyLight();
                 break;
             case "车窗":
                 setCarWindow(operation, 0);
@@ -71,6 +76,12 @@ public class CarVoiceManager {
         }
     }
 
+    private void setSkyLight() {
+        //SKY_WINDOW_RISE 翘起天窗
+        Log.d(TAG, "setSkyLight:翘起天窗 ");
+        CarCtrlManager.getInstance().setSkyWindow(SKY_WINDOW_RISE);
+    }
+
     private void setSkyLight(String operation) {
         if (operation.equals("OPEN")) {//{"name":"天窗","operation":"OPEN","focus":"carControl","rawText":"打开天窗"}
             CarCtrlManager.getInstance().setSkyWindow(SKY_WINDOW_OPEN);
@@ -83,6 +94,7 @@ public class CarVoiceManager {
 
     private void setCarWindow(String operation, int type) {
         if (operation.equals("OPEN")) {
+            Log.d(TAG, "setCarWindow: " + type);
             switch (type) {
                 case 0:
                     CarCtrlManager.getInstance().setAllSideWindows(true);
@@ -101,6 +113,7 @@ public class CarVoiceManager {
                     break;
             }
         } else if (operation.equals("CLOSE")) {
+            Log.d(TAG, "setCarWindow: " + type);
             switch (type) {
                 case 0:
                     CarCtrlManager.getInstance().setAllSideWindows(true);

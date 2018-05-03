@@ -11,11 +11,14 @@ import com.semisky.autoservice.manager.AutoManager;
 import com.semisky.voicereceiveclient.appAidl.AidlManager;
 import com.semisky.voicereceiveclient.jsonEntity.CMDEntity;
 import com.semisky.voicereceiveclient.model.KWMusicAPI;
+import com.semisky.voicereceiveclient.model.VoiceWakeupScenes;
+import com.semisky.voicereceiveclient.utils.ToolUtils;
 
 import static android.content.Intent.FLAG_ACTIVITY_NEW_TASK;
 import static com.semisky.voicereceiveclient.constant.AppConstant.CLS_BTCALL;
 import static com.semisky.voicereceiveclient.constant.AppConstant.LOOP_PLAY;
 import static com.semisky.voicereceiveclient.constant.AppConstant.PKG_BTCALL;
+import static com.semisky.voicereceiveclient.constant.AppConstant.PKG_VOICE;
 import static com.semisky.voicereceiveclient.constant.AppConstant.RANDOM_PLAY;
 import static com.semisky.voicereceiveclient.constant.AppConstant.SINGLE_PLAY;
 
@@ -49,6 +52,7 @@ public class CMDVoiceManager {
                     changeLightMode();
                     return;
                 case "返回主菜单":
+                    checkVoiceActivity();
                     skipHome();
                     return;
                 case "断开连接":
@@ -162,16 +166,26 @@ public class CMDVoiceManager {
                     break;
                 case "关闭屏幕":
                     //{"category":"屏幕控制","name":"关闭屏幕","focus":"cmd","rawText":"关闭屏幕"}
-                    AutoManager.getInstance().closeBackLight();
+                    cliseBackLight();
                     break;
                 case "开启屏幕":
                     //{"category":"屏幕控制","name":"开启屏幕","focus":"cmd","rawText":"打开屏幕"}
-                    AutoManager.getInstance().openBackLight();
+
                     break;
             }
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    private static final String SCREENSAVER_ACTION = "com.semisky.broadcast.SCREENSAVER";
+    private static final String KEY_POWER_EVENT = "PowerEvent";
+    private static final int ACTION_LONG_PRESS = 1;
+
+    private void cliseBackLight() {
+        Intent intent = new Intent(SCREENSAVER_ACTION);
+        intent.putExtra(KEY_POWER_EVENT, ACTION_LONG_PRESS);
+        mContext.sendBroadcast(intent);
     }
 
     private void videoControl(String name) {
@@ -384,6 +398,13 @@ public class CMDVoiceManager {
         homeIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         homeIntent.addCategory(Intent.CATEGORY_HOME);
         mContext.startActivity(homeIntent);
+    }
+
+    private void checkVoiceActivity() {
+        boolean topActivityName = ToolUtils.getTopActivityName(mContext, PKG_VOICE);
+        if (topActivityName) {
+            VoiceWakeupScenes.closeVoiceActivity();
+        }
     }
 
     private void openBTCallConnection(int type) {

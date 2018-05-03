@@ -1,5 +1,7 @@
 package com.semisky.voicereceiveclient.utils;
 
+import android.app.ActivityManager;
+import android.content.ComponentName;
 import android.content.Context;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
@@ -72,6 +74,23 @@ public class ToolUtils {
                     }
                 }
             }
+        }
+        return false;
+    }
+
+    /**
+     * 判断当前activity是否是packageName
+     *
+     * @return true属于
+     */
+    public static boolean getTopActivityName(Context context, String packageName) {
+        ActivityManager activityManager =
+                (ActivityManager) (context.getSystemService(Context.ACTIVITY_SERVICE));
+        if (activityManager != null) {
+            ComponentName topActivity = activityManager.getRunningTasks(1).get(0).topActivity;
+            String topPackageName = topActivity.getPackageName();
+            Log.d(TAG, "getTopActivityName: " + topPackageName);
+            return topPackageName.equals(packageName);
         }
         return false;
     }

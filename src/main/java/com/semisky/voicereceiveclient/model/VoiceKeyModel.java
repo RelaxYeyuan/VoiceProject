@@ -1,7 +1,5 @@
 package com.semisky.voicereceiveclient.model;
 
-import android.app.ActivityManager;
-import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.os.RemoteException;
@@ -9,6 +7,7 @@ import android.util.Log;
 
 import com.semisky.autoservice.aidl.IKeyListener;
 import com.semisky.autoservice.manager.KeyManager;
+import com.semisky.voicereceiveclient.utils.ToolUtils;
 
 import static com.semisky.voicereceiveclient.constant.AppConstant.CLS_VOICE;
 import static com.semisky.voicereceiveclient.constant.AppConstant.PKG_VOICE;
@@ -92,27 +91,10 @@ public class VoiceKeyModel {
      * 如果当前处于语音识别页面，再点击退出页面
      */
     private boolean checkVoiceActivity() {
-        boolean topActivityName = getTopActivityName(mContext, PKG_VOICE);
+        boolean topActivityName = ToolUtils.getTopActivityName(mContext, PKG_VOICE);
         if (topActivityName) {
             VoiceWakeupScenes.closeVoiceActivity();
             return true;
-        }
-        return false;
-    }
-
-    /**
-     * 判断当前activity是否是packageName
-     *
-     * @return true属于
-     */
-    private static boolean getTopActivityName(Context context, String packageName) {
-        ActivityManager activityManager =
-                (ActivityManager) (context.getSystemService(Context.ACTIVITY_SERVICE));
-        if (activityManager != null) {
-            ComponentName topActivity = activityManager.getRunningTasks(1).get(0).topActivity;
-            String topPackageName = topActivity.getPackageName();
-            Log.d(TAG, "getTopActivityName: " + topPackageName);
-            return topPackageName.equals(packageName);
         }
         return false;
     }

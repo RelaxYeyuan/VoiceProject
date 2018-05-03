@@ -2,9 +2,11 @@ package com.semisky.voicereceiveclient.manager;
 
 import android.content.Context;
 import android.content.Intent;
+import android.os.RemoteException;
 import android.util.Log;
 
 import com.semisky.voicereceiveclient.appAidl.AidlManager;
+import com.semisky.voicereceiveclient.constant.AppConstant;
 import com.semisky.voicereceiveclient.jsonEntity.RadioEntity;
 
 import static android.content.Intent.FLAG_ACTIVITY_NEW_TASK;
@@ -29,7 +31,7 @@ public class RadioVoiceManager {
     public RadioVoiceManager() {
     }
 
-    public boolean setActionJson(Context context, RadioEntity radioEntity) {
+    public int setActionJson(Context context, RadioEntity radioEntity) {
         mContext = context;
         String code = radioEntity.getCode();
         String waveband = radioEntity.getWaveband();
@@ -40,42 +42,88 @@ public class RadioVoiceManager {
         //{"code":"104.3","focus":"radio","rawText":"幺零四点三"}
         //{"category":"收藏","focus":"radio","rawText":"我想听我收藏的电台。"}
         //{"category":"收藏","focus":"radio","rawText":"我想听收藏的电台"}
+        //{"code":"87.5","waveband":"fm","focus":"radio","rawText":"调频八七点五"}
+        //{"code":"87.5","waveband":"am","focus":"radio","rawText":"调幅87.5。"}
+        //{"code":"102.9","waveband":"fm","focus":"radio","rawText":"调频幺零二九"}
+        //{"code":"1629","waveband":"am","focus":"radio","rawText":"调幅1629。"}
+
         try {
-            if (waveband == null && code != null) {
-                Log.d(TAG, "setActionJson:freq " + ((Number) (Float.parseFloat(code) * 100)).intValue());
-                AidlManager.getInstance().getRadioListener().radioPlayFreq(code);
-                startActivity(PKG_RADIO, CLS_RADIO);
-                return true;
-            } else if (category != null && category.equals("收藏")) {
-                Log.d(TAG, "听收藏电台: ");
-                AidlManager.getInstance().getRadioListener().radioPlayCollect();
-                startActivity(PKG_RADIO, CLS_RADIO);
-                return true;
-            } else if (waveband != null) {
-                Log.d(TAG, "setActionJson:waveband " + waveband);
+            if (waveband != null) {
                 switch (waveband) {
                     case "fm":
-                        AidlManager.getInstance().getRadioListener().changeSwitch(FM_TYPE);
+                        int fmFreq;
                         if (code != null) {
-                            AidlManager.getInstance().getRadioListener().radioPlayFreq(code);
+                            if (code.contains(".")) {
+                                fmFreq = ((Number) (Float.parseFloat(code) * 100)).intValue();
+                                Log.d(TAG, "setActionJson:fm " + fmFreq);
+                            } else {
+                                fmFreq = Integer.valueOf(code);
+                            }
+                            if (fmFreq <= AppConstant.Numerical.FM_MAX_FREQ && fmFreq >= AppConstant.Numerical.FM_MIN_FREQ) {
+                                AidlManager.getInstance().getRadioListener().radioPlayFreq(code);
+                                startActivity(PKG_RADIO, CLS_RADIO);
+                                Log.d(TAG, "setActionJson: 播放fm频点 " + fmFreq);
+                                return AppConstant.RADIO_TYPE_SUCCESS;
+                            } else {
+                                Log.d(TAG, "setActionJson: 超出fm频点范围 " + fmFreq);
+                                return AppConstant.RADIO_TYPE_SCOPE;
+                            }
+                        } else {
+                            AidlManager.getInstance().getRadioListener().changeSwitch(FM_TYPE);
+                            startActivity(PKG_RADIO, CLS_RADIO);
+                            Log.d(TAG, "setActionJson: 切换FM ");
+                            return AppConstant.RADIO_TYPE_SUCCESS;
                         }
-                        startActivity(PKG_RADIO, CLS_RADIO);
-                        return true;
                     case "am":
-                        AidlManager.getInstance().getRadioListener().changeSwitch(AM_TYPE);
+                        int amFreq;
                         if (code != null) {
-                            AidlManager.getInstance().getRadioListener().radioPlayFreq(code);
+                            if (code.contains(".")) {
+                                amFreq = ((Number) (Float.parseFloat(code) * 100)).intValue();
+                                Log.d(TAG, "setActionJson:fm " + amFreq);
+                            } else {
+                                amFreq = Integer.valueOf(code);
+                            }
+                            Log.d(TAG, "setActionJson:am " + amFreq);
+                            if (amFreq <= AppConstant.Numerical.AM_MAX_FREQ && amFreq >= AppConstant.Numerical.AM_MIN_FREQ
+                                    && amFreq % 9 == 0) {
+                                AidlManager.getInstance().getRadioListener().radioPlayFreq(code);
+                                startActivity(PKG_RADIO, CLS_RADIO);
+                                Log.d(TAG, "setActionJson: 播放am频点 " + amFreq);
+                                return AppConstant.RADIO_TYPE_SUCCESS;
+                            } else {
+                                Log.d(TAG, "setActionJson: 超出am频点范围 " + amFreq);
+                                return AppConstant.RADIO_TYPE_SCOPE;
+                            }
+                        } else {
+                            AidlManager.getInstance().getRadioListener().changeSwitch(AM_TYPE);
+                            startActivity(PKG_RADIO, CLS_RADIO);
+                            Log.d(TAG, "setActionJson: 切换AM");
+                            return AppConstant.RADIO_TYPE_SUCCESS;
                         }
+                }
+            } else {
+                try {
+                    if (category != null && category.equals("收藏")) {
+                        Log.d(TAG, "听收藏电台: ");
+                        AidlManager.getInstance().getRadioListener().radioPlayCollect();
                         startActivity(PKG_RADIO, CLS_RADIO);
-                        return true;
-                    default:
-                        return false;
+                        return AppConstant.RADIO_TYPE_SUCCESS;
+                    } else {
+                        //{"focus":"radio","rawText":"播放收音机"}
+                        //{"focus":"radio","rawText":"听收音机"}
+                        Log.d(TAG, "听收音机");
+                        startActivity(PKG_RADIO, CLS_RADIO);
+                        return AppConstant.RADIO_TYPE_SUCCESS;
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
                 }
             }
-        } catch (Exception e) {
+        } catch (RemoteException e) {
             e.printStackTrace();
         }
-        return false;
+
+        return AppConstant.RADIO_TYPE_FAIL;
     }
 
     private void startActivity(String packageName, String className) {

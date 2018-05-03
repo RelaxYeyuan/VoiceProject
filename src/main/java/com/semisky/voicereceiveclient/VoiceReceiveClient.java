@@ -119,10 +119,15 @@ public class VoiceReceiveClient implements PlatformClientListener {
                     }
                 } else if ("radio".equals(action.getString("focus"))) {
                     RadioEntity radioEntity = gson.fromJson(actionJson, RadioEntity.class);
-                    if (radioVoiceManager.setActionJson(mContext, radioEntity)) {
+                    int type = radioVoiceManager.setActionJson(mContext, radioEntity);
+                    if (type == AppConstant.RADIO_TYPE_SUCCESS) {
                         resultJson.put("status", "success");
                         return resultJson.toString();
-                    } else {
+                    } else if (type == AppConstant.RADIO_TYPE_SCOPE) {
+                        resultJson.put("status", "fail");
+                        resultJson.put("message", "频率超出范围，请重试");
+                        return resultJson.toString();
+                    } else if (type == AppConstant.RADIO_TYPE_FAIL) {
                         resultJson.put("status", "fail");
                         resultJson.put("message", "抱歉，没有可处理的操作");
                         return resultJson.toString();
