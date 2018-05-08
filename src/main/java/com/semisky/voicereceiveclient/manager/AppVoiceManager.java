@@ -19,6 +19,7 @@ import static android.content.Intent.FLAG_ACTIVITY_NEW_TASK;
 import static com.semisky.voicereceiveclient.constant.AppConstant.CLS_BTCALL;
 import static com.semisky.voicereceiveclient.constant.AppConstant.CLS_BTMUSIC;
 import static com.semisky.voicereceiveclient.constant.AppConstant.CLS_CAR_SETTINGS;
+import static com.semisky.voicereceiveclient.constant.AppConstant.CLS_HELP;
 import static com.semisky.voicereceiveclient.constant.AppConstant.CLS_MEDIA_MUSIC;
 import static com.semisky.voicereceiveclient.constant.AppConstant.CLS_MEDIA_PICTURE;
 import static com.semisky.voicereceiveclient.constant.AppConstant.CLS_MEDIA_VIDEO;
@@ -28,6 +29,7 @@ import static com.semisky.voicereceiveclient.constant.AppConstant.CLS_SETTINGS;
 import static com.semisky.voicereceiveclient.constant.AppConstant.PKG_BTCALL;
 import static com.semisky.voicereceiveclient.constant.AppConstant.PKG_BTMUSIC;
 import static com.semisky.voicereceiveclient.constant.AppConstant.PKG_CAR_SETTINGS;
+import static com.semisky.voicereceiveclient.constant.AppConstant.PKG_HELP;
 import static com.semisky.voicereceiveclient.constant.AppConstant.PKG_MEDIA;
 import static com.semisky.voicereceiveclient.constant.AppConstant.PKG_NAVI;
 import static com.semisky.voicereceiveclient.constant.AppConstant.PKG_RADIO;
@@ -102,6 +104,23 @@ public class AppVoiceManager {
                 return radioOnlineOperation(operation);
             case "车辆设置":
                 return carOperation(operation);
+            case "帮助手册":
+                return openHelperManual(operation);
+            default:
+                return AppConstant.MUSIC_TYPE_FAIL;
+        }
+    }
+
+    ////{"name":"帮助手册","operation":"LAUNCH","focus":"app","rawText":"打开帮助手册"}
+    private int openHelperManual(String operation) {
+        switch (operation) {
+            case "EXIT":
+                Log.d(TAG, "openHelperManual: EXIT");
+                return AppConstant.MUSIC_TYPE_SUCCESS;
+            case "LAUNCH":
+                Log.d(TAG, "openHelperManual: LAUNCH");
+                startActivity(PKG_HELP, CLS_HELP);
+                return AppConstant.MUSIC_TYPE_SUCCESS;
             default:
                 return AppConstant.MUSIC_TYPE_FAIL;
         }

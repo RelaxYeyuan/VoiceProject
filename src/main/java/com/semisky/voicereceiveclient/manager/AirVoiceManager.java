@@ -48,12 +48,12 @@ public class AirVoiceManager {
                 case "OPEN":
                     //{"device":"空调","operation":"OPEN","focus":"airControl","rawText":"打开空调"}
                     ACManager.getInstance().setAirConditionerWorking(AIR_WORKING_ON);
-                    Log.d(TAG, "OPEN: exit");
+                    Log.d(TAG, "OPEN:");
                     break;
                 case "CLOSE":
                     //{"device":"空调","operation":"CLOSE","focus":"airControl","rawText":"关闭空调"}
                     ACManager.getInstance().setAirConditionerWorking(AIR_WORKING_OFF);
-                    Log.d(TAG, "CLOSE: launch");
+                    Log.d(TAG, "CLOSE");
                     break;
             }
         }
