@@ -323,9 +323,7 @@ public class VoiceReceiveClient implements PlatformClientListener {
     @Override
     public void onAbandonAudioFocus() {
         Log.d(TAG, "onAbandonAudioFocus: ");
-        com.semisky.autoservice.manager.AudioManager.getInstance().closeStreamVolume(STREAM_VR);
         abandonFocus();
-        sendCloseVoiceBroadcast();
     }
 
     private AudioManager.OnAudioFocusChangeListener mFocusChangeListener = new AudioManager.OnAudioFocusChangeListener() {
@@ -417,10 +415,13 @@ public class VoiceReceiveClient implements PlatformClientListener {
      *
      * @return true 释放成功
      */
-    private boolean abandonFocus() {
+    private void abandonFocus() {
+        com.semisky.autoservice.manager.AudioManager.getInstance().closeStreamVolume(STREAM_VR);
+        sendCloseVoiceBroadcast();
         Log.d(TAG, "abandonFocus: ");
-        return mFocusChangeListener != null && AudioManager.AUDIOFOCUS_REQUEST_GRANTED ==
-                audioManager.abandonAudioFocus(mFocusChangeListener);
+        if (mFocusChangeListener != null) {
+            audioManager.abandonAudioFocus(mFocusChangeListener);
+        }
     }
 
     private void sendOpenVoiceBroadcast() {

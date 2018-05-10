@@ -37,6 +37,10 @@ public class VoiceProxyReceiver extends BroadcastReceiver {
     public static final String ACTION_START_SCREEN = "com.semisky.broadcast.SCREEN_START_ACTIVITY";
     public static final String START_SCREEN_FLAG = "start_screen_flag";
 
+    public static final String ACTION_CARLIFE_VOICE = "com.semisky.broadcast.CARLIFE_VOICE";
+    public static final String START_CARLIFE_FLAG = "start_carlife_voice_flag";
+
+
     @Override
     public void onReceive(Context context, Intent intent) {
         String action = intent.getAction();
@@ -80,6 +84,20 @@ public class VoiceProxyReceiver extends BroadcastReceiver {
                 int screenStatus = intent.getIntExtra(START_SCREEN_FLAG, 1);
                 Log.d(TAG, "ACTION_START_SCREEN: screenStatus " + screenStatus);
                 if (screenStatus == 1) {
+                    VoiceWakeupScenes.closeVoice();
+                    VoiceKeyModel.getInstance(context).unregisterOnKeyListener();
+                } else {
+                    VoiceWakeupScenes.wakeupVoice();
+                    if (!VoiceKeyModel.getInstance(context).isRegister()) {
+                        VoiceKeyModel.getInstance(context).registerOnKeyListener();
+                    }
+                }
+                break;
+
+            case ACTION_CARLIFE_VOICE:
+                boolean carlifeVoiceStatus = intent.getBooleanExtra(START_CARLIFE_FLAG, false);
+                Log.d(TAG, "ACTION_CARLIFE_VOICE:carlifeVoiceStatus " + carlifeVoiceStatus);
+                if (carlifeVoiceStatus) {
                     VoiceWakeupScenes.closeVoice();
                     VoiceKeyModel.getInstance(context).unregisterOnKeyListener();
                 } else {
