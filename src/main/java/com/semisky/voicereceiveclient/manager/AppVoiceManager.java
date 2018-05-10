@@ -289,7 +289,11 @@ public class AppVoiceManager {
                 return AppConstant.MUSIC_TYPE_SUCCESS;
             //进入app
             case "LAUNCH":
-                unMuteApp();
+                try {
+                    AidlManager.getInstance().getRadioListener().Unmute();
+                } catch (RemoteException e) {
+                    e.printStackTrace();
+                }
                 startActivity(PKG_RADIO, CLS_RADIO);
                 return AppConstant.MUSIC_TYPE_SUCCESS;
             default:
@@ -297,14 +301,20 @@ public class AppVoiceManager {
         }
     }
 
+    //{"name":"蓝牙","operation":"EXIT","focus":"app","rawText":"关闭蓝牙"}
     private int btCallOperation(String operation) {
         try {
             switch (operation) {
                 //断开蓝牙连接
                 case "EXIT":
-                    AidlManager.getInstance().getBTCallListener().cutBTCallConnect();
-                    return AppConstant.MUSIC_TYPE_SUCCESS;
-                //打开蓝牙连接
+                    if (VoiceBTModel.getInstance().isConnectionState()) {
+                        AidlManager.getInstance().getBTCallListener().cutBTCallConnect();
+                        Log.d(TAG, "btCallOperation: cutBTCallConnect");
+                        return AppConstant.MUSIC_TYPE_SUCCESS;
+                    } else {
+                        return AppConstant.BT_TYPE_NOT_CONNECTED;
+                    }
+                    //打开蓝牙连接
                 case "LAUNCH":
                     linkBTConnection();
                     return AppConstant.MUSIC_TYPE_SUCCESS;
@@ -468,6 +478,12 @@ public class AppVoiceManager {
         if (mWifiManager != null && !mWifiManager.isWifiEnabled()) {
             mWifiManager.setWifiEnabled(true);
         }
+
+        Intent intent = new Intent();
+        intent.putExtra("from", 1);
+        intent.setClassName(PKG_SETTINGS, CLS_SETTINGS);
+        intent.setFlags(FLAG_ACTIVITY_NEW_TASK);
+        mContext.startActivity(intent);
     }
 
     private void closeWifiFunction() {
