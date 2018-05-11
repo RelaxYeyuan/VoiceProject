@@ -89,7 +89,7 @@ public class AppVoiceManager {
             case "音乐":
                 return mediaOperation(name, operation);
             case "图片":
-                return mediaOperation(name, operation);
+                return pictureOperation(name, operation);
             case "图片列表":
                 return mediaOperation(name, operation);
             case "导航":
@@ -213,6 +213,9 @@ public class AppVoiceManager {
     }
 
     private int mediaOperation(String name, String operation) {
+        if (!ToolUtils.isSdOrUsbMounted(mContext, "/storage/udisk")) {
+            return AppConstant.MUSIC_TYPE_DISK_MISSING;
+        }
         switch (operation) {
             case "EXIT":
                 //{"name":"音乐","operation":"EXIT","focus":"app","rawText":"关闭音乐。"}
@@ -226,10 +229,23 @@ public class AppVoiceManager {
         }
     }
 
-    private int openMediaOperation(String name) {
+    private int pictureOperation(String name, String operation) {
         if (!ToolUtils.isSdOrUsbMounted(mContext, "/storage/udisk")) {
             return AppConstant.MUSIC_TYPE_DISK_MISSING;
         }
+        switch (operation) {
+            case "EXIT":
+                //{"name":"图片","operation":"EXIT","focus":"app","rawText":"关闭图片"}
+                skipHome();
+                return AppConstant.MUSIC_TYPE_SUCCESS;
+            case "LAUNCH":
+                return openMediaOperation(name);
+            default:
+                return AppConstant.MUSIC_TYPE_FAIL;
+        }
+    }
+
+    private int openMediaOperation(String name) {
         switch (name) {
             case "视频":
                 startActivity(PKG_MEDIA, CLS_MEDIA_VIDEO);

@@ -37,6 +37,9 @@ public class VoiceProxyReceiver extends BroadcastReceiver {
     public static final String ACTION_START_SCREEN = "com.semisky.broadcast.SCREEN_START_ACTIVITY";
     public static final String START_SCREEN_FLAG = "start_screen_flag";
 
+    public static final String ACTION_START_BASEBOARD = "com.semisky.broadcast.BASEBOARD_START_ACTIVITY";
+    public static final String START_BASEBOARD_FLAG = "start_baseboard_flag";
+
     public static final String ACTION_CARLIFE_VOICE = "com.semisky.broadcast.CARLIFE_VOICE";
     public static final String START_CARLIFE_FLAG = "start_carlife_voice_flag";
 
@@ -84,6 +87,21 @@ public class VoiceProxyReceiver extends BroadcastReceiver {
                 int screenStatus = intent.getIntExtra(START_SCREEN_FLAG, 1);
                 Log.d(TAG, "ACTION_START_SCREEN: screenStatus " + screenStatus);
                 if (screenStatus == 1) {
+                    VoiceWakeupScenes.closeVoice();
+                    VoiceKeyModel.getInstance(context).unregisterOnKeyListener();
+                } else {
+                    VoiceWakeupScenes.wakeupVoice();
+                    if (!VoiceKeyModel.getInstance(context).isRegister()) {
+                        VoiceKeyModel.getInstance(context).registerOnKeyListener();
+                    }
+                }
+                break;
+
+            case ACTION_START_BASEBOARD:
+                //1 = 进入 ; 0 = 退出
+                int baseboardStatus = intent.getIntExtra(START_BASEBOARD_FLAG, 1);
+                Log.d(TAG, "ACTION_START_SCREEN: baseboardStatus " + baseboardStatus);
+                if (baseboardStatus == 1) {
                     VoiceWakeupScenes.closeVoice();
                     VoiceKeyModel.getInstance(context).unregisterOnKeyListener();
                 } else {
