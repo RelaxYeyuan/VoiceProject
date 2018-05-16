@@ -166,7 +166,7 @@ public class CMDVoiceManager {
                     break;
                 case "关闭屏幕":
                     //{"category":"屏幕控制","name":"关闭屏幕","focus":"cmd","rawText":"关闭屏幕"}
-                    cliseBackLight();
+                    clockBackLight();
                     break;
                 case "开启屏幕":
                     //{"category":"屏幕控制","name":"开启屏幕","focus":"cmd","rawText":"打开屏幕"}
@@ -182,7 +182,7 @@ public class CMDVoiceManager {
     private static final String KEY_POWER_EVENT = "PowerEvent";
     private static final int ACTION_LONG_PRESS = 1;
 
-    private void cliseBackLight() {
+    private void clockBackLight() {
         Intent intent = new Intent(SCREENSAVER_ACTION);
         intent.putExtra(KEY_POWER_EVENT, ACTION_LONG_PRESS);
         mContext.sendBroadcast(intent);

@@ -6,6 +6,7 @@ import android.net.wifi.WifiManager;
 import android.os.RemoteException;
 import android.util.Log;
 
+import com.semisky.autoservice.manager.ACManager;
 import com.semisky.autoservice.manager.AudioManager;
 import com.semisky.autoservice.manager.AutoManager;
 import com.semisky.voicereceiveclient.appAidl.AidlManager;
@@ -16,6 +17,7 @@ import com.semisky.voicereceiveclient.model.VoiceBTModel;
 import com.semisky.voicereceiveclient.utils.ToolUtils;
 
 import static android.content.Intent.FLAG_ACTIVITY_NEW_TASK;
+import static com.semisky.autoservice.manager.ACManager.DEFROST_MODE_REAR;
 import static com.semisky.voicereceiveclient.constant.AppConstant.CLS_BTCALL;
 import static com.semisky.voicereceiveclient.constant.AppConstant.CLS_BTMUSIC;
 import static com.semisky.voicereceiveclient.constant.AppConstant.CLS_CAR_SETTINGS;
@@ -106,6 +108,16 @@ public class AppVoiceManager {
                 return carOperation(operation);
             case "帮助手册":
                 return openHelperManual(operation);
+            case "前除霜":
+                //{"name":"前除霜","operation":"EXIT","focus":"app","rawText":"关闭前除霜"}
+                //{"name":"后除霜","operation":"EXIT","focus":"app","rawText":"关闭后除霜"}
+//                ACManager.getInstance().enableAirConditionerDefrost(DEFROST_MODE_FRONT, false);
+                Log.d(TAG, "closeAirMode: 前除霜");
+                return AppConstant.MUSIC_TYPE_SUCCESS;
+            case "后除霜":
+                ACManager.getInstance().enableAirConditionerDefrost(DEFROST_MODE_REAR, false);
+                Log.d(TAG, "closeAirMode: 后除霜");
+                return AppConstant.MUSIC_TYPE_SUCCESS;
             default:
                 return AppConstant.MUSIC_TYPE_FAIL;
         }

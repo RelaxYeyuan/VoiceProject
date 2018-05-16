@@ -42,9 +42,6 @@ public class AirVoiceManager {
                 case "SET":
                     openAirMode(mode, temperature, fan_speed, airflow_direction);
                     break;
-                case "EXIT":
-                    closeAirMode(mode, temperature, fan_speed, airflow_direction);
-                    break;
                 case "OPEN":
                     //{"device":"空调","operation":"OPEN","focus":"airControl","rawText":"打开空调"}
                     ACManager.getInstance().setAirConditionerWorking(AIR_WORKING_ON);
@@ -59,28 +56,10 @@ public class AirVoiceManager {
         }
     }
 
-
-    //{"name":"前除霜","operation":"EXIT","focus":"app","rawText":"关闭前除霜"}
-    //{"name":"后除霜","operation":"EXIT","focus":"app","rawText":"关闭后除霜"}
-    private void closeAirMode(String mode, String temperature, String fan_speed, String airflow_direction) {
-        if (mode != null) {
-            Log.d(TAG, "openAirMode:mode " + mode);
-            switch (mode) {
-                case "前除霜":
-//                    ACManager.getInstance().enableAirConditionerDefrost(DEFROST_MODE_FRONT, false);
-                    Log.d(TAG, "closeAirMode: 前除霜");
-                    break;
-                case "后除霜":
-                    ACManager.getInstance().enableAirConditionerDefrost(DEFROST_MODE_REAR, false);
-                    Log.d(TAG, "closeAirMode: 后除霜");
-                    break;
-                default:
-            }
-        }
-    }
-
     //{"mode":"前除霜","operation":"SET","focus":"airControl","rawText":"打开前除霜"}
     //{"mode":"后除霜","operation":"SET","focus":"airControl","rawText":"打开后除霜模式"}
+    //{"name":"后除霜","operation":"EXIT","focus":"app","rawText":"关闭后除霜"}
+    //{"name":"后除霜模式","operation":"EXIT","focus":"app","rawText":"关闭后除霜模式"}
     //{"mode":"制冷","operation":"SET","focus":"airControl","rawText":"打开制冷模式"}
     //{"mode":"内循环","operation":"SET","focus":"airControl","rawText":"开启内循环模式"}
     //{"mode":"外循环","operation":"SET","focus":"airControl","rawText":"开启外循环模式"}
@@ -176,7 +155,7 @@ public class AirVoiceManager {
                 default:
                     Log.d(TAG, "openAirMode:temperatureInt " + temperature);
                     int temperatureInt = Integer.valueOf(temperature);
-                    if (temperatureInt < 17 && temperatureInt > 0) {
+                    if (temperatureInt <= 17 && temperatureInt >= 0) {
                         //调节到具体档位
                         ACManager.getInstance().setAirConditionerTemp(SIDE_FL, temperatureInt);
                     }
@@ -205,7 +184,7 @@ public class AirVoiceManager {
                 default:
                     Log.d(TAG, "openAirMode:fanSpeed " + fanSpeed);
                     int fanSpeedInt = Integer.valueOf(fanSpeed);
-                    if (fanSpeedInt < 7 && fanSpeedInt > 0) {
+                    if (fanSpeedInt <= 7 && fanSpeedInt >= 0) {
                         //调节到具体档位
                         ACManager.getInstance().setAirConditionerWindValue(fanSpeedInt);
                     }
@@ -217,7 +196,7 @@ public class AirVoiceManager {
     private void setAirTemperatureUp() {
         int CurrentTemperature = ACManager.getInstance().getAirConditionerTemp(SIDE_FL);//当前温度
         Log.d(TAG, "setAirTemperatureDown: " + CurrentTemperature);
-        if (CurrentTemperature < 17 && CurrentTemperature > 0) {
+        if (CurrentTemperature < 17 && CurrentTemperature >= 0) {
             ACManager.getInstance().setAirConditionerTemp(SIDE_FL, CurrentTemperature + 1);
         }
     }
@@ -225,16 +204,15 @@ public class AirVoiceManager {
     private void setAirTemperatureDown() {
         int CurrentTemperature = ACManager.getInstance().getAirConditionerTemp(SIDE_FL);//当前温度
         Log.d(TAG, "setAirTemperatureDown: " + CurrentTemperature);
-        if (CurrentTemperature < 17 && CurrentTemperature > 0) {
+        if (CurrentTemperature <= 17 && CurrentTemperature > 0) {
             ACManager.getInstance().setAirConditionerTemp(SIDE_FL, CurrentTemperature - 1);
         }
     }
 
-
     private void setFanSpeedUp() {
         int fanSpeed = ACManager.getInstance().getAirConditionerFanLevel();
         Log.d(TAG, "setFanSpeedUp: " + fanSpeed);
-        if (fanSpeed < 7 && fanSpeed > 0) {
+        if (fanSpeed < 7 && fanSpeed >= 0) {
             ACManager.getInstance().setAirConditionerWindValue(fanSpeed + 1);
         }
     }
@@ -242,7 +220,7 @@ public class AirVoiceManager {
     private void setFanSpeedDown() {
         int fanSpeed = ACManager.getInstance().getAirConditionerFanLevel();
         Log.d(TAG, "setFanSpeedDown: " + fanSpeed);
-        if (fanSpeed < 7 && fanSpeed > 0) {
+        if (fanSpeed <= 7 && fanSpeed > 0) {
             ACManager.getInstance().setAirConditionerWindValue(fanSpeed - 1);
         }
     }

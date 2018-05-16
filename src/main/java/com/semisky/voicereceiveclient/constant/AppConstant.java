@@ -89,6 +89,8 @@ public class AppConstant {
     public class Numerical {
         public static final int FM_MAX_FREQ = 10800;
         public static final int FM_MIN_FREQ = 8750;
+        public static final int FM_MAX_FREQ_INT = 108;
+        public static final int FM_MIN_FREQ_INT = 87;
         public static final int AM_MAX_FREQ = 1629;
         public static final int AM_MIN_FREQ = 531;
         public static final int RADIO_BAND_DEFAULT = 1;

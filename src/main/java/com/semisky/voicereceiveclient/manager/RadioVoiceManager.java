@@ -13,6 +13,10 @@ import static android.content.Intent.FLAG_ACTIVITY_NEW_TASK;
 import static com.semisky.voicereceiveclient.constant.AppConstant.AM_TYPE;
 import static com.semisky.voicereceiveclient.constant.AppConstant.CLS_RADIO;
 import static com.semisky.voicereceiveclient.constant.AppConstant.FM_TYPE;
+import static com.semisky.voicereceiveclient.constant.AppConstant.Numerical.FM_MAX_FREQ;
+import static com.semisky.voicereceiveclient.constant.AppConstant.Numerical.FM_MAX_FREQ_INT;
+import static com.semisky.voicereceiveclient.constant.AppConstant.Numerical.FM_MIN_FREQ;
+import static com.semisky.voicereceiveclient.constant.AppConstant.Numerical.FM_MIN_FREQ_INT;
 import static com.semisky.voicereceiveclient.constant.AppConstant.PKG_RADIO;
 
 /**
@@ -59,7 +63,12 @@ public class RadioVoiceManager {
                             } else {
                                 fmFreq = Integer.valueOf(code);
                             }
-                            if (fmFreq <= AppConstant.Numerical.FM_MAX_FREQ && fmFreq >= AppConstant.Numerical.FM_MIN_FREQ) {
+                            if (fmFreq <= FM_MAX_FREQ && fmFreq >= FM_MIN_FREQ) {
+                                AidlManager.getInstance().getRadioListener().radioPlayFreq(code);
+                                startActivity(PKG_RADIO, CLS_RADIO);
+                                Log.d(TAG, "setActionJson: 播放fm频点 " + fmFreq);
+                                return AppConstant.RADIO_TYPE_SUCCESS;
+                            } else if (fmFreq <= FM_MAX_FREQ_INT && fmFreq >= FM_MIN_FREQ_INT) {
                                 AidlManager.getInstance().getRadioListener().radioPlayFreq(code);
                                 startActivity(PKG_RADIO, CLS_RADIO);
                                 Log.d(TAG, "setActionJson: 播放fm频点 " + fmFreq);
