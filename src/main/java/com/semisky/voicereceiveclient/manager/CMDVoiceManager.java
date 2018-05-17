@@ -142,10 +142,10 @@ public class CMDVoiceManager {
                 case "音量-":
                     AudioManager.getInstance().upAndDownVolume(AudioManager.VR_DOWN_VOLUME);
                     break;
-                case "音量max+":
+                case "音量max":
                     AudioManager.getInstance().setVolumeTo(31);
                     break;
-                case "音量min-":
+                case "音量min":
                     AudioManager.getInstance().setVolumeTo(0);
                     break;
                 case "音量调节":

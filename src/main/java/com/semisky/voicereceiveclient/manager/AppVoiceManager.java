@@ -100,6 +100,8 @@ public class AppVoiceManager {
                 return airOperation(operation);
             case "网络音乐"://{"name":"网络音乐","operation":"LAUNCH","focus":"app","rawText":"打开网络音乐"}
                 return netMusicOperation(operation);
+            case "酷我音乐"://{"name":"酷我音乐","operation":"LAUNCH","focus":"app","rawText":"打开酷我音乐"}
+                return netMusicOperation(operation);
             case "wifi":
                 return wifiOperation(operation);
             case "在线电台":
@@ -214,7 +216,7 @@ public class AppVoiceManager {
     private int netMusicOperation(String operation) {
         switch (operation) {
             case "EXIT":
-
+                kwMusicAPI.exitApp();
                 return AppConstant.MUSIC_TYPE_SUCCESS;
             case "LAUNCH":
                 kwMusicAPI.startApp();
