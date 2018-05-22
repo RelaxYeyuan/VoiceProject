@@ -159,7 +159,7 @@ public class MusicVoiceManager {
                             type = "3";
                             Log.d(TAG, "本地根据歌手播放: ");
                         } else {//没特定要求 打开USB音乐 随便听首歌
-                            AidlManager.getInstance().getUsbMusicListener().play();
+                            AidlManager.getInstance().getUsbMusicListener().playResume();
                             Log.d(TAG, "本地没特定要求音乐: ");
                         }
                         return AppConstant.MUSIC_TYPE_SUCCESS;

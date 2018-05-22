@@ -8,7 +8,9 @@ import android.util.Log;
 
 import com.semisky.autoservice.manager.ACManager;
 import com.semisky.autoservice.manager.AudioManager;
+import com.semisky.autoservice.manager.AutoConstants;
 import com.semisky.autoservice.manager.AutoManager;
+import com.semisky.voicereceiveclient.R;
 import com.semisky.voicereceiveclient.appAidl.AidlManager;
 import com.semisky.voicereceiveclient.constant.AppConstant;
 import com.semisky.voicereceiveclient.jsonEntity.AppEntity;
@@ -140,6 +142,8 @@ public class AppVoiceManager {
         }
     }
 
+    private static final String APP_VEH_SETTING = "com.semisky.autovehicalsetting.VehicalSetingActivity";
+
     private int carOperation(String operation) {
         switch (operation) {
             case "EXIT":
@@ -148,6 +152,8 @@ public class AppVoiceManager {
                 return AppConstant.MUSIC_TYPE_SUCCESS;
             case "LAUNCH":
                 Log.d(TAG, "carOperation: LAUNCH");
+                AutoManager.getInstance().setAppStatus(APP_VEH_SETTING,
+                        mContext.getString(R.string.car_setting_name), AutoConstants.AppStatus.RUN_FOREGROUND);
                 startActivity(PKG_CAR_SETTINGS, CLS_CAR_SETTINGS);
                 return AppConstant.MUSIC_TYPE_SUCCESS;
             default:
@@ -387,6 +393,8 @@ public class AppVoiceManager {
         }
     }
 
+    private static final String APP_SETTING = "com.semisky.autovehicalsetting.VehicalSetingActivity";
+
     private int setOperation(String operation) {
         try {
             switch (operation) {
@@ -396,6 +404,8 @@ public class AppVoiceManager {
                     return AppConstant.MUSIC_TYPE_SUCCESS;
                 //进入app
                 case "LAUNCH":
+                    AutoManager.getInstance().setAppStatus(APP_SETTING,
+                            mContext.getString(R.string.setting_name), AutoConstants.AppStatus.RUN_FOREGROUND);
                     startActivity(PKG_SETTINGS, CLS_SETTINGS);
                     return AppConstant.MUSIC_TYPE_SUCCESS;
 

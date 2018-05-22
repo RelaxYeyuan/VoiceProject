@@ -133,32 +133,37 @@ public class AirVoiceManager {
             Log.d(TAG, "openAirMode:temperature " + temperature);
             switch (temperature) {
                 case "+"://{"operation":"SET","temperature":"+","focus":"airControl","rawText":"有点冷"}
-                    setAirTemperatureUp();
+//                    setAirTemperatureUp();
                     break;
                 case "-"://{"operation":"SET","temperature":"-","focus":"airControl","rawText":"有点热"}
-                    setAirTemperatureDown();
+//                    setAirTemperatureDown();
                     break;
                 case "+1"://{"operation":"SET","temperature":"+1","focus":"airControl","rawText":"温度调高一度"}
-                    setAirTemperatureUp();
+//                    setAirTemperatureUp();
                     break;
                 case "-1"://{"operation":"SET","temperature":"+1","focus":"airControl","rawText":"温度调高一度"}
-                    setAirTemperatureDown();
+//                    setAirTemperatureDown();
                     break;
-                case "30": //{"device":"空调","operation":"SET","temperature":"30","focus":"airControl","rawText":"空调温度调到最高"}
+                case "最高":
+                    //{"device":"空调","operation":"SET","temperature":"30","focus":"airControl","rawText":"空调温度调到最高"}
+                    //{"device":"空调","operation":"SET","temperature":"最高","focus":"airControl","rawText":"空调温度调到最高"}
+                    //{"operation":"SET","temperature":"最高","focus":"airControl","rawText":"温度调到最大"}
                     ACManager.getInstance().setAirConditionerTemp(SIDE_FL, 17);
                     Log.d(TAG, "openAirMode: 30");
                     break;
-                case "16"://{"device":"空调","operation":"SET","temperature":"16","focus":"airControl","rawText":"空调温度调到最低"}
+                case "最低":
+                    //{"device":"空调","operation":"SET","temperature":"16","focus":"airControl","rawText":"空调温度调到最低"}
+                    //{"device":"空调","operation":"SET","temperature":"最低","focus":"airControl","rawText":"空调温度调到最低"}
                     ACManager.getInstance().setAirConditionerTemp(SIDE_FL, 1);
                     Log.d(TAG, "openAirMode: 16");
                     break;
                 default:
                     Log.d(TAG, "openAirMode:temperatureInt " + temperature);
-                    int temperatureInt = Integer.valueOf(temperature);
-                    if (temperatureInt <= 17 && temperatureInt >= 0) {
-                        //调节到具体档位
-                        ACManager.getInstance().setAirConditionerTemp(SIDE_FL, temperatureInt);
-                    }
+//                    int temperatureInt = Integer.valueOf(temperature);
+//                    if (temperatureInt <= 17 && temperatureInt >= 0) {
+//                        //调节到具体档位
+//                        ACManager.getInstance().setAirConditionerTemp(SIDE_FL, temperatureInt);
+//                    }
                     break;
             }
         }

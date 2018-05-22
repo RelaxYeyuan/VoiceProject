@@ -1,5 +1,8 @@
 <resources>
     <string name="app_name">voicereceiveclient</string>
+    <string name="setting_name">Settings</string>
+    <string name="car_setting_name">CarSettings</string>
+
     <string name="play_for_singer">根据歌手播放音乐</string>
     <string name="play_for_name">根据歌名播放音乐</string>
     <string name="USBMusic_test">根据歌手和歌名播放音乐</string>

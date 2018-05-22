@@ -16,6 +16,9 @@ interface IUSBMusicListener {
     //根据专辑播放音乐
     int playByAlbum(String album);
 
+    //没有指定播放要求(恢复本地音乐播放并拉起前台)
+    int playResume();
+
     //改变播放顺序
     //1.顺序播放 2.单曲循环 3.随机播放 4.循环播放
     int changePlayOrder(int type);

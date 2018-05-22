@@ -332,6 +332,7 @@ public class VoiceReceiveClient implements PlatformClientListener {
 
             switch (focusChange) {
                 case AudioManager.AUDIOFOCUS_LOSS://永久失去焦点 -1
+                    abandonFocus();
                     break;
                 case AudioManager.AUDIOFOCUS_LOSS_TRANSIENT://暂时失去焦点 -2
                     /*
