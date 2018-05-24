@@ -4,6 +4,9 @@ import android.content.Context;
 import android.content.Intent;
 import android.util.Log;
 
+import com.semisky.autoservice.manager.AutoConstants;
+import com.semisky.autoservice.manager.AutoManager;
+import com.semisky.voicereceiveclient.R;
 import com.semisky.voicereceiveclient.appAidl.AidlManager;
 import com.semisky.voicereceiveclient.constant.AppConstant;
 import com.semisky.voicereceiveclient.jsonEntity.MusicEntity;
@@ -105,6 +108,8 @@ public class MusicVoiceManager {
                                 }
                             case "网络":
                                 kwMusicAPI.startApp();
+                                AutoManager.getInstance().setAppStatus(AutoConstants.PackageName.CLASS_KUWO,
+                                        mContext.getString(R.string.kw_music_name), AutoConstants.AppStatus.RUN_FOREGROUND);
                                 return AppConstant.MUSIC_TYPE_SUCCESS;
                             case "usb":
                                 if (checkDisk()) {
@@ -130,7 +135,7 @@ public class MusicVoiceManager {
                         } else {
                             //判断是否网络连接
                             if (ToolUtils.isNetworkAvailable(mContext)) {
-                                Log.d(TAG, "网络电台专辑播放: ");
+                                Log.d(TAG, "网络音乐专辑播放: ");
                                 kwMusicAPI.playByAlbum(album);
                                 return AppConstant.MUSIC_TYPE_SUCCESS;
                             } else {

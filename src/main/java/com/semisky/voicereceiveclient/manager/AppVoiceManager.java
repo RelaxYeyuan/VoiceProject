@@ -189,11 +189,10 @@ public class AppVoiceManager {
         switch (operation) {
             case "EXIT":
                 Log.d(TAG, "radioOnlineOperation: exit");
-                AutoManager.getInstance().setWifiState(false);
+
                 return AppConstant.MUSIC_TYPE_SUCCESS;
             case "LAUNCH":
                 Log.d(TAG, "radioOnlineOperation: launch");
-                AutoManager.getInstance().setWifiState(true);
                 return AppConstant.MUSIC_TYPE_SUCCESS;
             default:
                 return AppConstant.MUSIC_TYPE_FAIL;
@@ -226,6 +225,8 @@ public class AppVoiceManager {
                 return AppConstant.MUSIC_TYPE_SUCCESS;
             case "LAUNCH":
                 kwMusicAPI.startApp();
+                AutoManager.getInstance().setAppStatus(AutoConstants.PackageName.CLASS_KUWO,
+                        mContext.getString(R.string.kw_music_name), AutoConstants.AppStatus.RUN_FOREGROUND);
                 return AppConstant.MUSIC_TYPE_SUCCESS;
             default:
                 return AppConstant.MUSIC_TYPE_FAIL;
@@ -233,6 +234,7 @@ public class AppVoiceManager {
     }
 
     private int mediaOperation(String name, String operation) {
+        Log.d(TAG, "mediaOperation: " + name);
         if (!ToolUtils.isSdOrUsbMounted(mContext, "/storage/udisk")) {
             return AppConstant.MUSIC_TYPE_DISK_MISSING;
         }
@@ -462,6 +464,8 @@ public class AppVoiceManager {
     }
 
     private void startActivity(String packageName, String className) {
+        Log.d(TAG, "startActivity:packageName " + packageName);
+        Log.d(TAG, "startActivity:className " + className);
         Intent intent = new Intent();
         intent.setClassName(packageName, className);
         intent.setFlags(FLAG_ACTIVITY_NEW_TASK);

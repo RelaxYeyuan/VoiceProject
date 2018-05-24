@@ -44,6 +44,15 @@ public class BaseApplication extends Application {
                 "0e71ddf22f3942b3160fa46615497c64",
                 "com.ximalaya.ting.android.car.xiaokangqiche");
 
+//        Track currentTrack = controler.getCurrentTrack();
+//
+//        String currentTrackKind = currentTrack.getKind();
+//        if (currentTrackKind.equals("radio")) {
+//            String trackTitle = currentTrack.getTrackTitle();
+//        } else {
+//            String trackTitle = currentTrack.getTrackTitle();
+//        }
+
         VoiceReceiveClient testClient = new VoiceReceiveClient(this);
         PlatformHelp.getInstance().setPlatformClient(testClient);
         Log.d(TAG, "onCreate: setPlatformClient");
