@@ -142,6 +142,10 @@ public class VoiceReceiveClient implements PlatformClientListener {
                         resultJson.put("status", "fail");
                         resultJson.put("message", "U盘未连接，请先连接U盘");
                         return resultJson.toString();
+                    } else if (type == AppConstant.MUSIC_TYPE_DISK_LOAD_DATA) {
+                        resultJson.put("status", "fail");
+                        resultJson.put("message", "U盘正在加载中，请稍后重试");
+                        return resultJson.toString();
                     } else if (type == AppConstant.MUSIC_TYPE_FAIL) {
                         resultJson.put("status", "fail");
                         resultJson.put("message", "抱歉，没有可处理的操作");

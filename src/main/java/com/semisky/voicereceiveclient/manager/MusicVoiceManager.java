@@ -55,9 +55,13 @@ public class MusicVoiceManager {
             String album = musicEntity.getAlbum();
             if (category != null && category.equals("音乐列表")) {
                 if (checkDisk()) {
-                    //打开音乐列表
-                    AidlManager.getInstance().getUsbMusicListener().openMusicList();
-                    return AppConstant.MUSIC_TYPE_SUCCESS;
+                    if (checkLoadData()) {
+                        //打开音乐列表
+                        AidlManager.getInstance().getUsbMusicListener().openMusicList();
+                        return AppConstant.MUSIC_TYPE_SUCCESS;
+                    } else {
+                        return AppConstant.MUSIC_TYPE_DISK_LOAD_DATA;
+                    }
                 } else {
                     return AppConstant.MUSIC_TYPE_DISK_MISSING;
                 }
@@ -67,9 +71,13 @@ public class MusicVoiceManager {
             if (operation.equals("")) {
                 if (album != null) {
                     if (checkDisk()) {
-                        AidlManager.getInstance().getUsbMusicListener().playByAlbum(album);
-                        Log.d(TAG, "本地音乐专辑播放: ");
-                        return AppConstant.MUSIC_TYPE_SUCCESS;
+                        if (checkLoadData()) {
+                            AidlManager.getInstance().getUsbMusicListener().playByAlbum(album);
+                            Log.d(TAG, "本地音乐专辑播放: ");
+                            return AppConstant.MUSIC_TYPE_SUCCESS;
+                        } else {
+                            return AppConstant.MUSIC_TYPE_DISK_LOAD_DATA;
+                        }
                     } else {
                         //判断是否网络连接
                         if (ToolUtils.isNetworkAvailable(mContext)) {
@@ -101,8 +109,12 @@ public class MusicVoiceManager {
                                 return AppConstant.MUSIC_TYPE_SUCCESS;
                             case "本地":
                                 if (checkDisk()) {
-                                    startActivity(PKG_MEDIA, CLS_MEDIA_MUSIC);
-                                    return AppConstant.MUSIC_TYPE_SUCCESS;
+                                    if (checkLoadData()) {
+                                        startActivity(PKG_MEDIA, CLS_MEDIA_MUSIC);
+                                        return AppConstant.MUSIC_TYPE_SUCCESS;
+                                    } else {
+                                        return AppConstant.MUSIC_TYPE_DISK_LOAD_DATA;
+                                    }
                                 } else {
                                     return AppConstant.MUSIC_TYPE_DISK_MISSING;
                                 }
@@ -113,8 +125,12 @@ public class MusicVoiceManager {
                                 return AppConstant.MUSIC_TYPE_SUCCESS;
                             case "usb":
                                 if (checkDisk()) {
-                                    startActivity(PKG_MEDIA, CLS_MEDIA_MUSIC);
-                                    return AppConstant.MUSIC_TYPE_SUCCESS;
+                                    if (checkLoadData()) {
+                                        startActivity(PKG_MEDIA, CLS_MEDIA_MUSIC);
+                                        return AppConstant.MUSIC_TYPE_SUCCESS;
+                                    } else {
+                                        return AppConstant.MUSIC_TYPE_DISK_LOAD_DATA;
+                                    }
                                 } else {
                                     return AppConstant.MUSIC_TYPE_DISK_MISSING;
                                 }
@@ -129,9 +145,13 @@ public class MusicVoiceManager {
                     //专辑播放
                     if (album != null) {
                         if (checkDisk()) {
-                            AidlManager.getInstance().getUsbMusicListener().playByAlbum(album);
-                            Log.d(TAG, "本地音乐专辑播放: ");
-                            return AppConstant.MUSIC_TYPE_SUCCESS;
+                            if (checkLoadData()) {
+                                AidlManager.getInstance().getUsbMusicListener().playByAlbum(album);
+                                Log.d(TAG, "本地音乐专辑播放: ");
+                                return AppConstant.MUSIC_TYPE_SUCCESS;
+                            } else {
+                                return AppConstant.MUSIC_TYPE_DISK_LOAD_DATA;
+                            }
                         } else {
                             //判断是否网络连接
                             if (ToolUtils.isNetworkAvailable(mContext)) {
@@ -151,23 +171,27 @@ public class MusicVoiceManager {
                      * {"operation":"PLAY","song":"你到底有没有爱过我","focus":"music","rawText":"我想听歌曲，你到底有没有爱过我?"}
                      */
                     if (checkDisk()) {
-                        if (song != null && artist != null) {//根据歌名加歌手播放
-                            AidlManager.getInstance().getUsbMusicListener().playByArtistAndSong(artist, song);
-                            type = "1";
-                            Log.d(TAG, "本地根据歌名加歌手播放: ");
-                        } else if (song != null) {//根据歌名播放
-                            AidlManager.getInstance().getUsbMusicListener().playBySong(song);
-                            type = "2";
-                            Log.d(TAG, "本地根据歌名播放: ");
-                        } else if (artist != null) {//根据歌手播放
-                            AidlManager.getInstance().getUsbMusicListener().playByArtist(artist);
-                            type = "3";
-                            Log.d(TAG, "本地根据歌手播放: ");
-                        } else {//没特定要求 打开USB音乐 随便听首歌
-                            AidlManager.getInstance().getUsbMusicListener().playResume();
-                            Log.d(TAG, "本地没特定要求音乐: ");
+                        if (checkLoadData()) {
+                            if (song != null && artist != null) {//根据歌名加歌手播放
+                                AidlManager.getInstance().getUsbMusicListener().playByArtistAndSong(artist, song);
+                                type = "1";
+                                Log.d(TAG, "本地根据歌名加歌手播放: ");
+                            } else if (song != null) {//根据歌名播放
+                                AidlManager.getInstance().getUsbMusicListener().playBySong(song);
+                                type = "2";
+                                Log.d(TAG, "本地根据歌名播放: ");
+                            } else if (artist != null) {//根据歌手播放
+                                AidlManager.getInstance().getUsbMusicListener().playByArtist(artist);
+                                type = "3";
+                                Log.d(TAG, "本地根据歌手播放: ");
+                            } else {//没特定要求 打开USB音乐 随便听首歌
+                                AidlManager.getInstance().getUsbMusicListener().playResume();
+                                Log.d(TAG, "本地没特定要求音乐: ");
+                            }
+                            return AppConstant.MUSIC_TYPE_SUCCESS;
+                        } else {
+                            return AppConstant.MUSIC_TYPE_DISK_LOAD_DATA;
                         }
-                        return AppConstant.MUSIC_TYPE_SUCCESS;
                     } else {
                         //判断是否网络连接
                         if (ToolUtils.isNetworkAvailable(mContext)) {
@@ -200,6 +224,10 @@ public class MusicVoiceManager {
 
     private boolean checkDisk() {
         return ToolUtils.isSdOrUsbMounted(mContext, "/storage/udisk");
+    }
+
+    private boolean checkLoadData() {
+        return VoiceBTModel.getInstance().isLoadData();
     }
 
     private void startActivity(String packageName, String className) {

@@ -1,6 +1,7 @@
 package com.semisky.voicereceiveclient.model;
 
 import android.bluetooth.BluetoothAdapter;
+import android.util.Log;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -14,6 +15,8 @@ import java.util.List;
  * 修改日期
  */
 public class VoiceBTModel {
+
+    private static final String TAG = "VoiceBTModel";
 
     private static VoiceBTModel instance;
     private List<OnBtStateChangeListener> mBtStateListenerList = null;
@@ -119,5 +122,16 @@ public class VoiceBTModel {
 
     public void setRunningActivity(boolean runningActivity) {
         isRunningActivity = runningActivity;
+    }
+
+    private boolean isLoadData;
+
+    public boolean isLoadData() {
+        Log.d(TAG, "isLoadData: "+isLoadData);
+        return isLoadData;
+    }
+
+    public void setLoadData(boolean loadData) {
+        isLoadData = loadData;
     }
 }

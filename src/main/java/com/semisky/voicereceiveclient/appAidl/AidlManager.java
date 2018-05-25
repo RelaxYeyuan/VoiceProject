@@ -1,5 +1,7 @@
 package com.semisky.voicereceiveclient.appAidl;
 
+import android.util.Log;
+
 import com.semisky.voicereceiveclient.IBTCallListener;
 import com.semisky.voicereceiveclient.IBTMusicListener;
 import com.semisky.voicereceiveclient.ICarControlListener;
@@ -44,7 +46,13 @@ public class AidlManager {
     }
 
     public IRadioListener getRadioListener() {
-        return radioListener;
+        if (radioListener == null) {
+            Log.e(TAG, "getUsbMusicListener: 收音机未连接语音代理服务！！！");
+            return radioListener;
+        } else {
+            Log.d(TAG, "getRadioListener: " + radioListener);
+            return radioListener;
+        }
     }
 
     public void setRadioListener(IRadioListener radioListener) {
@@ -52,7 +60,13 @@ public class AidlManager {
     }
 
     public IUSBMusicListener getUsbMusicListener() {
-        return usbMusicListener;
+        if (usbMusicListener == null) {
+            Log.e(TAG, "getUsbMusicListener: 本地音乐未连接语音代理服务！！！");
+            return usbMusicListener;
+        } else {
+            Log.d(TAG, "getUsbMusicListener: " + usbMusicListener);
+            return usbMusicListener;
+        }
     }
 
     public void setUsbMusicListener(IUSBMusicListener usbMusicListener) {
@@ -60,7 +74,13 @@ public class AidlManager {
     }
 
     public IBTMusicListener getBTMusicListener() {
-        return BTMusicListener;
+        if (BTMusicListener == null) {
+            Log.e(TAG, "getUsbMusicListener: 蓝牙音乐未连接语音代理服务！！！");
+            return BTMusicListener;
+        } else {
+            Log.d(TAG, "getBTMusicListener: " + BTMusicListener);
+            return BTMusicListener;
+        }
     }
 
     public void setBTMusicListener(IBTMusicListener BTMusicListener) {
@@ -76,7 +96,13 @@ public class AidlManager {
     }
 
     public IBTCallListener getBTCallListener() {
-        return BTCallListener;
+        if (BTCallListener == null) {
+            Log.e(TAG, "getUsbMusicListener: 蓝牙电话未连接语音代理服务！！！");
+            return BTCallListener;
+        } else {
+            Log.d(TAG, "getBTCallListener: " + BTCallListener);
+            return BTCallListener;
+        }
     }
 
     public void setBTCallListener(IBTCallListener BTCallListener) {

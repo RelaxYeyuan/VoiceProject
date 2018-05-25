@@ -173,6 +173,12 @@ public class RadioVoiceManager {
     }
 
     private void startActivity(String packageName, String className) {
+        try {
+            AidlManager.getInstance().getRadioListener().Unmute();
+        } catch (RemoteException e) {
+            e.printStackTrace();
+        }
+
         Intent intent = new Intent();
         intent.setClassName(packageName, className);
         intent.setFlags(FLAG_ACTIVITY_NEW_TASK);

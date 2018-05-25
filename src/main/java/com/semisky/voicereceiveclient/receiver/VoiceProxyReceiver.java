@@ -43,6 +43,9 @@ public class VoiceProxyReceiver extends BroadcastReceiver {
     public static final String ACTION_CARLIFE_VOICE = "com.semisky.broadcast.CARLIFE_VOICE";
     public static final String START_CARLIFE_FLAG = "start_carlife_voice_flag";
 
+    public static final String ACTION_LOAD_DATA = "com.semisky.action.MEDIA_LOAD_STATE_CHANGE";
+    public static final String START_LOAD_DATA_FLAG = "state";
+
 
     @Override
     public void onReceive(Context context, Intent intent) {
@@ -123,6 +126,16 @@ public class VoiceProxyReceiver extends BroadcastReceiver {
                     if (!VoiceKeyModel.getInstance(context).isRegister()) {
                         VoiceKeyModel.getInstance(context).registerOnKeyListener();
                     }
+                }
+                break;
+
+            case ACTION_LOAD_DATA:
+                boolean loadDataStatus = intent.getBooleanExtra(START_LOAD_DATA_FLAG, false);
+                Log.d(TAG, "onReceive: " + loadDataStatus);
+                if (loadDataStatus) {
+                    VoiceBTModel.getInstance().setLoadData(true);
+                } else {
+                    VoiceBTModel.getInstance().setLoadData(false);
                 }
                 break;
         }
