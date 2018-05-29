@@ -120,12 +120,13 @@ public class VoiceProxyReceiver extends BroadcastReceiver {
                 Log.d(TAG, "ACTION_CARLIFE_VOICE:carlifeVoiceStatus " + carlifeVoiceStatus);
                 if (carlifeVoiceStatus) {
                     VoiceWakeupScenes.closeVoice();
-                    VoiceKeyModel.getInstance(context).unregisterOnKeyListener();
+                    //bug 2321 2006
+//                    VoiceKeyModel.getInstance(context).unregisterOnKeyListener();
                 } else {
                     VoiceWakeupScenes.wakeupVoice();
-                    if (!VoiceKeyModel.getInstance(context).isRegister()) {
-                        VoiceKeyModel.getInstance(context).registerOnKeyListener();
-                    }
+//                    if (!VoiceKeyModel.getInstance(context).isRegister()) {
+//                        VoiceKeyModel.getInstance(context).registerOnKeyListener();
+//                    }
                 }
                 break;
 

@@ -16,6 +16,7 @@ import com.semisky.voicereceiveclient.constant.AppConstant;
 import com.semisky.voicereceiveclient.jsonEntity.AppEntity;
 import com.semisky.voicereceiveclient.model.KWMusicAPI;
 import com.semisky.voicereceiveclient.model.VoiceBTModel;
+import com.semisky.voicereceiveclient.model.XMLYApi;
 import com.semisky.voicereceiveclient.utils.ToolUtils;
 
 import static android.content.Intent.FLAG_ACTIVITY_NEW_TASK;
@@ -186,13 +187,15 @@ public class AppVoiceManager {
      * {"name":"在线电台","operation":"EXIT","focus":"app","rawText":"关闭在线电台"}
      */
     private int radioOnlineOperation(String operation) {
+        XMLYApi xmlyApi = new XMLYApi(mContext);
         switch (operation) {
             case "EXIT":
                 Log.d(TAG, "radioOnlineOperation: exit");
-
+                xmlyApi.exitApp();
                 return AppConstant.MUSIC_TYPE_SUCCESS;
             case "LAUNCH":
                 Log.d(TAG, "radioOnlineOperation: launch");
+                xmlyApi.openApp();
                 return AppConstant.MUSIC_TYPE_SUCCESS;
             default:
                 return AppConstant.MUSIC_TYPE_FAIL;
@@ -329,6 +332,7 @@ public class AppVoiceManager {
             case "LAUNCH":
                 startActivity(PKG_RADIO, CLS_RADIO);
                 try {
+                    AidlManager.getInstance().getRadioListener().openActivity();
                     AidlManager.getInstance().getRadioListener().Unmute();
                 } catch (RemoteException e) {
                     e.printStackTrace();

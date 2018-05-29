@@ -30,6 +30,7 @@ import static com.semisky.autoservice.manager.CarCtrlManager.TYPE_WIDTH_LAMP;
  * {"name":"左前车窗","operation":"OPEN","focus":"carControl","rawText":"左前车窗打开一点"}
  * {"name":"大一点左前车窗","operation":"LAUNCH","focus":"app","rawText":"打开大一点左前车窗"}
  * {"name":"小一点左前车窗","operation":"LAUNCH","focus":"app","rawText":"打开小一点左前车窗"}
+ * {"name":"天窗翘起","operation":"OPEN","focus":"carControl","rawText":"翘起天窗"}
  */
 public class CarVoiceManager {
 

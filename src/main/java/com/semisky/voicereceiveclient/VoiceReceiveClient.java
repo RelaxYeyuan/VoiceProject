@@ -33,7 +33,7 @@ import com.semisky.voicereceiveclient.model.VoiceBTModel;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import static com.semisky.autoservice.manager.AudioManager.STREAM_VR;
+import static com.semisky.autoservice.manager.AudioManager.STREAM_IFLYTEK_VR;
 import static com.semisky.voicereceiveclient.constant.AppConstant.ACTION_START_VOICE;
 import static com.semisky.voicereceiveclient.constant.AppConstant.START_VOICE_FLAG;
 
@@ -161,19 +161,7 @@ public class VoiceReceiveClient implements PlatformClientListener {
                     }
                 } else if ("cmd".equals(action.getString("focus"))) {
                     CMDEntity cmdEntity = gson.fromJson(actionJson, CMDEntity.class);
-                    String category = cmdEntity.getCategory();
-                    String name = cmdEntity.getName();
-                    if ("汽车控制".equals(category) & "即刻出发".equals(name)) {
-                        try {
-                            resultJson.put("status", "fail");
-                            resultJson.put("message", "正在为您启动发动机");
-                        } catch (JSONException e) {
-                            Log.e(TAG, "onNLPResult: " + e.getMessage());
-                        }
-                        return resultJson.toString();
-                    }
                     cmdVoiceManager.setActionJson(cmdEntity, mContext);
-
                 } else if ("airControl".equals(action.getString("focus"))) {
                     AirControlEntity airEntity = gson.fromJson(actionJson, AirControlEntity.class);
                     airVoiceManager.setActionJson(airEntity);
@@ -319,7 +307,7 @@ public class VoiceReceiveClient implements PlatformClientListener {
     public int onRequestAudioFocus(int streamType, int nDuration) {
         Log.d(TAG, "onRequestAudioFocus: ");
         // 这里使用的 android AudioFocus的音频协调机制
-        com.semisky.autoservice.manager.AudioManager.getInstance().openStreamVolume(STREAM_VR);
+        com.semisky.autoservice.manager.AudioManager.getInstance().openStreamVolume(STREAM_IFLYTEK_VR);
         sendOpenVoiceBroadcast();
         return requestFocus();
     }
@@ -418,12 +406,12 @@ public class VoiceReceiveClient implements PlatformClientListener {
     /**
      * 释放音频焦点
      *
-     * @return true 释放成功
+     * true 释放成功
      */
     private void abandonFocus() {
-        com.semisky.autoservice.manager.AudioManager.getInstance().closeStreamVolume(STREAM_VR);
-        sendCloseVoiceBroadcast();
         Log.d(TAG, "abandonFocus: ");
+        com.semisky.autoservice.manager.AudioManager.getInstance().closeStreamVolume(STREAM_IFLYTEK_VR);
+        sendCloseVoiceBroadcast();
         if (mFocusChangeListener != null) {
             audioManager.abandonAudioFocus(mFocusChangeListener);
         }

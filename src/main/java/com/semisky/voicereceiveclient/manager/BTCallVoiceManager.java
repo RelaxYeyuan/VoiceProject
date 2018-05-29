@@ -46,4 +46,14 @@ public class BTCallVoiceManager {
         intent.putExtra(CALL_NUMBER, param1);
         mContext.sendBroadcast(intent);
     }
+
+    /**
+     * 重拨号码
+     */
+    void redialNumber() {
+        Log.d(TAG, "redialNumber: ");
+        String ACTION_CALL = "com.semisky.cx62.ACTION_CALL_REDIAL_NUMBER";
+        Intent intent = new Intent(ACTION_CALL);
+        mContext.sendBroadcast(intent);
+    }
 }

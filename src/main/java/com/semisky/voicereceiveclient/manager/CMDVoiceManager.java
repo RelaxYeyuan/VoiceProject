@@ -8,6 +8,7 @@ import android.util.Log;
 
 import com.semisky.autoservice.manager.AudioManager;
 import com.semisky.autoservice.manager.AutoManager;
+import com.semisky.autoservice.manager.CarCtrlManager;
 import com.semisky.voicereceiveclient.appAidl.AidlManager;
 import com.semisky.voicereceiveclient.jsonEntity.CMDEntity;
 import com.semisky.voicereceiveclient.model.KWMusicAPI;
@@ -46,6 +47,8 @@ public class CMDVoiceManager {
         String name = cmdEntity.getName();
         String nameValue = cmdEntity.getNameValue();
 
+        //{"name":"重拨号码","focus":"cmd","rawText":"重拨"}
+
         try {
             switch (name) {
                 case "切换模式":
@@ -58,6 +61,10 @@ public class CMDVoiceManager {
                 case "断开连接":
                     //{"name":"断开连接","focus":"cmd","rawText":"断开手机连接"}
                     AidlManager.getInstance().getBTCallListener().DisconnectThePhone();
+                    return;
+                case "重拨号码":
+                    BTCallVoiceManager btCallVoiceManager = new BTCallVoiceManager(mContext);
+                    btCallVoiceManager.redialNumber();
                     return;
             }
 
@@ -188,11 +195,18 @@ public class CMDVoiceManager {
         mContext.sendBroadcast(intent);
     }
 
+    //{"category":"曲目控制","name":"停止","focus":"cmd","rawText":"停止音乐"}
+    //{"category":"曲目控制","name":"停止","focus":"cmd","rawText":"停止播放音乐"}
+    //{"category":"曲目控制","name":"停止","focus":"cmd","rawText":"停止播放"}
+
     private void videoControl(String name) {
         try {
             Log.d(TAG, "videoControl: " + name);
             switch (name) {
                 case "暂停":
+                    pausePlay();
+                    break;
+                case "停止":
                     pausePlay();
                     break;
                 case "播放":
@@ -221,9 +235,9 @@ public class CMDVoiceManager {
 
     private void carCommand(String name) {
         if ("即刻出发".equals(name)) {
-
+            CarCtrlManager.getInstance().setEngineControlEDReq(true);
+            Log.d(TAG, "carCommand: 即刻出发");
         }
-
     }
 
     private void pausePlay() {

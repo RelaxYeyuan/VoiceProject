@@ -154,6 +154,7 @@ public class AirVoiceManager {
                 case "最低":
                     //{"device":"空调","operation":"SET","temperature":"16","focus":"airControl","rawText":"空调温度调到最低"}
                     //{"device":"空调","operation":"SET","temperature":"最低","focus":"airControl","rawText":"空调温度调到最低"}
+                    //{"device":"空调","operation":"SET","temperature":"最低","focus":"airControl","rawText":"将空调温度调到最低"}
                     ACManager.getInstance().setAirConditionerTemp(SIDE_FL, 1);
                     Log.d(TAG, "openAirMode: 16");
                     break;

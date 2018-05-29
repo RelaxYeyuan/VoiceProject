@@ -142,6 +142,7 @@ public class MusicVoiceManager {
                     //{"artist":"刘德华","operation":"PLAY","focus":"music","rawText":"来一首刘德华的歌曲"}
                     //{"artist":"刘德华","operation":"","focus":"music","rawText":"刘德华的专辑。"}
                     //{"album":"你到底有没有爱过我","operation":"PLAY","focus":"music","rawText":"我想听专辑,你到底有没有爱过我?"}
+                    //{"artist":"刘德华","operation":"PLAY","focus":"music","rawText":"打开刘德华的专辑"}
                     //专辑播放
                     if (album != null) {
                         if (checkDisk()) {
