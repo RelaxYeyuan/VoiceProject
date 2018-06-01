@@ -17,6 +17,8 @@ import com.semisky.voicereceiveclient.utils.ToolUtils;
 
 import static android.content.Intent.FLAG_ACTIVITY_NEW_TASK;
 import static com.semisky.voicereceiveclient.constant.AppConstant.CLS_BTCALL;
+import static com.semisky.voicereceiveclient.constant.AppConstant.CMD_TYPE_FAIL;
+import static com.semisky.voicereceiveclient.constant.AppConstant.CMD_TYPE_SUCCESS;
 import static com.semisky.voicereceiveclient.constant.AppConstant.LOOP_PLAY;
 import static com.semisky.voicereceiveclient.constant.AppConstant.PKG_BTCALL;
 import static com.semisky.voicereceiveclient.constant.AppConstant.PKG_VOICE;
@@ -41,120 +43,133 @@ public class CMDVoiceManager {
         kwMusicAPI = new KWMusicAPI();
     }
 
-    public void setActionJson(CMDEntity cmdEntity, Context context) {
+    public int setActionJson(CMDEntity cmdEntity, Context context) {
         mContext = context;
         String category = cmdEntity.getCategory();
         String name = cmdEntity.getName();
         String nameValue = cmdEntity.getNameValue();
 
         //{"name":"重拨号码","focus":"cmd","rawText":"重拨"}
+        //{"name":"收藏歌曲","focus":"cmd","rawText":"收藏这首歌"}
+        //{"name":"收藏","focus":"cmd","rawText":"收藏"}
+        //{"name":"下载歌曲","focus":"cmd","rawText":"下载这首歌"}
 
         try {
             switch (name) {
                 case "切换模式":
                     changeLightMode();
-                    return;
+                    return CMD_TYPE_SUCCESS;
                 case "返回主菜单":
                     checkVoiceActivity();
                     skipHome();
-                    return;
+                    return CMD_TYPE_SUCCESS;
                 case "断开连接":
                     //{"name":"断开连接","focus":"cmd","rawText":"断开手机连接"}
                     AidlManager.getInstance().getBTCallListener().DisconnectThePhone();
-                    return;
+                    return CMD_TYPE_SUCCESS;
                 case "重拨号码":
                     BTCallVoiceManager btCallVoiceManager = new BTCallVoiceManager(mContext);
                     btCallVoiceManager.redialNumber();
-                    return;
+                    return CMD_TYPE_SUCCESS;
+                case "收藏歌曲":
+
+                    Log.d(TAG, "setActionJson: 收藏歌曲");
+                    return CMD_TYPE_FAIL;
+                case "收藏":
+
+                    Log.d(TAG, "setActionJson: 收藏");
+                    return CMD_TYPE_FAIL;
+                case "下载歌曲":
+
+                    Log.d(TAG, "setActionJson: 下载歌曲");
+                    return CMD_TYPE_FAIL;
             }
 
             switch (category) {
                 case "收音机控制":
-                    radioControl(name);
-                    break;
+                    return radioControl(name);
                 case "收藏":
                     AidlManager.getInstance().getRadioListener().radioPlayCollect();
-                    break;
+                    return CMD_TYPE_SUCCESS;
                 case "屏幕控制":
-                    setControl(name, nameValue);
-                    break;
+                    return setControl(name, nameValue);
                 case "音量控制":
-                    setControl(name, nameValue);
-                    break;
+                    return setControl(name, nameValue);
                 case "曲目控制":
-                    videoControl(name);
-                    break;
+                    return videoControl(name);
                 case "播放模式":
-                    videoControl(name);
-                    break;
+                    return videoControl(name);
                 case "汽车控制":
-                    carCommand(name);
-                    break;
+                    return carCommand(name);
                 case "电话控制":
-                    btCallOperation(name);
-                    break;
+                    return btCallOperation(name);
             }
         } catch (Exception e) {
             e.printStackTrace();
+            return CMD_TYPE_SUCCESS;
         }
+        return CMD_TYPE_FAIL;
     }
 
     //{"category":"电话控制","name":"通话记录","focus":"cmd","rawText":"通话记录"}
-    private void btCallOperation(String name) {
+    private int btCallOperation(String name) {
         switch (name) {
             case "通话记录":
                 openBTCallConnection(5);
-                break;
+                return CMD_TYPE_SUCCESS;
         }
+        return CMD_TYPE_FAIL;
     }
 
     //{"category":"收音机控制","name":"收藏本台","focus":"cmd","rawText":"收藏这个电台"}
     //{"category":"收音机控制","name":"收藏本台","focus":"cmd","rawText":"收藏这个台"}
-    private void radioControl(String name) {
+    private int radioControl(String name) {
         try {
             switch (name) {
                 case "上一频道":
                     AidlManager.getInstance().getRadioListener().seekUp();
-                    break;
+                    return CMD_TYPE_SUCCESS;
                 case "下一频道":
                     AidlManager.getInstance().getRadioListener().seekDown();
-                    break;
+                    return CMD_TYPE_SUCCESS;
                 case "收藏本台":
                     AidlManager.getInstance().getRadioListener().collectFreq();
-                    break;
+                    return CMD_TYPE_SUCCESS;
                 case "扫描电台":
                     AidlManager.getInstance().getRadioListener().seekFreq();
-                    break;
+                    return CMD_TYPE_SUCCESS;
             }
         } catch (Exception e) {
             e.printStackTrace();
+            return CMD_TYPE_SUCCESS;
         }
+        return CMD_TYPE_FAIL;
     }
 
-    private void setControl(String name, String nameValue) {
+    private int setControl(String name, String nameValue) {
         try {
             Log.d(TAG, "setControl: " + name);
             switch (name) {
                 case "亮度+":
                     Log.d(TAG, "setControl: 亮度+");
                     updateLightAdjustValue(0);
-                    break;
+                    return CMD_TYPE_SUCCESS;
                 case "亮度-":
                     Log.d(TAG, "setControl: 亮度-");
                     updateLightAdjustValue(1);
-                    break;
+                    return CMD_TYPE_SUCCESS;
                 case "音量+":
                     AudioManager.getInstance().upAndDownVolume(AudioManager.VR_UP_VOLUME);
-                    break;
+                    return CMD_TYPE_SUCCESS;
                 case "音量-":
                     AudioManager.getInstance().upAndDownVolume(AudioManager.VR_DOWN_VOLUME);
-                    break;
+                    return CMD_TYPE_SUCCESS;
                 case "音量max":
                     AudioManager.getInstance().setVolumeTo(31);
-                    break;
+                    return CMD_TYPE_SUCCESS;
                 case "音量min":
                     AudioManager.getInstance().setVolumeTo(0);
-                    break;
+                    return CMD_TYPE_SUCCESS;
                 case "音量调节":
                     int volume = Integer.valueOf(nameValue);
                     if (volume < 0) {//如果语义调节音量小于0，就默认最小
@@ -164,25 +179,27 @@ public class CMDVoiceManager {
                     } else {
                         AudioManager.getInstance().setVolumeTo(volume);
                     }
-                    break;
+                    return CMD_TYPE_SUCCESS;
                 case "静音":
                     AudioManager.getInstance().setVolumeMute(true);
-                    break;
+                    return CMD_TYPE_SUCCESS;
                 case "打开音量":
                     AudioManager.getInstance().setVolumeMute(false);
-                    break;
+                    return CMD_TYPE_SUCCESS;
                 case "关闭屏幕":
                     //{"category":"屏幕控制","name":"关闭屏幕","focus":"cmd","rawText":"关闭屏幕"}
                     clockBackLight();
-                    break;
+                    return CMD_TYPE_SUCCESS;
                 case "开启屏幕":
                     //{"category":"屏幕控制","name":"开启屏幕","focus":"cmd","rawText":"打开屏幕"}
 
-                    break;
+                    return CMD_TYPE_SUCCESS;
             }
         } catch (Exception e) {
             e.printStackTrace();
+            return CMD_TYPE_SUCCESS;
         }
+        return CMD_TYPE_FAIL;
     }
 
     private static final String SCREENSAVER_ACTION = "com.semisky.broadcast.SCREENSAVER";
@@ -199,45 +216,49 @@ public class CMDVoiceManager {
     //{"category":"曲目控制","name":"停止","focus":"cmd","rawText":"停止播放音乐"}
     //{"category":"曲目控制","name":"停止","focus":"cmd","rawText":"停止播放"}
 
-    private void videoControl(String name) {
+    private int videoControl(String name) {
         try {
             Log.d(TAG, "videoControl: " + name);
             switch (name) {
                 case "暂停":
                     pausePlay();
-                    break;
+                    return CMD_TYPE_SUCCESS;
                 case "停止":
                     pausePlay();
-                    break;
+                    return CMD_TYPE_SUCCESS;
                 case "播放":
                     continuePlay();
-                    break;
+                    return CMD_TYPE_SUCCESS;
                 case "单曲循环":
                     AidlManager.getInstance().getUsbMusicListener().changePlayOrder(SINGLE_PLAY);
-                    break;
+                    return CMD_TYPE_SUCCESS;
                 case "随机播放":
                     AidlManager.getInstance().getUsbMusicListener().changePlayOrder(RANDOM_PLAY);
-                    break;
+                    return CMD_TYPE_SUCCESS;
                 case "循环播放":
                     AidlManager.getInstance().getUsbMusicListener().changePlayOrder(LOOP_PLAY);
-                    break;
+                    return CMD_TYPE_SUCCESS;
                 case "下一首":
                     mediaNext();
-                    break;
+                    return CMD_TYPE_SUCCESS;
                 case "上一首":
                     mediaLast();
-                    break;
+                    return CMD_TYPE_SUCCESS;
             }
         } catch (Exception e) {
             e.printStackTrace();
+            return CMD_TYPE_SUCCESS;
         }
+        return CMD_TYPE_FAIL;
     }
 
-    private void carCommand(String name) {
+    private int carCommand(String name) {
         if ("即刻出发".equals(name)) {
             CarCtrlManager.getInstance().setEngineControlEDReq(true);
             Log.d(TAG, "carCommand: 即刻出发");
+            return CMD_TYPE_SUCCESS;
         }
+        return CMD_TYPE_FAIL;
     }
 
     private void pausePlay() {

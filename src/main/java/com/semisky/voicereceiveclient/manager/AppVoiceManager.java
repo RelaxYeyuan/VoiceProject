@@ -118,7 +118,7 @@ public class AppVoiceManager {
                 //{"name":"后除霜","operation":"EXIT","focus":"app","rawText":"关闭后除霜"}
 //                ACManager.getInstance().enableAirConditionerDefrost(DEFROST_MODE_FRONT, false);
                 Log.d(TAG, "closeAirMode: 关闭前除霜");
-                return AppConstant.MUSIC_TYPE_SUCCESS;
+                return AppConstant.MUSIC_TYPE_FAIL;
             case "后除霜":
                 ACManager.getInstance().enableAirConditionerDefrost(DEFROST_MODE_REAR, false);
                 Log.d(TAG, "closeAirMode: 关闭后除霜");

@@ -15,6 +15,8 @@ import static com.semisky.autoservice.manager.CarCtrlManager.SKY_WINDOW_RISE;
 import static com.semisky.autoservice.manager.CarCtrlManager.STATUS_CLOSE;
 import static com.semisky.autoservice.manager.CarCtrlManager.STATUS_OPEN;
 import static com.semisky.autoservice.manager.CarCtrlManager.TYPE_WIDTH_LAMP;
+import static com.semisky.voicereceiveclient.constant.AppConstant.CAR_TYPE_FAIL;
+import static com.semisky.voicereceiveclient.constant.AppConstant.CAR_TYPE_SUCCESS;
 
 /**
  * Created by chenhongrui on 2018/3/9
@@ -36,34 +38,36 @@ public class CarVoiceManager {
 
     private static final String TAG = "CarVoiceManager";
 
-    public void setActionJson(CarControlEntity carControlEntity) {
+    public int setActionJson(CarControlEntity carControlEntity) {
         String name = carControlEntity.getName();
         String operation = carControlEntity.getOperation();
         switch (name) {
             case "天窗":
                 setSkyLight(operation);
-                break;
+                return CAR_TYPE_SUCCESS;
             case "天窗翘起":
                 setSkyLight();
-                break;
+                return CAR_TYPE_SUCCESS;
             case "车窗":
                 setCarWindow(operation, 0);
-                break;
+                return CAR_TYPE_SUCCESS;
             case "近光灯":
                 setDippedHeadlight(operation);
-                break;
+                return CAR_TYPE_SUCCESS;
             case "左前车窗":
                 setCarWindow(operation, 1);
-                break;
+                return CAR_TYPE_SUCCESS;
             case "右前车窗":
                 setCarWindow(operation, 2);
-                break;
+                return CAR_TYPE_SUCCESS;
             case "左后车窗":
                 setCarWindow(operation, 3);
-                break;
+                return CAR_TYPE_SUCCESS;
             case "右后车窗":
                 setCarWindow(operation, 4);
-                break;
+                return CAR_TYPE_SUCCESS;
+            default:
+                return CAR_TYPE_FAIL;
         }
     }
 

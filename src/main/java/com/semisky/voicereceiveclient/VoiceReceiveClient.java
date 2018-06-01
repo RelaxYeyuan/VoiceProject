@@ -161,13 +161,37 @@ public class VoiceReceiveClient implements PlatformClientListener {
                     }
                 } else if ("cmd".equals(action.getString("focus"))) {
                     CMDEntity cmdEntity = gson.fromJson(actionJson, CMDEntity.class);
-                    cmdVoiceManager.setActionJson(cmdEntity, mContext);
+                    int type = cmdVoiceManager.setActionJson(cmdEntity, mContext);
+                    if (type == AppConstant.CMD_TYPE_SUCCESS) {
+                        resultJson.put("status", "success");
+                        return resultJson.toString();
+                    } else if (type == AppConstant.CMD_TYPE_FAIL) {
+                        resultJson.put("status", "fail");
+                        resultJson.put("message", "抱歉，没有可处理的操作");
+                        return resultJson.toString();
+                    }
                 } else if ("airControl".equals(action.getString("focus"))) {
                     AirControlEntity airEntity = gson.fromJson(actionJson, AirControlEntity.class);
-                    airVoiceManager.setActionJson(airEntity);
+                    int type = airVoiceManager.setActionJson(airEntity);
+                    if (type == AppConstant.AIR_TYPE_SUCCESS) {
+                        resultJson.put("status", "success");
+                        return resultJson.toString();
+                    } else if (type == AppConstant.AIR_TYPE_FAIL) {
+                        resultJson.put("status", "fail");
+                        resultJson.put("message", "抱歉，没有可处理的操作");
+                        return resultJson.toString();
+                    }
                 } else if ("carControl".equals(action.getString("focus"))) {
                     CarControlEntity carEntity = gson.fromJson(actionJson, CarControlEntity.class);
-                    carVoiceManager.setActionJson(carEntity);
+                    int type = carVoiceManager.setActionJson(carEntity);
+                    if (type == AppConstant.CAR_TYPE_SUCCESS) {
+                        resultJson.put("status", "success");
+                        return resultJson.toString();
+                    } else if (type == AppConstant.CAR_TYPE_FAIL) {
+                        resultJson.put("status", "fail");
+                        resultJson.put("message", "抱歉，没有可处理的操作");
+                        return resultJson.toString();
+                    }
                 }
             } catch (JSONException e) {
                 Log.e(TAG, "onNLPResult: ");
@@ -405,7 +429,7 @@ public class VoiceReceiveClient implements PlatformClientListener {
 
     /**
      * 释放音频焦点
-     *
+     * <p>
      * true 释放成功
      */
     private void abandonFocus() {

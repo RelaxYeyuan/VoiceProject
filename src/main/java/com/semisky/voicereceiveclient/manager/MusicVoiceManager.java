@@ -67,6 +67,17 @@ public class MusicVoiceManager {
                 }
             }
 
+            //{"category":"我的收藏","operation":"PLAY","focus":"music","rawText":"播放收藏的歌曲"}
+            //{"category":"我的收藏","operation":"PLAY","focus":"music","rawText":"打开我的收藏"}
+            if (category != null && category.equals("我的收藏")) {
+                if (ToolUtils.isNetworkAvailable(mContext)) {
+                    Log.d(TAG, "setActionJson: 我的收藏");
+                    return AppConstant.MUSIC_TYPE_FAIL;
+                } else {
+                    return AppConstant.MUSIC_TYPE_NOT_CONNECTED;
+                }
+            }
+
             //{"artist":"刘德华","operation":"","focus":"music","rawText":"刘德华的专辑。"}
             if (operation.equals("")) {
                 if (album != null) {
@@ -134,6 +145,7 @@ public class MusicVoiceManager {
                                 } else {
                                     return AppConstant.MUSIC_TYPE_DISK_MISSING;
                                 }
+
                             default:
                                 break;
                         }

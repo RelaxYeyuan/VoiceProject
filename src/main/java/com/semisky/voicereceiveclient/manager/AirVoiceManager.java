@@ -17,6 +17,8 @@ import static com.semisky.autoservice.manager.ACManager.SIDE_FL;
 import static com.semisky.autoservice.manager.ACManager.WIND_EXIT_MODE_FACE;
 import static com.semisky.autoservice.manager.ACManager.WIND_EXIT_MODE_FACE_FOOT;
 import static com.semisky.autoservice.manager.ACManager.WIND_EXIT_MODE_FOOT;
+import static com.semisky.voicereceiveclient.constant.AppConstant.AIR_TYPE_FAIL;
+import static com.semisky.voicereceiveclient.constant.AppConstant.AIR_TYPE_SUCCESS;
 
 /**
  * Created by chenhongrui on 2018/3/9
@@ -29,7 +31,7 @@ public class AirVoiceManager {
 
     private static final String TAG = "AirVoiceManager";
 
-    public void setActionJson(AirControlEntity airEntity) {
+    public int setActionJson(AirControlEntity airEntity) {
         String airflow_direction = airEntity.getAirflow_direction();
         String device = airEntity.getDevice();
         String fan_speed = airEntity.getFan_speed();
@@ -40,20 +42,24 @@ public class AirVoiceManager {
         if (operation != null) {
             switch (operation) {
                 case "SET":
-                    openAirMode(mode, temperature, fan_speed, airflow_direction);
-                    break;
+                    return openAirMode(mode, temperature, fan_speed, airflow_direction);
                 case "OPEN":
                     //{"device":"空调","operation":"OPEN","focus":"airControl","rawText":"打开空调"}
                     ACManager.getInstance().setAirConditionerWorking(AIR_WORKING_ON);
                     Log.d(TAG, "OPEN:");
-                    break;
+                    return AIR_TYPE_SUCCESS;
                 case "CLOSE":
                     //{"device":"空调","operation":"CLOSE","focus":"airControl","rawText":"关闭空调"}
                     ACManager.getInstance().setAirConditionerWorking(AIR_WORKING_OFF);
                     Log.d(TAG, "CLOSE");
-                    break;
+                    return AIR_TYPE_SUCCESS;
+
+                default:
+                    return AIR_TYPE_FAIL;
             }
         }
+        Log.d(TAG, "setActionJson: operation null");
+        return AIR_TYPE_FAIL;
     }
 
     //{"mode":"前除霜","operation":"SET","focus":"airControl","rawText":"打开前除霜"}
@@ -67,43 +73,42 @@ public class AirVoiceManager {
     //{"mode":"制冷","operation":"SET","focus":"airControl","rawText":"我要制冷"}
     //{"mode":"制热","operation":"SET","focus":"airControl","rawText":"我要制热"}
 
-    private void openAirMode(String mode, String temperature, String fanSpeed, String airflowDirection) {
+    private int openAirMode(String mode, String temperature, String fanSpeed, String airflowDirection) {
         if (mode != null) {
             Log.d(TAG, "openAirMode:mode " + mode);
             switch (mode) {
                 case "制冷":
                     ACManager.getInstance().setAirCoolOrHeatMode(CTRL_MODE_COOL);
                     Log.d(TAG, "openAirMode: 制冷");
-                    break;
+                    return AIR_TYPE_SUCCESS;
 
                 case "制热":
                     ACManager.getInstance().setAirCoolOrHeatMode(CTRL_MODE_HEAT);
                     Log.d(TAG, "openAirMode: 制热");
-                    break;
+                    return AIR_TYPE_SUCCESS;
 
                 case "内循环":
                     ACManager.getInstance().setAirConditionerCirMode(CIR_MODE_INNER);
                     Log.d(TAG, "openAirMode: 内循环");
-                    break;
+                    return AIR_TYPE_SUCCESS;
 
                 case "外循环":
                     ACManager.getInstance().setAirConditionerCirMode(CIR_MODE_OUTSIDE);
                     Log.d(TAG, "openAirMode: 外循环");
-                    break;
+                    return AIR_TYPE_SUCCESS;
 
                 case "前除霜":
                     ACManager.getInstance().enableAirConditionerDefrost(DEFROST_MODE_FRONT, true);
                     Log.d(TAG, "openAirMode: 打开前除霜");
-                    break;
+                    return AIR_TYPE_SUCCESS;
 
                 case "后除霜":
                     ACManager.getInstance().enableAirConditionerDefrost(DEFROST_MODE_REAR, true);
                     Log.d(TAG, "openAirMode: 打开后除霜");
-                    break;
+                    return AIR_TYPE_SUCCESS;
 
                 default:
-
-                    break;
+                    return AIR_TYPE_FAIL;
             }
         }
 
@@ -116,15 +121,18 @@ public class AirVoiceManager {
                 case "面":
                     ACManager.getInstance().setAirConditionerWindExitMode(WIND_EXIT_MODE_FACE);
                     Log.d(TAG, "openAirMode: 吹面");
-                    break;
+                    return AIR_TYPE_SUCCESS;
                 case "吹面吹脚":
                     ACManager.getInstance().setAirConditionerWindExitMode(WIND_EXIT_MODE_FACE_FOOT);
                     Log.d(TAG, "openAirMode: 吹面吹脚");
-                    break;
+                    return AIR_TYPE_SUCCESS;
                 case "脚":
                     ACManager.getInstance().setAirConditionerWindExitMode(WIND_EXIT_MODE_FOOT);
                     Log.d(TAG, "openAirMode: 吹脚");
-                    break;
+                    return AIR_TYPE_SUCCESS;
+
+                default:
+                    return AIR_TYPE_FAIL;
             }
         }
 
@@ -134,30 +142,30 @@ public class AirVoiceManager {
             switch (temperature) {
                 case "+"://{"operation":"SET","temperature":"+","focus":"airControl","rawText":"有点冷"}
 //                    setAirTemperatureUp();
-                    break;
+                    return AIR_TYPE_FAIL;
                 case "-"://{"operation":"SET","temperature":"-","focus":"airControl","rawText":"有点热"}
 //                    setAirTemperatureDown();
-                    break;
+                    return AIR_TYPE_FAIL;
                 case "+1"://{"operation":"SET","temperature":"+1","focus":"airControl","rawText":"温度调高一度"}
 //                    setAirTemperatureUp();
-                    break;
+                    return AIR_TYPE_FAIL;
                 case "-1"://{"operation":"SET","temperature":"+1","focus":"airControl","rawText":"温度调高一度"}
 //                    setAirTemperatureDown();
-                    break;
+                    return AIR_TYPE_FAIL;
                 case "最高":
                     //{"device":"空调","operation":"SET","temperature":"30","focus":"airControl","rawText":"空调温度调到最高"}
                     //{"device":"空调","operation":"SET","temperature":"最高","focus":"airControl","rawText":"空调温度调到最高"}
                     //{"operation":"SET","temperature":"最高","focus":"airControl","rawText":"温度调到最大"}
                     ACManager.getInstance().setAirConditionerTemp(SIDE_FL, 17);
                     Log.d(TAG, "openAirMode: 30");
-                    break;
+                    return AIR_TYPE_SUCCESS;
                 case "最低":
                     //{"device":"空调","operation":"SET","temperature":"16","focus":"airControl","rawText":"空调温度调到最低"}
                     //{"device":"空调","operation":"SET","temperature":"最低","focus":"airControl","rawText":"空调温度调到最低"}
                     //{"device":"空调","operation":"SET","temperature":"最低","focus":"airControl","rawText":"将空调温度调到最低"}
                     ACManager.getInstance().setAirConditionerTemp(SIDE_FL, 1);
                     Log.d(TAG, "openAirMode: 16");
-                    break;
+                    return AIR_TYPE_SUCCESS;
                 default:
                     Log.d(TAG, "openAirMode:temperatureInt " + temperature);
 //                    int temperatureInt = Integer.valueOf(temperature);
@@ -165,7 +173,7 @@ public class AirVoiceManager {
 //                        //调节到具体档位
 //                        ACManager.getInstance().setAirConditionerTemp(SIDE_FL, temperatureInt);
 //                    }
-                    break;
+                    return AIR_TYPE_FAIL;
             }
         }
 
@@ -175,28 +183,29 @@ public class AirVoiceManager {
             switch (fanSpeed) {
                 case "+"://{"fan_speed":"+","operation":"SET","focus":"airControl","rawText":"风速大一点"}
                     setFanSpeedUp();
-                    break;
+                    return AIR_TYPE_SUCCESS;
                 case "-"://{"fan_speed":"-","operation":"SET","focus":"airControl","rawText":"风速小一点"}
                     setFanSpeedDown();
-                    break;
+                    return AIR_TYPE_SUCCESS;
                 case "最大":
                     ACManager.getInstance().setAirConditionerWindValue(7);
                     Log.d(TAG, "openAirMode: 最大");
-                    break;
+                    return AIR_TYPE_SUCCESS;
                 case "最小":
                     ACManager.getInstance().setAirConditionerWindValue(1);
                     Log.d(TAG, "openAirMode: 最小");
-                    break;
+                    return AIR_TYPE_SUCCESS;
                 default:
-                    Log.d(TAG, "openAirMode:fanSpeed " + fanSpeed);
-                    int fanSpeedInt = Integer.valueOf(fanSpeed);
-                    if (fanSpeedInt <= 7 && fanSpeedInt >= 0) {
-                        //调节到具体档位
-                        ACManager.getInstance().setAirConditionerWindValue(fanSpeedInt);
-                    }
-                    break;
+//                    Log.d(TAG, "openAirMode:fanSpeed " + fanSpeed);
+//                    int fanSpeedInt = Integer.valueOf(fanSpeed);
+//                    if (fanSpeedInt <= 7 && fanSpeedInt >= 0) {
+//                        //调节到具体档位
+//                        ACManager.getInstance().setAirConditionerWindValue(fanSpeedInt);
+//                    }
+                    return AIR_TYPE_FAIL;
             }
         }
+        return AIR_TYPE_FAIL;
     }
 
     private void setAirTemperatureUp() {
