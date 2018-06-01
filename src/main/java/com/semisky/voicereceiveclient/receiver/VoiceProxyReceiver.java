@@ -46,6 +46,8 @@ public class VoiceProxyReceiver extends BroadcastReceiver {
     public static final String ACTION_LOAD_DATA = "com.semisky.action.MEDIA_LOAD_STATE_CHANGE";
     public static final String START_LOAD_DATA_FLAG = "state";
 
+    public static final String ACTION_START_BACK_CAR = "com.semisky.IS_AVM";
+    public static final String START_BACK_CAR_FLAG = "isAVM";
 
     @Override
     public void onReceive(Context context, Intent intent) {
@@ -139,6 +141,21 @@ public class VoiceProxyReceiver extends BroadcastReceiver {
                     VoiceBTModel.getInstance().setLoadData(false);
                 }
                 break;
+
+            case ACTION_START_BACK_CAR:
+                boolean isBackCar = intent.getBooleanExtra(START_BACK_CAR_FLAG, true);
+                Log.d(TAG, "ACTION_START_BACK_CAR: " + isBackCar);
+                if (isBackCar) {
+                    VoiceWakeupScenes.closeVoice();
+                    VoiceKeyModel.getInstance(context).unregisterOnKeyListener();
+                } else {
+                    VoiceWakeupScenes.wakeupVoice();
+                    if (!VoiceKeyModel.getInstance(context).isRegister()) {
+                        VoiceKeyModel.getInstance(context).registerOnKeyListener();
+                    }
+                }
+                break;
+
         }
     }
 }

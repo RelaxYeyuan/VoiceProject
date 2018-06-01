@@ -55,6 +55,7 @@
                 <action android:name="com.semisky.broadcast.CARLIFE_VOICE"/>
                 <action android:name="com.semisky.broadcast.BASEBOARD_START_ACTIVITY"/>
                 <action android:name="com.semisky.action.MEDIA_LOAD_STATE_CHANGE"/>
+                <action android:name="com.semisky.IS_AVM"/>
             </intent-filter>
         </receiver>
 

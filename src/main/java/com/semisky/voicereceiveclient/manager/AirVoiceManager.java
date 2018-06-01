@@ -93,12 +93,12 @@ public class AirVoiceManager {
 
                 case "前除霜":
                     ACManager.getInstance().enableAirConditionerDefrost(DEFROST_MODE_FRONT, true);
-                    Log.d(TAG, "openAirMode: 前除霜");
+                    Log.d(TAG, "openAirMode: 打开前除霜");
                     break;
 
                 case "后除霜":
                     ACManager.getInstance().enableAirConditionerDefrost(DEFROST_MODE_REAR, true);
-                    Log.d(TAG, "openAirMode: 后除霜");
+                    Log.d(TAG, "openAirMode: 打开后除霜");
                     break;
 
                 default:
