@@ -9,6 +9,9 @@ import com.ximalaya.speechcontrol.SpeechControler;
 
 import cn.kuwo.autosdk.api.KWAPI;
 
+import static com.semisky.voicereceiveclient.constant.AppConstant.XMLYAppKey;
+import static com.semisky.voicereceiveclient.constant.AppConstant.XMLYSecret;
+
 /**
  * Created by chenhongrui on 2018/1/29
  * <p>
@@ -40,9 +43,7 @@ public class BaseApplication extends Application {
 
         //喜马拉雅
         controler = SpeechControler.getInstance(this);
-        controler.init("e0f26dd2f2406539c7c72417c3edb73c",
-                "0e71ddf22f3942b3160fa46615497c64",
-                "com.ximalaya.ting.android.car.xiaokangqiche");
+        controler.init(XMLYSecret, XMLYAppKey, getPackageName());
 
         VoiceReceiveClient testClient = new VoiceReceiveClient(this);
         PlatformHelp.getInstance().setPlatformClient(testClient);

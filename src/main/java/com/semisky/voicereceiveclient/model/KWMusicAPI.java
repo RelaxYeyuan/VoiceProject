@@ -99,10 +99,23 @@ public class KWMusicAPI {
         mKwapi.registerPlayerStatusListener(new OnPlayerStatusListener() {
 
             @Override
-            public void onPlayerStatus(PlayerStatus arg0, Music music) {
+            public void onPlayerStatus(PlayerStatus playerStatus, Music music) {
                 if (music != null) {
                     ICMManager.getInstance().setCurrentSourceName(music.name);
                     Log.d(TAG, "onPlayerStatus: " + music.name);
+                }
+
+                Log.d(TAG, "onPlayerStatus: " + playerStatus);
+
+                switch (playerStatus) {
+                    case PLAYING:
+                        ICMUtils.setCurrentPlayStatusTrue();
+                        break;
+
+                    case PAUSE:
+                    case STOP:
+                        ICMUtils.setCurrentPlayStatusFalse();
+                        break;
                 }
             }
         });

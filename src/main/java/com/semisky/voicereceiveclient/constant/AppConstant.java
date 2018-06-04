@@ -44,6 +44,9 @@ public class AppConstant {
     public static final String ACTION_START_VOICE = "com.semisky.broadcast.VOICE_START_ACTIVITY";
     public static final String START_VOICE_FLAG = "start_voice_flag";
 
+    public static final String XMLYSecret = "ff26b9d980267571270045294a702bd3";
+    public static final String XMLYAppKey = "0f726e39f019cb8a6b290eda22c599e7";
+
     public static final int RADIO_BINDER = 1;
     public static final int USB_MUSIC_BINDER = 2;
     public static final int BT_CALL_BINDER = 3;

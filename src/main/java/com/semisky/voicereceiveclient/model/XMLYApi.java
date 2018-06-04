@@ -44,31 +44,35 @@ public class XMLYApi {
         controler.addPlayerStatusListener(new IXmPlayerStatusListener() {
             @Override
             public void onPlayStart() {
-
+                Log.d(TAG, "onPlayStart: ");
+                ICMUtils.setCurrentPlayStatusTrue();
             }
 
             @Override
             public void onPlayPause() {
-
+                Log.d(TAG, "onPlayPause: ");
+                ICMUtils.setCurrentPlayStatusFalse();
             }
 
             @Override
             public void onPlayStop() {
-
+                Log.d(TAG, "onPlayStop: ");
+                ICMUtils.setCurrentPlayStatusFalse();
             }
 
             @Override
             public void onSoundPlayComplete() {
-
+                Log.d(TAG, "onSoundPlayComplete: ");
             }
 
             @Override
             public void onSoundPrepared() {
-
+                Log.d(TAG, "onSoundPrepared: ");
             }
 
             @Override
             public void onSoundSwitch(PlayableModel playableModel, PlayableModel curModel) {
+                Log.d(TAG, "onSoundSwitch: ");
                 if (curModel instanceof Track) {
                     String trackTitle = ((Track) curModel).getTrackTitle();
                     Log.d(TAG, "onSoundSwitch: " + trackTitle);
@@ -82,22 +86,18 @@ public class XMLYApi {
 
             @Override
             public void onBufferingStart() {
-
             }
 
             @Override
             public void onBufferingStop() {
-
             }
 
             @Override
             public void onBufferProgress(int i) {
-
             }
 
             @Override
             public void onPlayProgress(int i, int i1) {
-
             }
 
             @Override
