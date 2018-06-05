@@ -17,6 +17,7 @@ import static com.semisky.autoservice.manager.ACManager.SIDE_FL;
 import static com.semisky.autoservice.manager.ACManager.WIND_EXIT_MODE_FACE;
 import static com.semisky.autoservice.manager.ACManager.WIND_EXIT_MODE_FACE_FOOT;
 import static com.semisky.autoservice.manager.ACManager.WIND_EXIT_MODE_FOOT;
+import static com.semisky.autoservice.manager.ACManager.WIND_EXIT_MODE_FOOT_DEFROST;
 import static com.semisky.voicereceiveclient.constant.AppConstant.AIR_TYPE_FAIL;
 import static com.semisky.voicereceiveclient.constant.AppConstant.AIR_TYPE_SUCCESS;
 
@@ -75,7 +76,6 @@ public class AirVoiceManager {
 
     private int openAirMode(String mode, String temperature, String fanSpeed, String airflowDirection) {
         if (mode != null) {
-            Log.d(TAG, "openAirMode:mode " + mode);
             switch (mode) {
                 case "制冷":
                     ACManager.getInstance().setAirCoolOrHeatMode(CTRL_MODE_COOL);
@@ -107,6 +107,12 @@ public class AirVoiceManager {
                     Log.d(TAG, "openAirMode: 打开后除霜");
                     return AIR_TYPE_SUCCESS;
 
+                case "除霜":
+                    if (airflowDirection.equals("脚")) {
+                        ACManager.getInstance().setAirConditionerWindExitMode(WIND_EXIT_MODE_FOOT_DEFROST);
+                        Log.d(TAG, "openAirMode: 吹脚除霜");
+                    }
+                    return AIR_TYPE_SUCCESS;
                 default:
                     return AIR_TYPE_FAIL;
             }
@@ -116,6 +122,7 @@ public class AirVoiceManager {
         //{"airflow_direction":"面","device":"空调","operation":"SET","focus":"airControl","rawText":"打开空调吹面模式"}
         //{"airflow_direction":"吹面吹脚","operation":"SET","focus":"airControl","rawText":"打开吹面吹脚"}
         //{"airflow_direction":"脚","operation":"SET","focus":"airControl","rawText":"打开吹脚"}
+        //{"airflow_direction":"脚","mode":"除霜","operation":"SET","focus":"airControl","rawText":"打开吹脚除霜模式"}
         if (airflowDirection != null) {
             switch (airflowDirection) {
                 case "面":
