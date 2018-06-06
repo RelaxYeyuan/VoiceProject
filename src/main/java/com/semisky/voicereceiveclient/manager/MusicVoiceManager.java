@@ -236,7 +236,9 @@ public class MusicVoiceManager {
     }
 
     private boolean checkDisk() {
-        return ToolUtils.isSdOrUsbMounted(mContext, "/storage/udisk");
+        boolean isdOrUsbMounted = ToolUtils.isSdOrUsbMounted(mContext, "/storage/udisk");
+        Log.d(TAG, "checkDisk: " + isdOrUsbMounted);
+        return isdOrUsbMounted;
     }
 
     private boolean checkLoadData() {

@@ -32,7 +32,6 @@ public class ToolUtils {
      * @return
      */
     public static boolean isSdOrUsbMounted(Context context, String storagePath) {
-        Log.d("LauncherBusiness", "isSdOrUsbMounted() storagePath: " + storagePath);
         boolean isMounted = false;
         if (storagePath != null && new File(storagePath).exists()) {
             StorageManager sm = (StorageManager) context.getSystemService(Context.STORAGE_SERVICE);
