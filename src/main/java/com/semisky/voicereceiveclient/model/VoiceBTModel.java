@@ -124,14 +124,27 @@ public class VoiceBTModel {
         isRunningActivity = runningActivity;
     }
 
+    //多媒体是否正在加载数据
     private boolean isLoadData;
 
     public boolean isLoadData() {
-        Log.d(TAG, "isLoadData: "+isLoadData);
+        Log.d(TAG, "isLoadData: " + isLoadData);
         return isLoadData;
     }
 
     public void setLoadData(boolean loadData) {
         isLoadData = loadData;
+    }
+
+    //多媒体服务是否开启
+    private boolean isMediaService;
+
+    public boolean isMediaService() {
+        Log.d(TAG, "isMediaService: " + isMediaService);
+        return isMediaService;
+    }
+
+    public void setMediaService(boolean mediaService) {
+        isMediaService = mediaService;
     }
 }

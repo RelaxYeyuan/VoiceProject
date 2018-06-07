@@ -54,16 +54,13 @@ public class MusicVoiceManager {
             String source = musicEntity.getSource();
             String album = musicEntity.getAlbum();
             if (category != null && category.equals("音乐列表")) {
-                if (checkDisk()) {
-                    if (checkLoadData()) {
-                        //打开音乐列表
-                        AidlManager.getInstance().getUsbMusicListener().openMusicList();
-                        return AppConstant.MUSIC_TYPE_SUCCESS;
-                    } else {
-                        return AppConstant.MUSIC_TYPE_DISK_LOAD_DATA;
-                    }
+                int statue = checkMediaPlay();
+                if (statue == AppConstant.MUSIC_TYPE_SUCCESS) {
+                    //打开音乐列表
+                    AidlManager.getInstance().getUsbMusicListener().openMusicList();
+                    return statue;
                 } else {
-                    return AppConstant.MUSIC_TYPE_DISK_MISSING;
+                    return statue;
                 }
             }
 
@@ -83,9 +80,13 @@ public class MusicVoiceManager {
                 if (album != null) {
                     if (checkDisk()) {
                         if (checkLoadData()) {
-                            AidlManager.getInstance().getUsbMusicListener().playByAlbum(album);
-                            Log.d(TAG, "本地音乐专辑播放: ");
-                            return AppConstant.MUSIC_TYPE_SUCCESS;
+                            if (checkMediaService()) {
+                                AidlManager.getInstance().getUsbMusicListener().playByAlbum(album);
+                                Log.d(TAG, "本地音乐专辑播放: ");
+                                return AppConstant.MUSIC_TYPE_SUCCESS;
+                            } else {
+                                return AppConstant.MUSIC_TYPE_SERVICE_STATUS;
+                            }
                         } else {
                             return AppConstant.MUSIC_TYPE_DISK_LOAD_DATA;
                         }
@@ -98,6 +99,8 @@ public class MusicVoiceManager {
                             return AppConstant.MUSIC_TYPE_NOT_CONNECTED;
                         }
                     }
+
+
                 }
             }
 
@@ -159,9 +162,13 @@ public class MusicVoiceManager {
                     if (album != null) {
                         if (checkDisk()) {
                             if (checkLoadData()) {
-                                AidlManager.getInstance().getUsbMusicListener().playByAlbum(album);
-                                Log.d(TAG, "本地音乐专辑播放: ");
-                                return AppConstant.MUSIC_TYPE_SUCCESS;
+                                if (checkMediaService()) {
+                                    AidlManager.getInstance().getUsbMusicListener().playByAlbum(album);
+                                    Log.d(TAG, "本地音乐专辑播放: ");
+                                    return AppConstant.MUSIC_TYPE_SUCCESS;
+                                } else {
+                                    return AppConstant.MUSIC_TYPE_SERVICE_STATUS;
+                                }
                             } else {
                                 return AppConstant.MUSIC_TYPE_DISK_LOAD_DATA;
                             }
@@ -185,23 +192,27 @@ public class MusicVoiceManager {
                      */
                     if (checkDisk()) {
                         if (checkLoadData()) {
-                            if (song != null && artist != null) {//根据歌名加歌手播放
-                                AidlManager.getInstance().getUsbMusicListener().playByArtistAndSong(artist, song);
-                                type = "1";
-                                Log.d(TAG, "本地根据歌名加歌手播放: ");
-                            } else if (song != null) {//根据歌名播放
-                                AidlManager.getInstance().getUsbMusicListener().playBySong(song);
-                                type = "2";
-                                Log.d(TAG, "本地根据歌名播放: ");
-                            } else if (artist != null) {//根据歌手播放
-                                AidlManager.getInstance().getUsbMusicListener().playByArtist(artist);
-                                type = "3";
-                                Log.d(TAG, "本地根据歌手播放: ");
-                            } else {//没特定要求 打开USB音乐 随便听首歌
-                                AidlManager.getInstance().getUsbMusicListener().playResume();
-                                Log.d(TAG, "本地没特定要求音乐: ");
+                            if (checkMediaService()) {
+                                if (song != null && artist != null) {//根据歌名加歌手播放
+                                    AidlManager.getInstance().getUsbMusicListener().playByArtistAndSong(artist, song);
+                                    type = "1";
+                                    Log.d(TAG, "本地根据歌名加歌手播放: ");
+                                } else if (song != null) {//根据歌名播放
+                                    AidlManager.getInstance().getUsbMusicListener().playBySong(song);
+                                    type = "2";
+                                    Log.d(TAG, "本地根据歌名播放: ");
+                                } else if (artist != null) {//根据歌手播放
+                                    AidlManager.getInstance().getUsbMusicListener().playByArtist(artist);
+                                    type = "3";
+                                    Log.d(TAG, "本地根据歌手播放: ");
+                                } else {//没特定要求 打开USB音乐 随便听首歌
+                                    AidlManager.getInstance().getUsbMusicListener().playResume();
+                                    Log.d(TAG, "本地没特定要求音乐: ");
+                                }
+                                return AppConstant.MUSIC_TYPE_SUCCESS;
+                            } else {
+                                return AppConstant.MUSIC_TYPE_SERVICE_STATUS;
                             }
-                            return AppConstant.MUSIC_TYPE_SUCCESS;
                         } else {
                             return AppConstant.MUSIC_TYPE_DISK_LOAD_DATA;
                         }
@@ -245,6 +256,26 @@ public class MusicVoiceManager {
         return VoiceBTModel.getInstance().isLoadData();
     }
 
+    private boolean checkMediaService() {
+        return VoiceBTModel.getInstance().isMediaService();
+    }
+
+    private int checkMediaPlay() {
+        if (!checkDisk()) {
+            return AppConstant.MUSIC_TYPE_DISK_MISSING;
+        }
+
+        if (!checkLoadData()) {
+            return AppConstant.MUSIC_TYPE_DISK_LOAD_DATA;
+        }
+
+        if (!checkMediaService()) {
+            return AppConstant.MUSIC_TYPE_SERVICE_STATUS;
+        }
+
+        return AppConstant.MUSIC_TYPE_SUCCESS;
+    }
+
     private void startActivity(String packageName, String className) {
         Intent intent = new Intent();
         intent.setClassName(packageName, className);
@@ -255,21 +286,34 @@ public class MusicVoiceManager {
     private static String type;
 
     public static void setResultCode(int resultCode) {
-        if (resultCode == AppConstant.RESULT_FAIL) {
-            Log.d(TAG, "setResultCode: " + type);
-            switch (type) {
-                case "1":
-                    kwMusicAPI.playByArtistAndSong(artist, song);
+        Log.d(TAG, "setResultCode: " + type);
+        //判断是否网络连接
+        if (ToolUtils.isNetworkAvailable(mContext)) {
+            switch (resultCode) {
+                case AppConstant.RESULT_FAIL:
+                    switch (type) {
+                        case "1":
+                            kwMusicAPI.playByArtistAndSong(artist, song);
+                            break;
+                        case "2":
+                            kwMusicAPI.playBySong(song);
+                            break;
+                        case "3":
+                            kwMusicAPI.playByArtist(artist);
+                            break;
+                    }
                     break;
-                case "2":
-                    kwMusicAPI.playBySong(song);
+                case AppConstant.RESULT_SUCCESS:
+                    Log.d(TAG, "setResultCode: 本地音乐已处理");
                     break;
-                case "3":
-                    kwMusicAPI.playByArtist(artist);
+                case AppConstant.RESULT_ERROR:
+
                     break;
             }
         } else {
-            Log.d(TAG, "setResultCode: 本地音乐已处理");
+            kwMusicAPI.startApp();
+            AutoManager.getInstance().setAppStatus(AutoConstants.PackageName.CLASS_KUWO,
+                    mContext.getString(R.string.kw_music_name), AutoConstants.AppStatus.RUN_FOREGROUND);
         }
     }
 }

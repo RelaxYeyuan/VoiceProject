@@ -158,6 +158,10 @@ public class VoiceReceiveClient implements PlatformClientListener {
                         resultJson.put("status", "fail");
                         resultJson.put("message", "蓝牙电话未连接，请连接后重试");
                         return resultJson.toString();
+                    } else if (type == AppConstant.MUSIC_TYPE_SERVICE_STATUS) {
+                        resultJson.put("status", "fail");
+                        resultJson.put("message", "抱歉，多媒体未启动");
+                        return resultJson.toString();
                     }
                 } else if ("cmd".equals(action.getString("focus"))) {
                     CMDEntity cmdEntity = gson.fromJson(actionJson, CMDEntity.class);

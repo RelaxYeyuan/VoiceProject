@@ -49,6 +49,10 @@ public class VoiceProxyReceiver extends BroadcastReceiver {
     public static final String ACTION_START_BACK_CAR = "com.semisky.IS_AVM";
     public static final String START_BACK_CAR_FLAG = "isAVM";
 
+    // 音乐服务状态广播
+    private static final String ACTION_MUSIC_SERVICE_STATE_CHANGE = "com.semisky.broadcast.ACTION_MUSIC_SERVICE_STATE_CHANGE";
+    private static final String KEY_MUSIC_SERVICE_STATE = "state";// true ：表示音乐服务启动，false 表示音乐服务未启动。
+
     @Override
     public void onReceive(Context context, Intent intent) {
         String action = intent.getAction();
@@ -156,6 +160,15 @@ public class VoiceProxyReceiver extends BroadcastReceiver {
                 }
                 break;
 
+            case ACTION_MUSIC_SERVICE_STATE_CHANGE:
+                boolean isServiceStart = intent.getBooleanExtra(KEY_MUSIC_SERVICE_STATE, false);
+                Log.d(TAG, "ACTION_MUSIC_SERVICE_STATE_CHANGE: " + isServiceStart);
+                if (isServiceStart) {
+                    VoiceBTModel.getInstance().setMediaService(true);
+                } else {
+                    VoiceBTModel.getInstance().setMediaService(false);
+                }
+                break;
         }
     }
 }

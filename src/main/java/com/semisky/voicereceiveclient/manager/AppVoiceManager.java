@@ -330,13 +330,15 @@ public class AppVoiceManager {
                 return AppConstant.MUSIC_TYPE_SUCCESS;
             //进入app
             case "LAUNCH":
-                startActivity(PKG_RADIO, CLS_RADIO);
                 try {
                     AidlManager.getInstance().getRadioListener().openActivity();
                     AidlManager.getInstance().getRadioListener().Unmute();
                 } catch (RemoteException e) {
+                    startActivity(PKG_RADIO, CLS_RADIO);
                     e.printStackTrace();
                 }
+                startActivity(PKG_RADIO, CLS_RADIO);
+
                 return AppConstant.MUSIC_TYPE_SUCCESS;
             default:
                 return AppConstant.MUSIC_TYPE_FAIL;

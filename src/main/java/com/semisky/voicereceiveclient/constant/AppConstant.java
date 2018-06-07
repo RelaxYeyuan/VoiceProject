@@ -81,6 +81,7 @@ public class AppConstant {
     public static final int MUSIC_TYPE_DISK_MISSING = 3;
     public static final int MUSIC_TYPE_NOT_CONNECTED = 4;
     public static final int MUSIC_TYPE_DISK_LOAD_DATA = 5;
+    public static final int MUSIC_TYPE_SERVICE_STATUS = 6;
 
     //radio相关状态
     public static final int RADIO_TYPE_SUCCESS = 1;
@@ -100,7 +101,7 @@ public class AppConstant {
     public static final int CAR_TYPE_FAIL = 2;
 
     //BTMusic
-    public static final int BT_TYPE_NOT_CONNECTED = 6;
+    public static final int BT_TYPE_NOT_CONNECTED = 7;
 
     public class Numerical {
         public static final int FM_MAX_FREQ = 10800;
