@@ -20,7 +20,7 @@ public class VoiceWakeupScenes {
     /**
      * 通知语音助理，恢复之前的状态
      */
-    public static void wakeupVoice() {
+    public static void wakeupVoice(int statue) {
         if (PlatformService.platformCallback == null) {
             Log.e(TAG, "phoneStateChange: platformCallback == null");
             return;
@@ -28,6 +28,7 @@ public class VoiceWakeupScenes {
 
         try {
             PlatformService.platformCallback.systemStateChange(PlatformCode.STATE_SPEECHON);
+            VoiceStatueModel.getInstance().setWakeupVoice(statue);
             Log.d(TAG, "wakeupVoice: ");
         } catch (Exception e) {
             e.printStackTrace();
@@ -39,7 +40,7 @@ public class VoiceWakeupScenes {
     /**
      * 通知语音助理，释放录音通道，并且界面退出
      */
-    public static void closeVoice() {
+    public static void closeVoice(int statue) {
         if (PlatformService.platformCallback == null) {
             Log.e(TAG, "phoneStateChange: platformCallback == null");
             return;
@@ -47,6 +48,7 @@ public class VoiceWakeupScenes {
 
         try {
             PlatformService.platformCallback.systemStateChange(PlatformCode.STATE_SPEECHOFF);
+            VoiceStatueModel.getInstance().setCloseVoice(statue);
             Log.d(TAG, "closeVoice: ");
         } catch (Exception e) {
             e.printStackTrace();

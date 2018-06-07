@@ -29,6 +29,7 @@ import com.semisky.voicereceiveclient.manager.GPSManager;
 import com.semisky.voicereceiveclient.manager.MusicVoiceManager;
 import com.semisky.voicereceiveclient.manager.RadioVoiceManager;
 import com.semisky.voicereceiveclient.model.VoiceBTModel;
+import com.semisky.voicereceiveclient.model.VoiceStatueModel;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -210,7 +211,6 @@ public class VoiceReceiveClient implements PlatformClientListener {
         }
     }
 
-
     /**
      * 调用系统平台，请求其执行某个动作，或者语音助理自身状态的通知。例如：拨打电话、发送短信、告知系统语音助理在录音等。
      *
@@ -334,6 +334,10 @@ public class VoiceReceiveClient implements PlatformClientListener {
     @Override
     public int onRequestAudioFocus(int streamType, int nDuration) {
         Log.d(TAG, "onRequestAudioFocus: ");
+        int closeVoice = VoiceStatueModel.getInstance().getCloseVoice();
+        int wakeupVoice = VoiceStatueModel.getInstance().getWakeupVoice();
+        Log.d(TAG, "closeVoice: " + closeVoice);
+        Log.d(TAG, "wakeupVoice: " + wakeupVoice);
         // 这里使用的 android AudioFocus的音频协调机制
         com.semisky.autoservice.manager.AudioManager.getInstance().openStreamVolume(STREAM_IFLYTEK_VR);
         sendOpenVoiceBroadcast();
