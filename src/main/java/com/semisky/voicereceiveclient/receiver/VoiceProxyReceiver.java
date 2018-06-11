@@ -17,6 +17,9 @@ public class VoiceProxyReceiver extends BroadcastReceiver {
 
     private static final String TAG = "VoiceProxyReceiver";
 
+    private static final String BT_PHONE_CALLSTATE = "com.semisky.broadcast.BT_PHONE_CALLSTATE"; // 语音屏保广播
+    private static final String BT_PHONE_FLAG = "call_state_flag";//这个拨打的是true,挂断给你发的false.
+
     //蓝牙通话状态
     private static final String ACTION_CALL_STATE_CHANGED =
             "com.semisky.cx62.bluetooth.adapter.action.ACTION_CALL_STATE_CHANGED";
@@ -65,10 +68,9 @@ public class VoiceProxyReceiver extends BroadcastReceiver {
         d(TAG, "onReceive() action==>" + action);
         if (action == null) return;
         switch (action) {
-            case ACTION_CALL_STATE_CHANGED:
+            case BT_PHONE_CALLSTATE:
                 //true: 正在进行通话; false: 蓝牙通话结束
-                if (!intent.hasExtra(EXTRA_CALL_ACTIVE)) return;
-                boolean callState = intent.getBooleanExtra(EXTRA_CALL_ACTIVE, false);
+                boolean callState = intent.getBooleanExtra(BT_PHONE_FLAG, false);
                 int iCallState = callState ? 1 : 0;
                 d(TAG, "蓝牙电话:callState " + callState);
                 VoiceBTModel.getInstance().setCallState(iCallState);
