@@ -49,8 +49,6 @@ public class BaseApplication extends Application {
         PlatformHelp.getInstance().setPlatformClient(testClient);
         Log.d(TAG, "onCreate: setPlatformClient");
 
-        if (!VoiceKeyModel.getInstance(this).isRegister()) {
-            VoiceKeyModel.getInstance(this).registerOnKeyListener();
-        }
+        VoiceKeyModel.getInstance(this).registerOnKeyListener();
     }
 }

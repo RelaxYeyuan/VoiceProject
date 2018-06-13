@@ -80,9 +80,7 @@ public class VoiceProxyReceiver extends BroadcastReceiver {
                     VoiceKeyModel.getInstance(context).unregisterOnKeyListener();
                 } else {
                     VoiceWakeupScenes.wakeupVoice(VoiceStatueModel.BT_CALL);
-                    if (!VoiceKeyModel.getInstance(context).isRegister()) {
-                        VoiceKeyModel.getInstance(context).registerOnKeyListener();
-                    }
+                    VoiceKeyModel.getInstance(context).registerOnKeyListener();
                 }
                 break;
             case ACTION_CONNECTION_STATE_CHANGED:
@@ -108,9 +106,7 @@ public class VoiceProxyReceiver extends BroadcastReceiver {
                     VoiceKeyModel.getInstance(context).unregisterOnKeyListener();
                 } else {
                     VoiceWakeupScenes.wakeupVoice(VoiceStatueModel.CLOCK_SCREEN);
-                    if (!VoiceKeyModel.getInstance(context).isRegister()) {
-                        VoiceKeyModel.getInstance(context).registerOnKeyListener();
-                    }
+                    VoiceKeyModel.getInstance(context).registerOnKeyListener();
                 }
                 break;
 
@@ -123,9 +119,7 @@ public class VoiceProxyReceiver extends BroadcastReceiver {
                     VoiceKeyModel.getInstance(context).unregisterOnKeyListener();
                 } else {
                     VoiceWakeupScenes.wakeupVoice(VoiceStatueModel.BACKLIGHT_SCREEN);
-                    if (!VoiceKeyModel.getInstance(context).isRegister()) {
-                        VoiceKeyModel.getInstance(context).registerOnKeyListener();
-                    }
+                    VoiceKeyModel.getInstance(context).registerOnKeyListener();
                 }
                 break;
 
@@ -138,9 +132,7 @@ public class VoiceProxyReceiver extends BroadcastReceiver {
 //                    VoiceKeyModel.getInstance(context).unregisterOnKeyListener();
                 } else {
                     VoiceWakeupScenes.wakeupVoice(VoiceStatueModel.CARLIFE);
-//                    if (!VoiceKeyModel.getInstance(context).isRegister()) {
 //                        VoiceKeyModel.getInstance(context).registerOnKeyListener();
-//                    }
                 }
                 break;
 
@@ -163,9 +155,7 @@ public class VoiceProxyReceiver extends BroadcastReceiver {
             case ACTION_START_CLOSE_BACK_CAR:
                 Log.d(TAG, "ACTION_START_CLOSE_BACK_CAR: ");
                 VoiceWakeupScenes.wakeupVoice(VoiceStatueModel.BACK_CAR);
-                if (!VoiceKeyModel.getInstance(context).isRegister()) {
-                    VoiceKeyModel.getInstance(context).registerOnKeyListener();
-                }
+                VoiceKeyModel.getInstance(context).registerOnKeyListener();
                 break;
 
             case ACTION_MUSIC_SERVICE_STATE_CHANGE:

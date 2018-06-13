@@ -286,11 +286,11 @@ public class MusicVoiceManager {
     private static String type;
 
     public static void setResultCode(int resultCode) {
-        Log.d(TAG, "setResultCode: " + type);
+        Log.d(TAG, "setResultCode: " + resultCode);
         //判断是否网络连接
-        if (ToolUtils.isNetworkAvailable(mContext)) {
-            switch (resultCode) {
-                case AppConstant.RESULT_FAIL:
+        switch (resultCode) {
+            case AppConstant.RESULT_FAIL:
+                if (ToolUtils.isNetworkAvailable(mContext)) {
                     switch (type) {
                         case "1":
                             kwMusicAPI.playByArtistAndSong(artist, song);
@@ -302,18 +302,20 @@ public class MusicVoiceManager {
                             kwMusicAPI.playByArtist(artist);
                             break;
                     }
-                    break;
-                case AppConstant.RESULT_SUCCESS:
-                    Log.d(TAG, "setResultCode: 本地音乐已处理");
-                    break;
-                case AppConstant.RESULT_ERROR:
-
-                    break;
-            }
-        } else {
-            kwMusicAPI.startApp();
-            AutoManager.getInstance().setAppStatus(AutoConstants.PackageName.CLASS_KUWO,
-                    mContext.getString(R.string.kw_music_name), AutoConstants.AppStatus.RUN_FOREGROUND);
+                } else {
+                    Log.d(TAG, "setResultCode: 网络未连接");
+                    kwMusicAPI.startApp();
+                    AutoManager.getInstance().setAppStatus(AutoConstants.PackageName.CLASS_KUWO,
+                            mContext.getString(R.string.kw_music_name), AutoConstants.AppStatus.RUN_FOREGROUND);
+                }
+                break;
+            case AppConstant.RESULT_SUCCESS:
+                Log.d(TAG, "setResultCode: 本地音乐已处理");
+                break;
+            case AppConstant.RESULT_ERROR:
+                Log.d(TAG, "setResultCode: RESULT_ERROR");
+                break;
         }
+
     }
 }

@@ -55,11 +55,15 @@ public class VoiceKeyModel {
                 switch (keyCode) {
                     case KeyManager.KEYCODE_VR:
                         if (action == 0) {
-                            if (checkVoiceActivity()) return;
+                            if (checkVoiceActivity()) {
+                                Log.d(TAG, "onKey: 按键退出语音页面");
+                                return;
+                            }
                             Intent intent = new Intent();
                             intent.setClassName(PKG_VOICE, CLS_VOICE);
                             intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                             mContext.startActivity(intent);
+                            Log.d(TAG, "onKey: 按键进入语音页面");
                         }
                         break;
                 }
@@ -69,22 +73,10 @@ public class VoiceKeyModel {
 
     public void registerOnKeyListener() {
         KeyManager.getInstance().setOnKeyListener(iKeyListener);
-        setRegister(true);
     }
 
     public void unregisterOnKeyListener() {
         KeyManager.getInstance().unregisterOnKeyListener(iKeyListener);
-        setRegister(false);
-    }
-
-    private boolean isRegister;
-
-    public boolean isRegister() {
-        return isRegister;
-    }
-
-    private void setRegister(boolean register) {
-        isRegister = register;
     }
 
     /**

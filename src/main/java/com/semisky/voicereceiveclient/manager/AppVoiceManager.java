@@ -93,7 +93,11 @@ public class AppVoiceManager {
                 return mediaOperation(name, operation);
             case "音乐":
                 return mediaOperation(name, operation);
+            case "本地视频":
+                return mediaOperation(name, operation);
             case "图片":
+                return pictureOperation(name, operation);
+            case "本地图片":
                 return pictureOperation(name, operation);
             case "图片列表":
                 return mediaOperation(name, operation);
@@ -346,6 +350,7 @@ public class AppVoiceManager {
     }
 
     //{"name":"蓝牙","operation":"EXIT","focus":"app","rawText":"关闭蓝牙"}
+    //{"name":"蓝牙","operation":"EXIT","focus":"app","rawText":"停止蓝牙音乐"}
     private int btCallOperation(String operation) {
         try {
             switch (operation) {
@@ -483,9 +488,9 @@ public class AppVoiceManager {
             int currentAudioType = AudioManager.getInstance().getCurrentAudioType();
             Log.d(TAG, "muteApp: " + currentAudioType);
             switch (currentAudioType) {
-                case AudioManager.RADIO:
-                    AidlManager.getInstance().getRadioListener().mute();
-                    break;
+//                case AudioManager.RADIO:
+//                    AidlManager.getInstance().getRadioListener().mute();
+//                    break;
                 case AudioManager.STREAM_BT_MUSIC:
                     AidlManager.getInstance().getBTMusicListener().pause();
                     break;
