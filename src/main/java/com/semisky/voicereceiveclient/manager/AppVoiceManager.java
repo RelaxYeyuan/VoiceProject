@@ -87,6 +87,10 @@ public class AppVoiceManager {
                 return btCallOperation(operation);
             case "通讯录":
                 return openAddressBook(operation);
+            case "电话本":
+                return openAddressBook(operation);
+            case "电话簿":
+                return openAddressBook(operation);
             case "设置":
                 return setOperation(operation);
             case "视频":
@@ -380,11 +384,24 @@ public class AppVoiceManager {
         return AppConstant.MUSIC_TYPE_FAIL;
     }
 
+    /**
+     * {"name":"通讯录","operation":"LAUNCH","focus":"app","rawText":"打开通讯录"}
+     * {"name":"通讯录","operation":"QUERY","focus":"app","rawText":"查看通讯录"}
+     * {"name":"电话本","operation":"LAUNCH","focus":"app","rawText":"打开电话本"}
+     * {"name":"电话本","operation":"QUERY","focus":"app","rawText":"查看电话本"}
+     * {"name":"电话簿","operation":"LAUNCH","focus":"app","rawText":"打开电话簿"}
+     * {"name":"电话簿","operation":"QUERY","focus":"app","rawText":"查看电话簿"}
+     * {"name":"通讯录","operation":"LAUNCH","focus":"app","rawText":"打开联系人"}
+     * {"name":"通讯录","operation":"LAUNCH","focus":"app","rawText":"查看联系人"}
+     */
     private int openAddressBook(String operation) {
         try {
             switch (operation) {
                 //打开通讯录 4
                 case "LAUNCH":
+                    openBTCallConnection(4);
+                    return AppConstant.MUSIC_TYPE_SUCCESS;
+                case "QUERY":
                     openBTCallConnection(4);
                     return AppConstant.MUSIC_TYPE_SUCCESS;
                 default:
