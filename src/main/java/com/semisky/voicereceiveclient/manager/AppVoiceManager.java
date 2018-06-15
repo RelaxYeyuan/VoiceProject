@@ -288,8 +288,9 @@ public class AppVoiceManager {
                     AidlManager.getInstance().getUsbMusicListener().play();
                 } catch (RemoteException e) {
                     e.printStackTrace();
+                } finally {
+                    startActivity(PKG_MEDIA, CLS_MEDIA_MUSIC);
                 }
-                startActivity(PKG_MEDIA, CLS_MEDIA_MUSIC);
                 return AppConstant.MUSIC_TYPE_SUCCESS;
             case "图片":
                 startActivity(PKG_MEDIA, CLS_MEDIA_PICTURE);
@@ -342,10 +343,10 @@ public class AppVoiceManager {
                     AidlManager.getInstance().getRadioListener().openActivity();
                     AidlManager.getInstance().getRadioListener().Unmute();
                 } catch (RemoteException e) {
-                    startActivity(PKG_RADIO, CLS_RADIO);
                     e.printStackTrace();
+                } finally {
+                    startActivity(PKG_RADIO, CLS_RADIO);
                 }
-                startActivity(PKG_RADIO, CLS_RADIO);
 
                 return AppConstant.MUSIC_TYPE_SUCCESS;
             default:
