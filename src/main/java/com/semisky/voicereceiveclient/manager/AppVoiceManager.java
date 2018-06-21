@@ -361,14 +361,10 @@ public class AppVoiceManager {
             switch (operation) {
                 //断开蓝牙连接
                 case "EXIT":
-                    if (VoiceBTModel.getInstance().isConnectionState()) {
-                        AidlManager.getInstance().getBTCallListener().cutBTCallConnect();
-                        Log.d(TAG, "btCallOperation: cutBTCallConnect");
-                        return AppConstant.MUSIC_TYPE_SUCCESS;
-                    } else {
-                        return AppConstant.BT_TYPE_NOT_CONNECTED;
-                    }
-                    //打开蓝牙连接
+                    AidlManager.getInstance().getBTCallListener().cutBTCallConnect();
+                    Log.d(TAG, "btCallOperation: cutBTCallConnect");
+                    return AppConstant.MUSIC_TYPE_SUCCESS;
+                //打开蓝牙连接
                 case "LAUNCH":
                     linkBTConnection();
                     return AppConstant.MUSIC_TYPE_SUCCESS;
