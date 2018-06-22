@@ -502,9 +502,9 @@ public class AppVoiceManager {
             int currentAudioType = AudioManager.getInstance().getCurrentAudioType();
             Log.d(TAG, "muteApp: " + currentAudioType);
             switch (currentAudioType) {
-//                case AudioManager.RADIO:
-//                    AidlManager.getInstance().getRadioListener().mute();
-//                    break;
+                case AudioManager.RADIO:
+                    AidlManager.getInstance().getRadioListener().mute();
+                    break;
                 case AudioManager.STREAM_BT_MUSIC:
                     AidlManager.getInstance().getBTMusicListener().pause();
                     break;
