@@ -340,7 +340,6 @@ public class AppVoiceManager {
             //进入app
             case "LAUNCH":
                 try {
-                    AidlManager.getInstance().getRadioListener().openActivity();
                     AidlManager.getInstance().getRadioListener().Unmute();
                 } catch (RemoteException e) {
                     e.printStackTrace();
