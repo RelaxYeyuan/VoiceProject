@@ -6,6 +6,10 @@ import android.util.Log;
 
 import com.semisky.voicereceiveclient.jsonEntity.CallEntity;
 
+import static com.semisky.voicereceiveclient.constant.AppConstant.ACTION_CALL_NUMBER;
+import static com.semisky.voicereceiveclient.constant.AppConstant.ACTION_CALL_REDIAL_NUMBER;
+import static com.semisky.voicereceiveclient.constant.AppConstant.CALL_NUMBER;
+
 /**
  * Created by chenhongrui on 2018/3/8
  * <p>
@@ -40,9 +44,7 @@ public class BTCallVoiceManager {
 
     private void sendBroadcastForCall(String param1) {
         Log.d(TAG, "sendBroadcastForCall: ");
-        String ACTION_CALL = "com.semisky.cx62.ACTION_CALL_BY_NUMBER";
-        String CALL_NUMBER = "CALL_NUMBER";
-        Intent intent = new Intent(ACTION_CALL);
+        Intent intent = new Intent(ACTION_CALL_NUMBER);
         intent.putExtra(CALL_NUMBER, param1);
         mContext.sendBroadcast(intent);
     }
@@ -52,8 +54,7 @@ public class BTCallVoiceManager {
      */
     void redialNumber() {
         Log.d(TAG, "redialNumber: ");
-        String ACTION_CALL = "com.semisky.cx62.ACTION_CALL_REDIAL_NUMBER";
-        Intent intent = new Intent(ACTION_CALL);
+        Intent intent = new Intent(ACTION_CALL_REDIAL_NUMBER);
         mContext.sendBroadcast(intent);
     }
 }
