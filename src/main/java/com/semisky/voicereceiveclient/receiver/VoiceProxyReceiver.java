@@ -20,12 +20,6 @@ public class VoiceProxyReceiver extends BroadcastReceiver {
     private static final String BT_PHONE_CALLSTATE = "com.semisky.broadcast.BT_PHONE_CALLSTATE"; // 语音屏保广播
     private static final String BT_PHONE_FLAG = "call_state_flag";//这个拨打的是true,挂断给你发的false.
 
-    //蓝牙通话状态
-    private static final String ACTION_CALL_STATE_CHANGED =
-            "com.semisky.cx62.bluetooth.adapter.action.ACTION_CALL_STATE_CHANGED";
-    private static final String EXTRA_CALL_ACTIVE =
-            "com.semisky.cx62.bluetooth.adapter.extra.EXTRA_CALL_ACTIVE";
-
     //蓝牙开关状态
     private static final String ACTION_STATE_CHANGED =
             "com.semisky.cx62.bluetooth.adapter.action.STATE_CHANGED";
