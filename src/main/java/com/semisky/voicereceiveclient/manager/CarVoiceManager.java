@@ -121,7 +121,7 @@ public class CarVoiceManager {
             Log.d(TAG, "setCarWindow: " + type);
             switch (type) {
                 case 0:
-                    CarCtrlManager.getInstance().setAllSideWindows(true);
+                    CarCtrlManager.getInstance().setAllSideWindows(false);
                     break;
                 case 1:
                     CarCtrlManager.getInstance().setSideWindow(POSITION_FL, STATUS_CLOSE);
