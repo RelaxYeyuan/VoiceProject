@@ -23,6 +23,8 @@ public class VoiceStatueModel {
     public static final int CARLIFE = 4;
     public static final int BACK_CAR = 5;
 
+    public static final int PRESS_KEY = 6;
+
     public static VoiceStatueModel getInstance() {
         if (INSTANCE == null) {
             synchronized (VoiceStatueModel.class) {

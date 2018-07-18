@@ -59,6 +59,7 @@ public class VoiceKeyModel {
                                 Log.d(TAG, "onKey: 按键退出语音页面");
                                 return;
                             }
+                            VoiceWakeupScenes.wakeupVoice(VoiceStatueModel.PRESS_KEY);
                             Intent intent = new Intent();
                             intent.setClassName(PKG_VOICE, CLS_VOICE);
                             intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
