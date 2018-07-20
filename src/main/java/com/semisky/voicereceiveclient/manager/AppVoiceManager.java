@@ -2,7 +2,6 @@ package com.semisky.voicereceiveclient.manager;
 
 import android.content.Context;
 import android.content.Intent;
-import android.net.wifi.WifiManager;
 import android.os.RemoteException;
 import android.util.Log;
 
@@ -536,32 +535,38 @@ public class AppVoiceManager {
         }
     }
 
-    private WifiManager mWifiManager;
+//    private WifiManager mWifiManager;
 
     private void openWifiFunction() {
-        if (mWifiManager == null) {
-            mWifiManager = (WifiManager) mContext.getApplicationContext().getSystemService(Context.WIFI_SERVICE);
-        }
+//        if (mWifiManager == null) {
+//            mWifiManager = (WifiManager) mContext.getApplicationContext().getSystemService(Context.WIFI_SERVICE);
+//        }
+//
+//        if (mWifiManager != null && !mWifiManager.isWifiEnabled()) {
+//            mWifiManager.setWifiEnabled(true);
+//        }
+//
+//        Intent intent = new Intent();
+//        intent.putExtra("from", 1);
+//        intent.setClassName(PKG_SETTINGS, CLS_SETTINGS);
+//        intent.setFlags(FLAG_ACTIVITY_NEW_TASK);
+//        mContext.startActivity(intent);
+//
+//        Log.d(TAG, "openWifiFunction: startActivity");
 
-        if (mWifiManager != null && !mWifiManager.isWifiEnabled()) {
-            mWifiManager.setWifiEnabled(true);
-        }
-
-        Intent intent = new Intent();
-        intent.putExtra("from", 1);
-        intent.setClassName(PKG_SETTINGS, CLS_SETTINGS);
-        intent.setFlags(FLAG_ACTIVITY_NEW_TASK);
-        mContext.startActivity(intent);
+        AutoManager.getInstance().setWifiState(true);
     }
 
     private void closeWifiFunction() {
-        if (mWifiManager == null) {
-            mWifiManager = (WifiManager) mContext.getApplicationContext().getSystemService(Context.WIFI_SERVICE);
-        }
+//        if (mWifiManager == null) {
+//            mWifiManager = (WifiManager) mContext.getApplicationContext().getSystemService(Context.WIFI_SERVICE);
+//        }
+//
+//        if (mWifiManager != null && mWifiManager.isWifiEnabled()) {
+//            mWifiManager.setWifiEnabled(false);
+//        }
 
-        if (mWifiManager != null && mWifiManager.isWifiEnabled()) {
-            mWifiManager.setWifiEnabled(false);
-        }
+        AutoManager.getInstance().setWifiState(false);
     }
 
 }
