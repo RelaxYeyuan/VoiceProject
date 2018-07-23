@@ -54,7 +54,10 @@ public class VoiceProxyReceiver extends BroadcastReceiver {
 
     // 音乐服务状态广播
     private static final String ACTION_MUSIC_SERVICE_STATE_CHANGE = "com.semisky.broadcast.ACTION_MUSIC_SERVICE_STATE_CHANGE";
-    private static final String KEY_MUSIC_SERVICE_STATE = "state";// true ：表示音乐服务启动，false 表示音乐服务未启动。
+    private static final String KEY_MUSIC_SERVICE_STATE = "state";// true ：表示音乐服务启动，false 表示音乐服务未启动。]
+
+    private static final String ACTION_POWER_MODE_CHANGE = "com.semisky.broadcast.POWERMODE.CHANGED";
+    private static final String POWER_MODE_EXTRA = "Mode";
 
     @Override
     public void onReceive(Context context, Intent intent) {
@@ -159,6 +162,13 @@ public class VoiceProxyReceiver extends BroadcastReceiver {
                     VoiceBTModel.getInstance().setMediaService(true);
                 } else {
                     VoiceBTModel.getInstance().setMediaService(false);
+                }
+                break;
+
+            case ACTION_POWER_MODE_CHANGE:
+                int intExtra = intent.getIntExtra(POWER_MODE_EXTRA, 3);
+                if (intExtra == 3) {
+                    VoiceWakeupScenes.closeVoiceActivity();
                 }
                 break;
         }

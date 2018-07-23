@@ -106,6 +106,8 @@ public class AppVoiceManager {
                 return mediaOperation(name, operation);
             case "导航":
                 return naviOperation(operation);
+            case "地图":
+                return naviOperation(operation);
             case "空调":
                 return airOperation(operation);
             case "网络音乐"://{"name":"网络音乐","operation":"LAUNCH","focus":"app","rawText":"打开网络音乐"}
