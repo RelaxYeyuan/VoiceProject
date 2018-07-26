@@ -14,6 +14,9 @@ public class BinderPoolService extends Service {
 
     private IBinder iBinder = new BinderPoolImpl();
 
+    private XMLYApi xmlyApi;
+    private KWMusicAPI mKwapi;
+
     public BinderPoolService() {
     }
 
@@ -23,10 +26,10 @@ public class BinderPoolService extends Service {
 
         Log.d(TAG, "onCreate: ");
 
-        KWMusicAPI mKwapi = new KWMusicAPI();
+        mKwapi = new KWMusicAPI();
         mKwapi.registerPlayerStatusListener();
 
-        XMLYApi xmlyApi = new XMLYApi(this);
+        xmlyApi = new XMLYApi(this);
         xmlyApi.addPlayerStatusListener();
 //
 //        VoiceBTModel.getInstance().setOnBtStateChangeListener(new OnBtStateChangeListener() {
@@ -67,6 +70,21 @@ public class BinderPoolService extends Service {
     public IBinder onBind(Intent intent) {
         Log.d(TAG, "onBind: 返回IBinder对象" + iBinder);
         return iBinder;
+    }
+
+    @Override
+    public int onStartCommand(Intent intent, int flags, int startId) {
+        if (intent != null) {
+            int type = intent.getIntExtra("FINISH_OTHER_APP", 1);
+            Log.d(TAG, "onStartCommand: " + type);
+            if (type == 1) {
+                mKwapi.exitApp();
+                xmlyApi.exitApp();
+            }
+        }
+
+
+        return super.onStartCommand(intent, flags, startId);
     }
 
     @Override
