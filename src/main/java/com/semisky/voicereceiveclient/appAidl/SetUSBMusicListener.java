@@ -23,6 +23,6 @@ public class SetUSBMusicListener extends IUSBMusicPlay.Stub {
 
     @Override
     public void resultCode(int code) throws RemoteException {
-        MusicVoiceManager.setResultCode(code);
+        MusicVoiceManager.getInstance().setResultCode(code);
     }
 }

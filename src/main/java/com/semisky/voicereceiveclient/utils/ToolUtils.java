@@ -9,6 +9,8 @@ import android.os.Environment;
 import android.os.storage.StorageManager;
 import android.util.Log;
 
+import com.semisky.voicereceiveclient.BaseApplication;
+
 import java.io.File;
 import java.lang.reflect.Method;
 
@@ -52,15 +54,15 @@ public class ToolUtils {
     /**
      * 判断网络情况
      *
-     * @param context 上下文
      * @return false 表示没有网络 true 表示有网络
      */
-    public static boolean isNetworkAvailable(Context context) {
+    public static boolean isNetworkAvailable() {
         // 获得网络状态管理器
-        ConnectivityManager connectivityManager = (ConnectivityManager) context
+        ConnectivityManager connectivityManager = (ConnectivityManager) BaseApplication.getContext()
                 .getSystemService(Context.CONNECTIVITY_SERVICE);
 
         if (connectivityManager == null) {
+            Log.d(TAG, "isNetworkAvailable:connectivityManager null ");
             return false;
         } else {
             // 建立网络数组

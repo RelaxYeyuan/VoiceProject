@@ -67,7 +67,7 @@ public class VoiceReceiveClient implements PlatformClientListener {
         audioManager = (AudioManager) context.getSystemService(Context.AUDIO_SERVICE);
         radioVoiceManager = new RadioVoiceManager();
         appManager = new AppVoiceManager();
-        musicVoiceManager = new MusicVoiceManager(mContext);
+        musicVoiceManager = MusicVoiceManager.getInstance();
         cmdVoiceManager = new CMDVoiceManager();
         airVoiceManager = new AirVoiceManager();
         carVoiceManager = new CarVoiceManager();

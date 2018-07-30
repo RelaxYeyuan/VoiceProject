@@ -20,19 +20,21 @@ public class VoiceWakeupScenes {
     /**
      * 通知语音助理，恢复之前的状态
      */
-    public static void wakeupVoice(int statue) {
+    public static boolean wakeupVoice(int statue) {
         if (PlatformService.platformCallback == null) {
             Log.e(TAG, "phoneStateChange: platformCallback == null");
-            return;
+            return false;
         }
 
         try {
             PlatformService.platformCallback.systemStateChange(PlatformCode.STATE_SPEECHON);
             VoiceStatueModel.getInstance().setWakeupVoice(statue);
             Log.d(TAG, "wakeupVoice: ");
+            return true;
         } catch (Exception e) {
             e.printStackTrace();
             Log.e(TAG, "wakeupVoice: " + e.getLocalizedMessage());
+            return false;
         }
 
     }
@@ -40,19 +42,21 @@ public class VoiceWakeupScenes {
     /**
      * 通知语音助理，释放录音通道，并且界面退出
      */
-    public static void closeVoice(int statue) {
+    public static boolean closeVoice(int statue) {
         if (PlatformService.platformCallback == null) {
             Log.e(TAG, "phoneStateChange: platformCallback == null");
-            return;
+            return false;
         }
 
         try {
             PlatformService.platformCallback.systemStateChange(PlatformCode.STATE_SPEECHOFF);
             VoiceStatueModel.getInstance().setCloseVoice(statue);
             Log.d(TAG, "closeVoice: ");
+            return true;
         } catch (Exception e) {
             e.printStackTrace();
             Log.e(TAG, "closeVoice: " + e.getLocalizedMessage());
+            return false;
         }
     }
 

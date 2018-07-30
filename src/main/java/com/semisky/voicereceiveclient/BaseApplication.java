@@ -1,6 +1,7 @@
 package com.semisky.voicereceiveclient;
 
 import android.app.Application;
+import android.content.Context;
 import android.util.Log;
 
 import com.iflytek.platformservice.PlatformHelp;
@@ -27,15 +28,12 @@ public class BaseApplication extends Application {
     public KWAPI mKwapi;
     public SpeechControler controler;
 
-    private static BaseApplication mApp;
-
-    public static synchronized BaseApplication getInstance() {
-        return mApp;
-    }
+    private static Context mContext;
 
     @Override
     public void onCreate() {
         super.onCreate();
+        mContext = this.getApplicationContext();
         //给助理传递 实现 PlatformClientListener 接口的对象
         //Application启动的时候，必须给NavigationService.naviClient赋值
         //酷我实例
@@ -50,5 +48,9 @@ public class BaseApplication extends Application {
         Log.d(TAG, "onCreate: setPlatformClient");
 
         VoiceKeyModel.getInstance(this).registerOnKeyListener();
+    }
+
+    public static Context getContext() {
+        return mContext;
     }
 }

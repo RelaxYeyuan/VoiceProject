@@ -83,6 +83,6 @@ public class MainActivity extends Activity {
     }
 
     public void isNetwork(View view) {
-        Log.d(TAG, "isNetwork: " + isNetworkAvailable(this));
+        Log.d(TAG, "isNetwork: " + isNetworkAvailable());
     }
 }

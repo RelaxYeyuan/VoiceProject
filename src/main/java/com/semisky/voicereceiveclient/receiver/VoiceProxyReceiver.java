@@ -38,8 +38,13 @@ public class VoiceProxyReceiver extends BroadcastReceiver {
     private static final String ACTION_START_BASEBOARD = "com.semisky.broadcast.BASEBOARD_START_ACTIVITY";
     private static final String START_BASEBOARD_FLAG = "start_baseboard_flag";
 
+    //进入carlife语音
     private static final String ACTION_CARLIFE_VOICE = "com.semisky.broadcast.CARLIFE_VOICE";
     private static final String START_CARLIFE_FLAG = "start_carlife_voice_flag";
+
+    //进入carlife
+    private static final String ACTION_CARLIFE_VIEW = "com.semisky.broadcast.CARLIFE_VIEW";
+    private static final String START_CARLIFE_VIEW_FLAG = "start_carlife_view_flag";
 
     private static final String ACTION_LOAD_DATA = "com.semisky.action.MEDIA_LOAD_STATE_CHANGE";
     private static final String START_LOAD_DATA_FLAG = "state";
@@ -62,8 +67,8 @@ public class VoiceProxyReceiver extends BroadcastReceiver {
     @Override
     public void onReceive(Context context, Intent intent) {
         String action = intent.getAction();
-        d(TAG, "onReceive() action==>" + action);
         if (action == null) return;
+        d(TAG, "onReceive() action==>" + action);
         switch (action) {
             case BT_PHONE_CALLSTATE:
                 //true: 正在进行通话; false: 蓝牙通话结束
@@ -120,16 +125,26 @@ public class VoiceProxyReceiver extends BroadcastReceiver {
                 }
                 break;
 
-            case ACTION_CARLIFE_VOICE:
-                boolean carlifeVoiceStatus = intent.getBooleanExtra(START_CARLIFE_FLAG, false);
-                Log.d(TAG, "ACTION_CARLIFE_VOICE:carlifeVoiceStatus " + carlifeVoiceStatus);
-                if (carlifeVoiceStatus) {
-                    VoiceWakeupScenes.closeVoice(VoiceStatueModel.CARLIFE);
-                    //bug 2321 2006
+//            case ACTION_CARLIFE_VOICE:
+//                boolean carlifeVoiceStatus = intent.getBooleanExtra(START_CARLIFE_FLAG, false);
+//                Log.d(TAG, "ACTION_CARLIFE_VOICE:carlifeVoiceStatus " + carlifeVoiceStatus);
+//                if (carlifeVoiceStatus) {
+//                    VoiceWakeupScenes.closeVoice(VoiceStatueModel.CARLIFE);
+////                bug 2321 2006
 //                    VoiceKeyModel.getInstance(context).unregisterOnKeyListener();
+//                } else {
+//                    VoiceWakeupScenes.wakeupVoice(VoiceStatueModel.CARLIFE);
+//                    VoiceKeyModel.getInstance(context).registerOnKeyListener();
+//                }
+//                break;
+
+            case ACTION_CARLIFE_VIEW:
+                boolean carlifeViewStatus = intent.getBooleanExtra(START_CARLIFE_VIEW_FLAG, false);
+                Log.d(TAG, "ACTION_CARLIFE_VIEW:carlifeViewStatus " + carlifeViewStatus);
+                if (carlifeViewStatus) {
+                    VoiceWakeupScenes.closeVoice(VoiceStatueModel.CARLIFE);
                 } else {
                     VoiceWakeupScenes.wakeupVoice(VoiceStatueModel.CARLIFE);
-//                        VoiceKeyModel.getInstance(context).registerOnKeyListener();
                 }
                 break;
 

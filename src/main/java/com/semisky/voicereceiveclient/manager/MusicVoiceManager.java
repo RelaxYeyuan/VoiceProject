@@ -1,11 +1,11 @@
 package com.semisky.voicereceiveclient.manager;
 
-import android.content.Context;
 import android.content.Intent;
 import android.util.Log;
 
 import com.semisky.autoservice.manager.AutoConstants;
 import com.semisky.autoservice.manager.AutoManager;
+import com.semisky.voicereceiveclient.BaseApplication;
 import com.semisky.voicereceiveclient.R;
 import com.semisky.voicereceiveclient.appAidl.AidlManager;
 import com.semisky.voicereceiveclient.constant.AppConstant;
@@ -31,14 +31,20 @@ import static com.semisky.voicereceiveclient.constant.AppConstant.PKG_MEDIA;
 public class MusicVoiceManager {
 
     private static final String TAG = "MusicVoiceManager";
-    private static Context mContext;
     private static KWMusicAPI kwMusicAPI;
     private static String song;
     private static String artist;
 
-    public MusicVoiceManager(Context context) {
+    private MusicVoiceManager() {
         kwMusicAPI = new KWMusicAPI();
-        mContext = context;
+    }
+
+    private static class SingletonHolder {
+        private static final MusicVoiceManager INSTANCE = new MusicVoiceManager();
+    }
+
+    public static MusicVoiceManager getInstance() {
+        return SingletonHolder.INSTANCE;
     }
 
     /**
@@ -67,7 +73,7 @@ public class MusicVoiceManager {
             //{"category":"我的收藏","operation":"PLAY","focus":"music","rawText":"播放收藏的歌曲"}
             //{"category":"我的收藏","operation":"PLAY","focus":"music","rawText":"打开我的收藏"}
             if (category != null && category.equals("我的收藏")) {
-                if (ToolUtils.isNetworkAvailable(mContext)) {
+                if (ToolUtils.isNetworkAvailable()) {
                     Log.d(TAG, "setActionJson: 我的收藏");
                     return AppConstant.MUSIC_TYPE_FAIL;
                 } else {
@@ -92,7 +98,7 @@ public class MusicVoiceManager {
                         }
                     } else {
                         //判断是否网络连接
-                        if (ToolUtils.isNetworkAvailable(mContext)) {
+                        if (ToolUtils.isNetworkAvailable()) {
                             kwMusicAPI.playByAlbum(album);
                             return AppConstant.MUSIC_TYPE_SUCCESS;
                         } else {
@@ -135,7 +141,8 @@ public class MusicVoiceManager {
                             case "网络":
                                 kwMusicAPI.startApp();
                                 AutoManager.getInstance().setAppStatus(AutoConstants.PackageName.CLASS_KUWO,
-                                        mContext.getString(R.string.kw_music_name), AutoConstants.AppStatus.RUN_FOREGROUND);
+                                        BaseApplication.getContext().getString(R.string.kw_music_name),
+                                        AutoConstants.AppStatus.RUN_FOREGROUND);
                                 return AppConstant.MUSIC_TYPE_SUCCESS;
                             case "usb":
                                 if (checkDisk()) {
@@ -174,7 +181,7 @@ public class MusicVoiceManager {
                             }
                         } else {
                             //判断是否网络连接
-                            if (ToolUtils.isNetworkAvailable(mContext)) {
+                            if (ToolUtils.isNetworkAvailable()) {
                                 Log.d(TAG, "网络音乐专辑播放: ");
                                 kwMusicAPI.playByAlbum(album);
                                 return AppConstant.MUSIC_TYPE_SUCCESS;
@@ -218,7 +225,7 @@ public class MusicVoiceManager {
                         }
                     } else {
                         //判断是否网络连接
-                        if (ToolUtils.isNetworkAvailable(mContext)) {
+                        if (ToolUtils.isNetworkAvailable()) {
                             if (song != null && artist != null) {//根据歌名加歌手播放
                                 kwMusicAPI.playByArtistAndSong(artist, song);
                                 Log.d(TAG, "网络根据歌名加歌手播放: ");
@@ -247,7 +254,7 @@ public class MusicVoiceManager {
     }
 
     private boolean checkDisk() {
-        boolean isdOrUsbMounted = ToolUtils.isSdOrUsbMounted(mContext, "/storage/udisk");
+        boolean isdOrUsbMounted = ToolUtils.isSdOrUsbMounted(BaseApplication.getContext(), "/storage/udisk");
         Log.d(TAG, "checkDisk: " + isdOrUsbMounted);
         return isdOrUsbMounted;
     }
@@ -280,17 +287,18 @@ public class MusicVoiceManager {
         Intent intent = new Intent();
         intent.setClassName(packageName, className);
         intent.setFlags(FLAG_ACTIVITY_NEW_TASK);
-        mContext.startActivity(intent);
+        BaseApplication.getContext().startActivity(intent);
     }
 
     private static String type;
 
-    public static void setResultCode(int resultCode) {
+    public void setResultCode(int resultCode) {
         Log.d(TAG, "setResultCode: " + resultCode);
+        Log.d(TAG, "kwMusicAPI: " + kwMusicAPI);
         //判断是否网络连接
         switch (resultCode) {
             case AppConstant.RESULT_FAIL:
-                if (ToolUtils.isNetworkAvailable(mContext)) {
+                if (ToolUtils.isNetworkAvailable()) {
                     switch (type) {
                         case "1":
                             kwMusicAPI.playByArtistAndSong(artist, song);
@@ -306,7 +314,8 @@ public class MusicVoiceManager {
                     Log.d(TAG, "setResultCode: 网络未连接");
                     kwMusicAPI.startApp();
                     AutoManager.getInstance().setAppStatus(AutoConstants.PackageName.CLASS_KUWO,
-                            mContext.getString(R.string.kw_music_name), AutoConstants.AppStatus.RUN_FOREGROUND);
+                            BaseApplication.getContext().getString(R.string.kw_music_name),
+                            AutoConstants.AppStatus.RUN_FOREGROUND);
                 }
                 break;
             case AppConstant.RESULT_SUCCESS:

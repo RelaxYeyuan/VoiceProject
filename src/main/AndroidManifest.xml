@@ -51,6 +51,7 @@
             <intent-filter>
                 <action android:name="com.semisky.cx62.bluetooth.adapter.action.CONNECTION_STATE_CHANGED"/>
                 <action android:name="com.semisky.broadcast.SCREEN_START_ACTIVITY"/>
+                <action android:name="com.semisky.broadcast.CARLIFE_VIEW"/>
                 <action android:name="com.semisky.broadcast.CARLIFE_VOICE"/>
                 <action android:name="com.semisky.broadcast.BASEBOARD_START_ACTIVITY"/>
                 <action android:name="com.semisky.action.MEDIA_LOAD_STATE_CHANGE"/>
@@ -58,7 +59,7 @@
                 <action android:name="com.semisky.broadcast.ACTION_MUSIC_SERVICE_STATE_CHANGE"/>
                 <action android:name="com.semisky.IS_AD_CLOSE"/>
                 <action android:name="com.semisky.broadcast.BT_PHONE_CALLSTATE"/>
-                <action android:name="com.semisky.broadcast.POWERMODE.CHANGED "/>
+                <action android:name="com.semisky.broadcast.POWERMODE.CHANGED"/>
             </intent-filter>
         </receiver>
 

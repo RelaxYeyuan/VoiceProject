@@ -62,6 +62,7 @@ public class AppConstant {
     public static final int BT_CAR_CONTROL_BINDER = 5;
     public static final int IPOD_BINDER = 6;
     public static final int SYSTEM_CONTROL_BINDER = 7;
+    public static final int CARLIFE_BINDER = 8;
 
     //循环播放
     public static final int LOOP_PLAY = 1;
@@ -110,6 +111,11 @@ public class AppConstant {
 
     //BTMusic
     public static final int BT_TYPE_NOT_CONNECTED = 7;
+
+    //CARLIFE关闭语音
+    public static final int CLOSE_VOICE_CARLIFE = 4;
+    //CARLIFE唤醒语音
+    public static final int WAKUP_VOICE_CARLIFE = 4;
 
     public class Numerical {
         public static final int FM_MAX_FREQ = 10800;
