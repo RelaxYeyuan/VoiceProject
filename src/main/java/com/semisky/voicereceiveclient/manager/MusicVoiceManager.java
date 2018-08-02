@@ -284,6 +284,7 @@ public class MusicVoiceManager {
     }
 
     private void startActivity(String packageName, String className) {
+        Log.d(TAG, "startActivity: " + packageName);
         Intent intent = new Intent();
         intent.setClassName(packageName, className);
         intent.setFlags(FLAG_ACTIVITY_NEW_TASK);
@@ -294,7 +295,7 @@ public class MusicVoiceManager {
 
     public void setResultCode(int resultCode) {
         Log.d(TAG, "setResultCode: " + resultCode);
-        Log.d(TAG, "kwMusicAPI: " + kwMusicAPI);
+        Log.d(TAG, "type: " + type);
         //判断是否网络连接
         switch (resultCode) {
             case AppConstant.RESULT_FAIL:
