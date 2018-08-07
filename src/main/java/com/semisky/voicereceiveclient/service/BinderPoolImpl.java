@@ -11,6 +11,7 @@ import com.semisky.voicereceiveclient.appAidl.SetCarControlListener;
 import com.semisky.voicereceiveclient.appAidl.SetRadioListener;
 import com.semisky.voicereceiveclient.appAidl.SetSystemControlListener;
 import com.semisky.voicereceiveclient.appAidl.SetUSBMusicListener;
+import com.semisky.voicereceiveclient.appAidl.SetVoiceSpeechListener;
 import com.semisky.voicereceiveclient.appAidl.VoiceChannelControl;
 
 import static com.semisky.voicereceiveclient.constant.AppConstant.BT_CALL_BINDER;
@@ -20,6 +21,7 @@ import static com.semisky.voicereceiveclient.constant.AppConstant.CARLIFE_BINDER
 import static com.semisky.voicereceiveclient.constant.AppConstant.RADIO_BINDER;
 import static com.semisky.voicereceiveclient.constant.AppConstant.SYSTEM_CONTROL_BINDER;
 import static com.semisky.voicereceiveclient.constant.AppConstant.USB_MUSIC_BINDER;
+import static com.semisky.voicereceiveclient.constant.AppConstant.VOICE_SPEECH_BINDER;
 
 
 /**
@@ -66,6 +68,10 @@ public class BinderPoolImpl extends IBinderPool.Stub {
             case CARLIFE_BINDER:
                 binder = new VoiceChannelControl();
                 Log.d(TAG, "queryBinder: 返回给客户端Carlife binder  " + binder);
+                break;
+            case VOICE_SPEECH_BINDER:
+                binder = new SetVoiceSpeechListener();
+                Log.d(TAG, "queryBinder: 返回给客户端Voice binder  " + binder);
                 break;
             default:
                 break;

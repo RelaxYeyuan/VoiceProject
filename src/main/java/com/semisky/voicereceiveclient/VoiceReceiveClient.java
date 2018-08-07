@@ -12,6 +12,7 @@ import com.iflytek.platform.type.PlatformCode;
 import com.iflytek.platformservice.PlatformService;
 import com.semisky.autoservice.manager.AutoConstants;
 import com.semisky.autoservice.manager.AutoManager;
+import com.semisky.voicereceiveclient.appAidl.VoiceSpeechManager;
 import com.semisky.voicereceiveclient.constant.AppConstant;
 import com.semisky.voicereceiveclient.jsonEntity.AirControlEntity;
 import com.semisky.voicereceiveclient.jsonEntity.AppEntity;
@@ -252,21 +253,25 @@ public class VoiceReceiveClient implements PlatformClientListener {
                 } else if ("startspeechrecord".equals(action
                         .getString("action"))) {
                     Log.i(TAG, "Action_StartSpeechRecord ");
+                    VoiceSpeechManager.getInstance().informStartSpeech();
                     changRecordMode(0);
                     resultJson.put("status", "success");
                     return resultJson.toString();
                 } else if ("stopspeechrecord"
                         .equals(action.getString("action"))) {
                     Log.i(TAG, "Action_StopSpeechRecord ");
+                    VoiceSpeechManager.getInstance().informStopSpeech();
                     resultJson.put("status", "success");
                     return resultJson.toString();
                 } else if ("startwakerecord".equals(action.getString("action"))) {
                     Log.i(TAG, "Action_StartWakeRecord ");
+                    VoiceSpeechManager.getInstance().informStartWake();
                     changRecordMode(1);
                     resultJson.put("status", "success");
                     return resultJson.toString();
                 } else if ("stopwakerecord".equals(action.getString("action"))) {
                     Log.i(TAG, "Action_StopWakeRecord ");
+                    VoiceSpeechManager.getInstance().informStopWake();
                     resultJson.put("status", "success");
                     return resultJson.toString();
                 }

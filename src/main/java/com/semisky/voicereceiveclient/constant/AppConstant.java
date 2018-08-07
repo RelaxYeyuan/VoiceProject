@@ -63,6 +63,7 @@ public class AppConstant {
     public static final int IPOD_BINDER = 6;
     public static final int SYSTEM_CONTROL_BINDER = 7;
     public static final int CARLIFE_BINDER = 8;
+    public static final int VOICE_SPEECH_BINDER = 9;
 
     //循环播放
     public static final int LOOP_PLAY = 1;
