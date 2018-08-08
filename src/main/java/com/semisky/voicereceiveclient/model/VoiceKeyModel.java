@@ -55,6 +55,10 @@ public class VoiceKeyModel {
                 switch (keyCode) {
                     case KeyManager.KEYCODE_VR:
                         if (action == 0) {
+                            if (CarlifeStatueModel.getInstance().isStartCarlife()) {
+                                Log.d(TAG, "onKey: 当前carlif页面不响应");
+                                return;
+                            }
                             if (checkVoiceActivity()) {
                                 Log.d(TAG, "onKey: 按键退出语音页面");
                                 return;

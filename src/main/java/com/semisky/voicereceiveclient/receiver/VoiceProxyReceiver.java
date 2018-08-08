@@ -6,6 +6,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.util.Log;
 
+import com.semisky.voicereceiveclient.model.CarlifeStatueModel;
 import com.semisky.voicereceiveclient.model.VoiceBTModel;
 import com.semisky.voicereceiveclient.model.VoiceKeyModel;
 import com.semisky.voicereceiveclient.model.VoiceStatueModel;
@@ -143,8 +144,10 @@ public class VoiceProxyReceiver extends BroadcastReceiver {
                 Log.d(TAG, "ACTION_CARLIFE_VIEW:carlifeViewStatus " + carlifeViewStatus);
                 if (carlifeViewStatus) {
                     VoiceWakeupScenes.closeVoice(VoiceStatueModel.CARLIFE);
+                    CarlifeStatueModel.getInstance().setStartCarlife(true);
                 } else {
                     VoiceWakeupScenes.wakeupVoice(VoiceStatueModel.CARLIFE);
+                    CarlifeStatueModel.getInstance().setStartCarlife(false);
                 }
                 break;
 
