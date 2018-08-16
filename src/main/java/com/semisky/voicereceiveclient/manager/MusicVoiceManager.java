@@ -91,22 +91,16 @@ public class MusicVoiceManager {
                                 Log.d(TAG, "本地音乐专辑播放: ");
                                 return AppConstant.MUSIC_TYPE_SUCCESS;
                             } else {
-                                return AppConstant.MUSIC_TYPE_SERVICE_STATUS;
+                                return playNetworkForAlbum(album);
                             }
                         } else {
-                            return AppConstant.MUSIC_TYPE_DISK_LOAD_DATA;
+                            //判断是否网络连接
+                            return playNetworkForAlbum(album);
                         }
                     } else {
                         //判断是否网络连接
-                        if (ToolUtils.isNetworkAvailable()) {
-                            kwMusicAPI.playByAlbum(album);
-                            return AppConstant.MUSIC_TYPE_SUCCESS;
-                        } else {
-                            return AppConstant.MUSIC_TYPE_NOT_CONNECTED;
-                        }
+                        return playNetworkForAlbum(album);
                     }
-
-
                 }
             }
 
@@ -174,20 +168,13 @@ public class MusicVoiceManager {
                                     Log.d(TAG, "本地音乐专辑播放: ");
                                     return AppConstant.MUSIC_TYPE_SUCCESS;
                                 } else {
-                                    return AppConstant.MUSIC_TYPE_SERVICE_STATUS;
+                                    return playNetworkForAlbum(album);
                                 }
                             } else {
-                                return AppConstant.MUSIC_TYPE_DISK_LOAD_DATA;
+                                return playNetworkForAlbum(album);
                             }
                         } else {
-                            //判断是否网络连接
-                            if (ToolUtils.isNetworkAvailable()) {
-                                Log.d(TAG, "网络音乐专辑播放: ");
-                                kwMusicAPI.playByAlbum(album);
-                                return AppConstant.MUSIC_TYPE_SUCCESS;
-                            } else {
-                                return AppConstant.MUSIC_TYPE_NOT_CONNECTED;
-                            }
+                            return playNetworkForAlbum(album);
                         }
                     }
 
@@ -218,31 +205,14 @@ public class MusicVoiceManager {
                                 }
                                 return AppConstant.MUSIC_TYPE_SUCCESS;
                             } else {
-                                return AppConstant.MUSIC_TYPE_SERVICE_STATUS;
+                                return playNetworkMusic();
                             }
                         } else {
-                            return AppConstant.MUSIC_TYPE_DISK_LOAD_DATA;
+                            return playNetworkMusic();
                         }
                     } else {
-                        //判断是否网络连接
-                        if (ToolUtils.isNetworkAvailable()) {
-                            if (song != null && artist != null) {//根据歌名加歌手播放
-                                kwMusicAPI.playByArtistAndSong(artist, song);
-                                Log.d(TAG, "网络根据歌名加歌手播放: ");
-                            } else if (song != null) {//根据歌名播放
-                                kwMusicAPI.playBySong(song);
-                                Log.d(TAG, "网络根据歌名播放: ");
-                            } else if (artist != null) {//根据歌手播放
-                                kwMusicAPI.playByArtist(artist);
-                                Log.d(TAG, "网络根据歌手播放: ");
-                            } else {//没特定要求 打开USB音乐 随便听首歌
-                                kwMusicAPI.play();
-                                Log.d(TAG, "网络没特定要求音乐: ");
-                            }
-                            return AppConstant.MUSIC_TYPE_SUCCESS;
-                        } else {
-                            return AppConstant.MUSIC_TYPE_NOT_CONNECTED;
-                        }
+                        return playNetworkMusic();
+
                     }
                 default:
                     return AppConstant.MUSIC_TYPE_FAIL;
@@ -251,6 +221,38 @@ public class MusicVoiceManager {
             e.printStackTrace();
         }
         return AppConstant.MUSIC_TYPE_FAIL;
+    }
+
+    private int playNetworkForAlbum(String album) {
+        //判断是否网络连接
+        if (ToolUtils.isNetworkAvailable()) {
+            kwMusicAPI.playByAlbum(album);
+            return AppConstant.MUSIC_TYPE_SUCCESS;
+        } else {
+            return AppConstant.MUSIC_TYPE_NOT_CONNECTED;
+        }
+    }
+
+    private int playNetworkMusic() {
+        //判断是否网络连接
+        if (ToolUtils.isNetworkAvailable()) {
+            if (song != null && artist != null) {//根据歌名加歌手播放
+                kwMusicAPI.playByArtistAndSong(artist, song);
+                Log.d(TAG, "网络根据歌名加歌手播放: ");
+            } else if (song != null) {//根据歌名播放
+                kwMusicAPI.playBySong(song);
+                Log.d(TAG, "网络根据歌名播放: ");
+            } else if (artist != null) {//根据歌手播放
+                kwMusicAPI.playByArtist(artist);
+                Log.d(TAG, "网络根据歌手播放: ");
+            } else {//没特定要求 打开USB音乐 随便听首歌
+                kwMusicAPI.play();
+                Log.d(TAG, "网络没特定要求音乐: ");
+            }
+            return AppConstant.MUSIC_TYPE_SUCCESS;
+        } else {
+            return AppConstant.MUSIC_TYPE_NOT_CONNECTED;
+        }
     }
 
     private boolean checkDisk() {
