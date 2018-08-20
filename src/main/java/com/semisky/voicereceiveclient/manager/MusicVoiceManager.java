@@ -108,14 +108,18 @@ public class MusicVoiceManager {
                 case "PLAY":
                     //{"operation":"PLAY","source":"蓝牙音乐","focus":"music","rawText":"播放蓝牙音乐"}
                     //{"operation":"PLAY","source":"本地","focus":"music","rawText":"打开本地歌曲"}
+                    //{"operation":"PLAY","source":"本地","focus":"music","rawText":"播放本地音乐"}
                     //{"operation":"PLAY","source":"网络","focus":"music","rawText":"我想听网络音乐"}
 
                     //{"artist":"收藏","operation":"PLAY","focus":"music","rawText":"听收藏的频道"}
                     //{"operation":"PLAY","source":"usb","focus":"music","rawText":"打开USB音乐"}
+
+                    //{"operation":"PLAY","focus":"music","rawText":"播放音乐。"}
                     if (source != null) {
                         switch (source) {
                             case "蓝牙音乐":
                                 if (VoiceBTModel.getInstance().isConnectionState()) {
+                                    AidlManager.getInstance().getBTMusicListener().play();
                                     startActivity(PKG_BTMUSIC, CLS_BTMUSIC);
                                 } else {
                                     return AppConstant.BT_TYPE_NOT_CONNECTED;
@@ -124,6 +128,7 @@ public class MusicVoiceManager {
                             case "本地":
                                 if (checkDisk()) {
                                     if (checkLoadData()) {
+                                        AidlManager.getInstance().getUsbMusicListener().play();
                                         startActivity(PKG_MEDIA, CLS_MEDIA_MUSIC);
                                         return AppConstant.MUSIC_TYPE_SUCCESS;
                                     } else {
