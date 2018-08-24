@@ -31,6 +31,7 @@ import com.semisky.voicereceiveclient.manager.MusicVoiceManager;
 import com.semisky.voicereceiveclient.manager.RadioVoiceManager;
 import com.semisky.voicereceiveclient.model.VoiceBTModel;
 import com.semisky.voicereceiveclient.model.VoiceStatueModel;
+import com.semisky.voicereceiveclient.model.VoiceWakeupScenes;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -362,6 +363,7 @@ public class VoiceReceiveClient implements PlatformClientListener {
             switch (focusChange) {
                 case AudioManager.AUDIOFOCUS_LOSS://永久失去焦点 -1
                     abandonFocus();
+                    VoiceWakeupScenes.closeVoiceActivity();
                     break;
                 case AudioManager.AUDIOFOCUS_LOSS_TRANSIENT://暂时失去焦点 -2
                     /*
@@ -371,6 +373,7 @@ public class VoiceReceiveClient implements PlatformClientListener {
                     4.不会走onAbandonAudioFocus回调方法，导致收音机没有声音
                      */
                     abandonFocus();
+                    VoiceWakeupScenes.closeVoiceActivity();
                     break;
                 case AudioManager.AUDIOFOCUS_LOSS_TRANSIENT_CAN_DUCK://duck机制 -3
 
