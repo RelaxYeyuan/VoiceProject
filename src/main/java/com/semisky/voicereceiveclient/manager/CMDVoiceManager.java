@@ -17,6 +17,8 @@ import com.semisky.voicereceiveclient.utils.ToolUtils;
 
 import static android.content.Intent.FLAG_ACTIVITY_NEW_TASK;
 import static com.semisky.voicereceiveclient.constant.AppConstant.CLS_BTCALL;
+import static com.semisky.voicereceiveclient.constant.AppConstant.CMD_ENGINE_FALSE;
+import static com.semisky.voicereceiveclient.constant.AppConstant.CMD_ENGINE_TRUE;
 import static com.semisky.voicereceiveclient.constant.AppConstant.CMD_TYPE_FAIL;
 import static com.semisky.voicereceiveclient.constant.AppConstant.CMD_TYPE_SUCCESS;
 import static com.semisky.voicereceiveclient.constant.AppConstant.LOOP_PLAY;
@@ -254,9 +256,14 @@ public class CMDVoiceManager {
 
     private int carCommand(String name) {
         if ("即刻出发".equals(name)) {
-            CarCtrlManager.getInstance().setEngineControlEDReq(true);
-            Log.d(TAG, "carCommand: 即刻出发");
-            return CMD_TYPE_SUCCESS;
+            boolean engineControlEDReq = CarCtrlManager.getInstance().getEngineControlEDReq();
+            Log.d(TAG, "carCommand: 即刻出发 " + engineControlEDReq);
+            if (engineControlEDReq) {
+                return CMD_ENGINE_TRUE;
+            } else {
+                CarCtrlManager.getInstance().setEngineControlEDReq(true);
+                return CMD_ENGINE_FALSE;
+            }
         }
         return CMD_TYPE_FAIL;
     }

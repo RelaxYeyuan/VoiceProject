@@ -102,6 +102,9 @@ public class AppConstant {
     public static final int CMD_TYPE_SUCCESS = 1;
     public static final int CMD_TYPE_FAIL = 2;
 
+    public static final int CMD_ENGINE_TRUE = 3;
+    public static final int CMD_ENGINE_FALSE = 4;
+
     //空调相关状态
     public static final int AIR_TYPE_SUCCESS = 1;
     public static final int AIR_TYPE_FAIL = 2;

@@ -40,6 +40,7 @@ public class RadioVoiceManager {
         String code = radioEntity.getCode();
         String waveband = radioEntity.getWaveband();
         String category = radioEntity.getCategory();
+        String rawText = radioEntity.getRawText();
 
         //{"code":"555","waveband":"am","focus":"radio","rawText":"打开AM五五五"}
         //{"waveband":"fm","focus":"radio","rawText":"打开fm"}
@@ -50,6 +51,7 @@ public class RadioVoiceManager {
         //{"code":"87.5","waveband":"am","focus":"radio","rawText":"调幅87.5。"}
         //{"code":"102.9","waveband":"fm","focus":"radio","rawText":"调频幺零二九"}
         //{"code":"1629","waveband":"am","focus":"radio","rawText":"调幅1629。"}
+        //{"focus":"radio","rawText":"关闭FM"}
 
         try {
             if (waveband != null) {
@@ -155,8 +157,18 @@ public class RadioVoiceManager {
                         } else {
                             //{"focus":"radio","rawText":"播放收音机"}
                             //{"focus":"radio","rawText":"听收音机"}
-                            Log.d(TAG, "听收音机");
-                            startActivity(PKG_RADIO, CLS_RADIO);
+                            //{"focus":"radio","rawText":"关闭FM"}
+
+                            switch (rawText) {
+                                case "播放收音机":
+                                case "听收音机":
+                                    Log.d(TAG, "听收音机");
+                                    startActivity(PKG_RADIO, CLS_RADIO);
+                                    break;
+                                case "关闭FM":
+                                    skipHome();
+                                    break;
+                            }
                             return AppConstant.RADIO_TYPE_SUCCESS;
                         }
                     } catch (Exception e) {
@@ -183,5 +195,12 @@ public class RadioVoiceManager {
         intent.setClassName(packageName, className);
         intent.setFlags(FLAG_ACTIVITY_NEW_TASK);
         mContext.startActivity(intent);
+    }
+
+    private void skipHome() {
+        Intent homeIntent = new Intent(Intent.ACTION_MAIN);
+        homeIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        homeIntent.addCategory(Intent.CATEGORY_HOME);
+        mContext.startActivity(homeIntent);
     }
 }

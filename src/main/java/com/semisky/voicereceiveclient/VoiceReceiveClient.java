@@ -176,6 +176,14 @@ public class VoiceReceiveClient implements PlatformClientListener {
                         resultJson.put("status", "fail");
                         resultJson.put("message", "抱歉，没有可处理的操作");
                         return resultJson.toString();
+                    } else if (type == AppConstant.CMD_ENGINE_TRUE) {
+                        resultJson.put("status", "fail");
+                        resultJson.put("message", "发动机已启动");
+                        return resultJson.toString();
+                    } else if (type == AppConstant.CMD_ENGINE_FALSE) {
+                        resultJson.put("status", "fail");
+                        resultJson.put("message", "即将为您启动发动机");
+                        return resultJson.toString();
                     }
                 } else if ("airControl".equals(action.getString("focus"))) {
                     AirControlEntity airEntity = gson.fromJson(actionJson, AirControlEntity.class);
