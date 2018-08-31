@@ -36,6 +36,7 @@ public class RadioVoiceManager {
     }
 
     public int setActionJson(Context context, RadioEntity radioEntity) {
+        Log.d(TAG, "setActionJson: ");
         mContext = context;
         String code = radioEntity.getCode();
         String waveband = radioEntity.getWaveband();
@@ -52,6 +53,21 @@ public class RadioVoiceManager {
         //{"code":"102.9","waveband":"fm","focus":"radio","rawText":"调频幺零二九"}
         //{"code":"1629","waveband":"am","focus":"radio","rawText":"调幅1629。"}
         //{"focus":"radio","rawText":"关闭FM"}
+
+        //{"focus":"radio","rawText":"播放收音机"}
+        //{"focus":"radio","rawText":"听收音机"}
+        //{"focus":"radio","rawText":"关闭FM"}
+
+        switch (rawText) {
+            case "播放收音机":
+            case "听收音机":
+                Log.d(TAG, "听收音机");
+                startActivity(PKG_RADIO, CLS_RADIO);
+                return AppConstant.RADIO_TYPE_SUCCESS;
+            case "关闭FM":
+                Log.d(TAG, "关闭FM: ");
+                return AppConstant.RADIO_TYPE_FAIL;
+        }
 
         try {
             if (waveband != null) {
@@ -155,21 +171,7 @@ public class RadioVoiceManager {
                             startActivity(PKG_RADIO, CLS_RADIO);
                             return AppConstant.RADIO_TYPE_SUCCESS;
                         } else {
-                            //{"focus":"radio","rawText":"播放收音机"}
-                            //{"focus":"radio","rawText":"听收音机"}
-                            //{"focus":"radio","rawText":"关闭FM"}
-
-                            switch (rawText) {
-                                case "播放收音机":
-                                case "听收音机":
-                                    Log.d(TAG, "听收音机");
-                                    startActivity(PKG_RADIO, CLS_RADIO);
-                                    break;
-                                case "关闭FM":
-                                    skipHome();
-                                    break;
-                            }
-                            return AppConstant.RADIO_TYPE_SUCCESS;
+                            return AppConstant.RADIO_TYPE_FAIL;
                         }
                     } catch (Exception e) {
                         e.printStackTrace();
@@ -197,10 +199,4 @@ public class RadioVoiceManager {
         mContext.startActivity(intent);
     }
 
-    private void skipHome() {
-        Intent homeIntent = new Intent(Intent.ACTION_MAIN);
-        homeIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        homeIntent.addCategory(Intent.CATEGORY_HOME);
-        mContext.startActivity(homeIntent);
-    }
 }

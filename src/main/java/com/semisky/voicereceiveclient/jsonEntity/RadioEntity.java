@@ -19,7 +19,6 @@ public class RadioEntity extends BaseEntity {
     private String waveband;
     private String code;
     private String category;
-    private String rawText;
 
     public String getWaveband() {
         return waveband;
@@ -45,11 +44,4 @@ public class RadioEntity extends BaseEntity {
         this.category = category;
     }
 
-    public String getRawText() {
-        return rawText;
-    }
-
-    public void setRawText(String rawText) {
-        this.rawText = rawText;
-    }
 }
