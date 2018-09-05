@@ -51,12 +51,8 @@ public class VoiceProxyReceiver extends BroadcastReceiver {
     private static final String START_LOAD_DATA_FLAG = "state";
 
     //进入倒车
-    private static final String ACTION_START_OPEN_BACK_CAR = "com.semisky.IS_AVM";
-    private static final String KEY_IS_AVM = "isAVM";
-
-    //退出倒车
-    private static final String ACTION_START_CLOSE_BACK_CAR = "com.semisky.IS_AD_CLOSE";
-    private static final String KEY_AD_CLOSE = "isClose";
+    private static final String ACTION_START_BACK_CAR = "com.semisky.BACKMODE_CHANGED";
+    private static final String KEY_IS_AVM = "BackMode";
 
     // 音乐服务状态广播
     private static final String ACTION_MUSIC_SERVICE_STATE_CHANGE = "com.semisky.broadcast.ACTION_MUSIC_SERVICE_STATE_CHANGE";
@@ -161,16 +157,16 @@ public class VoiceProxyReceiver extends BroadcastReceiver {
                 }
                 break;
 
-            case ACTION_START_OPEN_BACK_CAR:
+            case ACTION_START_BACK_CAR:
                 Log.d(TAG, "ACTION_START_OPEN_BACK_CAR: ");
-                VoiceWakeupScenes.closeVoice(VoiceStatueModel.BACK_CAR);
-                VoiceKeyModel.getInstance(context).unregisterOnKeyListener();
-                break;
-
-            case ACTION_START_CLOSE_BACK_CAR:
-                Log.d(TAG, "ACTION_START_CLOSE_BACK_CAR: ");
-                VoiceWakeupScenes.wakeupVoice(VoiceStatueModel.BACK_CAR);
-                VoiceKeyModel.getInstance(context).registerOnKeyListener();
+                boolean booleanExtra = intent.getBooleanExtra(KEY_IS_AVM, false);
+                if (booleanExtra) {
+                    VoiceWakeupScenes.closeVoice(VoiceStatueModel.BACK_CAR);
+                    VoiceKeyModel.getInstance(context).unregisterOnKeyListener();
+                } else {
+                    VoiceWakeupScenes.wakeupVoice(VoiceStatueModel.BACK_CAR);
+                    VoiceKeyModel.getInstance(context).registerOnKeyListener();
+                }
                 break;
 
             case ACTION_MUSIC_SERVICE_STATE_CHANGE:
