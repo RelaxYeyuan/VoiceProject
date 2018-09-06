@@ -9,6 +9,7 @@ import com.semisky.autoservice.manager.ACManager;
 import com.semisky.autoservice.manager.AudioManager;
 import com.semisky.autoservice.manager.AutoConstants;
 import com.semisky.autoservice.manager.AutoManager;
+import com.semisky.autoservice.manager.RadioManager;
 import com.semisky.voicereceiveclient.R;
 import com.semisky.voicereceiveclient.appAidl.AidlManager;
 import com.semisky.voicereceiveclient.constant.AppConstant;
@@ -340,18 +341,17 @@ public class AppVoiceManager {
                 return AppConstant.MUSIC_TYPE_SUCCESS;
             //进入app
             case "LAUNCH":
-                try {
-                    AidlManager.getInstance().getRadioListener().Unmute();
-                } catch (RemoteException e) {
-                    e.printStackTrace();
-                } finally {
-                    startActivity(PKG_RADIO, CLS_RADIO);
-                }
-
+                setUnMute();
+                startActivity(PKG_RADIO, CLS_RADIO);
                 return AppConstant.MUSIC_TYPE_SUCCESS;
             default:
                 return AppConstant.MUSIC_TYPE_FAIL;
         }
+    }
+
+    private void setUnMute() {
+        Log.d(TAG, "setUnMute: 解除静音");
+        RadioManager.getInstance().FmVolumeMute(0);
     }
 
     //{"name":"蓝牙","operation":"EXIT","focus":"app","rawText":"关闭蓝牙"}

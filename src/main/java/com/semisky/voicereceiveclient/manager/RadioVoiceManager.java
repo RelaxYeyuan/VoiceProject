@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.os.RemoteException;
 import android.util.Log;
 
+import com.semisky.autoservice.manager.RadioManager;
 import com.semisky.voicereceiveclient.appAidl.AidlManager;
 import com.semisky.voicereceiveclient.constant.AppConstant;
 import com.semisky.voicereceiveclient.jsonEntity.RadioEntity;
@@ -187,16 +188,20 @@ public class RadioVoiceManager {
     }
 
     private void startActivity(String packageName, String className) {
-        try {
-            AidlManager.getInstance().getRadioListener().Unmute();
-        } catch (RemoteException e) {
-            e.printStackTrace();
-        }
-
+        setUnMute();
         Intent intent = new Intent();
         intent.setClassName(packageName, className);
         intent.setFlags(FLAG_ACTIVITY_NEW_TASK);
         mContext.startActivity(intent);
     }
 
+    private void setMute() {
+        Log.d(TAG, "setMute: 静音");
+        RadioManager.getInstance().FmVolumeMute(1);
+    }
+
+    private void setUnMute() {
+        Log.d(TAG, "setUnMute: 解除静音");
+        RadioManager.getInstance().FmVolumeMute(0);
+    }
 }
