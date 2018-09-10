@@ -100,16 +100,15 @@ public class KWMusicAPI {
 
             @Override
             public void onPlayerStatus(PlayerStatus playerStatus, Music music) {
-                if (music != null) {
-                    ICMManager.getInstance().setCurrentSourceName(music.name);
-                    Log.d(TAG, "onPlayerStatus: " + music.name);
-                }
-
                 Log.d(TAG, "onPlayerStatus: " + playerStatus);
 
                 switch (playerStatus) {
                     case PLAYING:
                         ICMUtils.setCurrentPlayStatusTrue();
+                        if (music != null) {
+                            ICMManager.getInstance().setCurrentSourceName(music.name);
+                            Log.d(TAG, "onPlayerStatus: " + music.name);
+                        }
                         break;
 
                     case PAUSE:

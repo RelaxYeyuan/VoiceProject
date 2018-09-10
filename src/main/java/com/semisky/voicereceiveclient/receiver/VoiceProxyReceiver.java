@@ -67,21 +67,6 @@ public class VoiceProxyReceiver extends BroadcastReceiver {
         if (action == null) return;
         d(TAG, "onReceive() action==>" + action);
         switch (action) {
-            case BT_PHONE_CALLSTATE:
-                //true: 正在进行通话; false: 蓝牙通话结束
-                boolean callState = intent.getBooleanExtra(BT_PHONE_FLAG, false);
-                int iCallState = callState ? 1 : 0;
-                d(TAG, "蓝牙电话:callState " + callState);
-                VoiceBTModel.getInstance().setCallState(iCallState);
-                VoiceBTModel.getInstance().notifyObserversBtCallStateChanged(callState);
-                if (callState) {
-                    VoiceWakeupScenes.closeVoice(VoiceStatueModel.BT_CALL);
-                    VoiceKeyModel.getInstance(context).unregisterOnKeyListener();
-                } else {
-                    VoiceWakeupScenes.wakeupVoice(VoiceStatueModel.BT_CALL);
-                    VoiceKeyModel.getInstance(context).registerOnKeyListener();
-                }
-                break;
             case ACTION_CONNECTION_STATE_CHANGED:
                 //连接状态---断开：BluetoothAdapter.STATE_DISCONNECTED
                 //蓝牙开关状态---开启：BluetoothAdapter.STATE_ON
