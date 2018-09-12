@@ -5,12 +5,10 @@ import android.content.Intent;
 import android.os.IBinder;
 import android.util.Log;
 
-import com.semisky.autoservice.aidl.IBtCallStatusChangeListener;
-import com.semisky.autoservice.manager.AutoConstants;
+import com.semisky.autoservice.aidl.IShouldEnableIflytek;
 import com.semisky.autoservice.manager.AutoManager;
 import com.semisky.voicereceiveclient.manager.VoiceChannelManager;
 import com.semisky.voicereceiveclient.model.KWMusicAPI;
-import com.semisky.voicereceiveclient.model.VoiceStatueModel;
 import com.semisky.voicereceiveclient.model.XMLYApi;
 
 public class BinderPoolService extends Service {
@@ -37,64 +35,48 @@ public class BinderPoolService extends Service {
         xmlyApi = new XMLYApi(this);
         xmlyApi.addPlayerStatusListener();
 
-        initBTCallStatusListener();
-//
-//        VoiceBTModel.getInstance().setOnBtStateChangeListener(new OnBtStateChangeListener() {
-//            @Override
-//            public void onConnectionStateChanged(boolean isConnect) {
-//
-//            }
-//
-//            @Override
-//            public void onCallStateChanged(boolean isCall) {
-//                if (isCall) {
-//                    new Thread(runnable).start();
-//                    Log.d(TAG, "onCallStateChanged: ");
-//                }
-//            }
-//        });
-//
-//        Log.d(TAG, "setOnBtStateChangeListener: ");
+        initCloseOrOpenVoice();
     }
 
-    private void initBTCallStatusListener() {
-        IBtCallStatusChangeListener listener = new IBtCallStatusChangeListener.Stub() {
+    private void initCloseOrOpenVoice() {
+        Log.d(TAG, "initCloseOrOpenVoice: ");
+        final VoiceChannelManager instance = VoiceChannelManager.getInstance(BinderPoolService.this);
+
+        AutoManager.getInstance().registerShouldEnableIflytek(new IShouldEnableIflytek.Stub() {
             @Override
-            public void onBtCallStatusChanged(int status) {
-                Log.d(TAG, "onBtCallStatusChanged: " + status);
-                switch (status) {
-                    case AutoConstants.BtIncallState.CALL_STATE_DIALING:
-                    case AutoConstants.BtIncallState.CALL_STATE_INCOMING:
-                        VoiceChannelManager.getInstance(BinderPoolService.this).sendMessageCloseVoice(VoiceStatueModel.BT_CALL);
-                        break;
-                    case AutoConstants.BtIncallState.CALL_STATE_TERMINATED:
-                        VoiceChannelManager.getInstance(BinderPoolService.this).sendMessageWakeup(VoiceStatueModel.BT_CALL);
-                        break;
+            public void ShouldEnableIflytek(boolean status) {
+                Log.d(TAG, "ShouldEnableIflytek: " + status);
+                if (status) {
+                    instance.sendMessageWakeup();
+                } else {
+                    instance.sendMessageCloseVoice();
                 }
             }
-        };
-
-        Log.d(TAG, "initBTCallStatusListener: " + listener);
-        AutoManager.getInstance().registerBtCallStatusChangeListener(listener);
-
-        VoiceChannelManager.getInstance(BinderPoolService.this);
+        });
     }
 
-//    private Handler handler = new Handler();
-//
-//    private Runnable runnable = new Runnable() {
-//        @Override
-//        public void run() {
-//            boolean topActivityName = ToolUtils.getTopActivityName(BinderPoolService.this, PKG_BTCALL);
-//            Log.d(TAG, "run: " + topActivityName);
-//            if (!topActivityName) {
-//                VoiceWakeupScenes.wakeupVoice();
-//                handler.removeCallbacks(runnable);
-//            } else {
-//                handler.postDelayed(runnable, 3000);
+//    private void initBTCallStatusListener() {
+//        IBtCallStatusChangeListener listener = new IBtCallStatusChangeListener.Stub() {
+//            @Override
+//            public void onBtCallStatusChanged(int status) {
+//                Log.d(TAG, "onBtCallStatusChanged: " + status);
+//                switch (status) {
+//                    case AutoConstants.BtIncallState.CALL_STATE_DIALING:
+//                    case AutoConstants.BtIncallState.CALL_STATE_INCOMING:
+//                        VoiceChannelManager.getInstance(BinderPoolService.this).sendMessageCloseVoice(VoiceStatueModel.BT_CALL);
+//                        break;
+//                    case AutoConstants.BtIncallState.CALL_STATE_TERMINATED:
+//                        VoiceChannelManager.getInstance(BinderPoolService.this).sendMessageWakeup(VoiceStatueModel.BT_CALL);
+//                        break;
+//                }
 //            }
-//        }
-//    };
+//        };
+//
+//        Log.d(TAG, "initBTCallStatusListener: " + listener);
+//        AutoManager.getInstance().registerBtCallStatusChangeListener(listener);
+//
+//        VoiceChannelManager.getInstance(BinderPoolService.this);
+//    }
 
     @Override
     public IBinder onBind(Intent intent) {

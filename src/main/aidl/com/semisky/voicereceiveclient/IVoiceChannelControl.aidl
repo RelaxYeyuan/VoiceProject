@@ -13,4 +13,10 @@ interface IVoiceChannelControl {
          * controlProject 控制的工程
          */
         boolean openVoiceChannel(int controlProject);
+
+        /**
+         * 关闭讯飞activity
+         *
+         */
+        void closeVoiceActivity();
 }

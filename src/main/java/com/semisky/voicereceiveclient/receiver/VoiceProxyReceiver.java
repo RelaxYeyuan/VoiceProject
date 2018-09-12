@@ -6,10 +6,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.util.Log;
 
-import com.semisky.voicereceiveclient.model.CarlifeStatueModel;
 import com.semisky.voicereceiveclient.model.VoiceBTModel;
-import com.semisky.voicereceiveclient.model.VoiceKeyModel;
-import com.semisky.voicereceiveclient.model.VoiceStatueModel;
 import com.semisky.voicereceiveclient.model.VoiceWakeupScenes;
 
 import static android.util.Log.d;
@@ -81,57 +78,6 @@ public class VoiceProxyReceiver extends BroadcastReceiver {
                 }
                 break;
 
-            case ACTION_START_SCREEN:
-                //1 = 进入 ; 0 = 退出 屏保模式下
-                int screenStatus = intent.getIntExtra(START_SCREEN_FLAG, 1);
-                Log.d(TAG, "ACTION_START_SCREEN: screenStatus " + screenStatus);
-                if (screenStatus == 1) {
-                    VoiceWakeupScenes.closeVoice(VoiceStatueModel.CLOCK_SCREEN);
-                    VoiceKeyModel.getInstance(context).unregisterOnKeyListener();
-                } else {
-                    VoiceWakeupScenes.wakeupVoice(VoiceStatueModel.CLOCK_SCREEN);
-                    VoiceKeyModel.getInstance(context).registerOnKeyListener();
-                }
-                break;
-
-            case ACTION_START_BASEBOARD:
-                //1 = 进入 ; 0 = 退出
-                int baseboardStatus = intent.getIntExtra(START_BASEBOARD_FLAG, 1);
-                Log.d(TAG, "ACTION_START_SCREEN: baseboardStatus " + baseboardStatus);
-                if (baseboardStatus == 1) {
-                    VoiceWakeupScenes.closeVoice(VoiceStatueModel.BACKLIGHT_SCREEN);
-                    VoiceKeyModel.getInstance(context).unregisterOnKeyListener();
-                } else {
-                    VoiceWakeupScenes.wakeupVoice(VoiceStatueModel.BACKLIGHT_SCREEN);
-                    VoiceKeyModel.getInstance(context).registerOnKeyListener();
-                }
-                break;
-
-//            case ACTION_CARLIFE_VOICE:
-//                boolean carlifeVoiceStatus = intent.getBooleanExtra(START_CARLIFE_FLAG, false);
-//                Log.d(TAG, "ACTION_CARLIFE_VOICE:carlifeVoiceStatus " + carlifeVoiceStatus);
-//                if (carlifeVoiceStatus) {
-//                    VoiceWakeupScenes.closeVoice(VoiceStatueModel.CARLIFE);
-////                bug 2321 2006
-//                    VoiceKeyModel.getInstance(context).unregisterOnKeyListener();
-//                } else {
-//                    VoiceWakeupScenes.wakeupVoice(VoiceStatueModel.CARLIFE);
-//                    VoiceKeyModel.getInstance(context).registerOnKeyListener();
-//                }
-//                break;
-
-            case ACTION_CARLIFE_VIEW:
-                boolean carlifeViewStatus = intent.getBooleanExtra(START_CARLIFE_VIEW_FLAG, false);
-                Log.d(TAG, "ACTION_CARLIFE_VIEW:carlifeViewStatus " + carlifeViewStatus);
-                if (carlifeViewStatus) {
-                    VoiceWakeupScenes.closeVoice(VoiceStatueModel.CARLIFE);
-                    CarlifeStatueModel.getInstance().setStartCarlife(true);
-                } else {
-                    VoiceWakeupScenes.wakeupVoice(VoiceStatueModel.CARLIFE);
-                    CarlifeStatueModel.getInstance().setStartCarlife(false);
-                }
-                break;
-
             case ACTION_LOAD_DATA:
                 boolean loadDataStatus = intent.getBooleanExtra(START_LOAD_DATA_FLAG, false);
                 Log.d(TAG, "onReceive: " + loadDataStatus);
@@ -139,18 +85,6 @@ public class VoiceProxyReceiver extends BroadcastReceiver {
                     VoiceBTModel.getInstance().setLoadData(true);
                 } else {
                     VoiceBTModel.getInstance().setLoadData(false);
-                }
-                break;
-
-            case ACTION_START_BACK_CAR:
-                Log.d(TAG, "ACTION_START_OPEN_BACK_CAR: ");
-                boolean booleanExtra = intent.getBooleanExtra(KEY_IS_AVM, false);
-                if (booleanExtra) {
-                    VoiceWakeupScenes.closeVoice(VoiceStatueModel.BACK_CAR);
-                    VoiceKeyModel.getInstance(context).unregisterOnKeyListener();
-                } else {
-                    VoiceWakeupScenes.wakeupVoice(VoiceStatueModel.BACK_CAR);
-                    VoiceKeyModel.getInstance(context).registerOnKeyListener();
                 }
                 break;
 

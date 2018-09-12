@@ -2,10 +2,12 @@ package com.semisky.voicereceiveclient;
 
 import android.app.Application;
 import android.content.Context;
+import android.content.Intent;
 import android.util.Log;
 
 import com.iflytek.platformservice.PlatformHelp;
 import com.semisky.voicereceiveclient.model.VoiceKeyModel;
+import com.semisky.voicereceiveclient.service.BinderPoolService;
 import com.ximalaya.speechcontrol.SpeechControler;
 
 import cn.kuwo.autosdk.api.KWAPI;
@@ -48,6 +50,8 @@ public class BaseApplication extends Application {
         Log.d(TAG, "onCreate: setPlatformClient");
 
         VoiceKeyModel.getInstance(this).registerOnKeyListener();
+
+        startService(new Intent(this, BinderPoolService.class));
     }
 
     public static Context getContext() {

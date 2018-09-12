@@ -1,7 +1,6 @@
 package com.semisky.voicereceiveclient.manager;
 
 import android.content.Context;
-import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.util.Log;
@@ -9,7 +8,6 @@ import android.util.Log;
 import com.iflytek.platform.type.PlatformCode;
 import com.iflytek.platformservice.PlatformService;
 import com.semisky.voicereceiveclient.model.VoiceKeyModel;
-import com.semisky.voicereceiveclient.model.VoiceStatueModel;
 
 import java.lang.ref.WeakReference;
 
@@ -30,8 +28,10 @@ public class VoiceChannelManager {
     private static final String TAG = "VoiceChannelManager";
 
     private VoiceChannelManager(Context context) {
+        Log.d(TAG, "VoiceChannelManager: ");
         this.context = context;
         myHandler = new MyHandler(this);
+
     }
 
     public static VoiceChannelManager getInstance(Context context) {
@@ -45,24 +45,14 @@ public class VoiceChannelManager {
         return instance;
     }
 
-    public void sendMessageWakeup(int status) {
-        Message message = Message.obtain();
-        Bundle bundle = new Bundle();
-        bundle.putInt("status", status);
-        message.setData(bundle);
-        message.what = WAKEUP_VOICE;
-        myHandler.sendMessage(message);
-        Log.d(TAG, "sendMessageWakeup: " + status);
+    public void sendMessageWakeup() {
+        myHandler.sendEmptyMessage(WAKEUP_VOICE);
+        Log.d(TAG, "sendMessageWakeup: ");
     }
 
-    public void sendMessageCloseVoice(int status) {
-        Message message = Message.obtain();
-        Bundle bundle = new Bundle();
-        bundle.putInt("status", status);
-        message.setData(bundle);
-        message.what = CLOSE_VOICE;
-        myHandler.sendMessage(message);
-        Log.d(TAG, "sendMessageCloseVoice: " + status);
+    public void sendMessageCloseVoice() {
+        myHandler.sendEmptyMessage(CLOSE_VOICE);
+        Log.d(TAG, "sendMessageCloseVoice: ");
     }
 
     public void sendMessageCloseActivity() {
@@ -85,11 +75,11 @@ public class VoiceChannelManager {
             VoiceChannelManager voiceChannelManager = mReference.get();
             switch (msg.what) {
                 case WAKEUP_VOICE:
-                    voiceChannelManager.wakeupVoice(msg.getData().getInt("status"));
+                    voiceChannelManager.wakeupVoice();
                     VoiceKeyModel.getInstance(voiceChannelManager.context).registerOnKeyListener();
                     break;
                 case CLOSE_VOICE:
-                    voiceChannelManager.closeVoice(msg.getData().getInt("status"));
+                    voiceChannelManager.closeVoice();
                     VoiceKeyModel.getInstance(voiceChannelManager.context).unregisterOnKeyListener();
                     break;
                 case CLOSE_VOICE_ACTIVITY:
@@ -102,7 +92,7 @@ public class VoiceChannelManager {
     /**
      * 通知语音助理，恢复之前的状态
      */
-    private void wakeupVoice(int statue) {
+    private void wakeupVoice() {
         if (PlatformService.platformCallback == null) {
             Log.e(TAG, "phoneStateChange: platformCallback == null");
             return;
@@ -110,7 +100,6 @@ public class VoiceChannelManager {
 
         try {
             PlatformService.platformCallback.systemStateChange(PlatformCode.STATE_SPEECHON);
-            VoiceStatueModel.getInstance().setWakeupVoice(statue);
             Log.d(TAG, "wakeupVoice: ");
         } catch (Exception e) {
             e.printStackTrace();
@@ -122,7 +111,7 @@ public class VoiceChannelManager {
     /**
      * 通知语音助理，释放录音通道，并且界面退出
      */
-    private void closeVoice(int statue) {
+    private void closeVoice() {
         if (PlatformService.platformCallback == null) {
             Log.e(TAG, "phoneStateChange: platformCallback == null");
             return;
@@ -130,7 +119,6 @@ public class VoiceChannelManager {
 
         try {
             PlatformService.platformCallback.systemStateChange(PlatformCode.STATE_SPEECHOFF);
-            VoiceStatueModel.getInstance().setCloseVoice(statue);
             Log.d(TAG, "closeVoice: ");
         } catch (Exception e) {
             e.printStackTrace();

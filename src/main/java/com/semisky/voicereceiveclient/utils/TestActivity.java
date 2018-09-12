@@ -8,9 +8,10 @@ import android.view.View;
 import com.semisky.autoservice.manager.ACManager;
 import com.semisky.autoservice.manager.CarCtrlManager;
 import com.semisky.voicereceiveclient.R;
+import com.semisky.voicereceiveclient.model.VoiceStatueModel;
+import com.semisky.voicereceiveclient.model.VoiceWakeupScenes;
 
 import static com.semisky.autoservice.manager.ACManager.AIR_WORKING_OFF;
-import static com.semisky.autoservice.manager.ACManager.AIR_WORKING_ON;
 import static com.semisky.autoservice.manager.ACManager.CIR_MODE_INNER;
 import static com.semisky.autoservice.manager.ACManager.CIR_MODE_OUTSIDE;
 import static com.semisky.autoservice.manager.ACManager.DEFROST_MODE_FRONT;
@@ -139,7 +140,8 @@ public class TestActivity extends Activity {
     }
 
     public void 打开空调(View view) {
-        ACManager.getInstance().setAirConditionerWorking(AIR_WORKING_ON);
+//        ACManager.getInstance().setAirConditionerWorking(AIR_WORKING_ON);
+        VoiceWakeupScenes.closeVoice(VoiceStatueModel.PRESS_KEY);
     }
 
     public void 关闭空调(View view) {

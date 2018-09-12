@@ -23,4 +23,9 @@ public class VoiceChannelControl extends IVoiceChannelControl.Stub {
     public boolean openVoiceChannel(int controlProject) throws RemoteException {
         return VoiceWakeupScenes.wakeupVoice(controlProject);
     }
+
+    @Override
+    public void closeVoiceActivity() throws RemoteException {
+        VoiceWakeupScenes.closeVoiceActivity();
+    }
 }
