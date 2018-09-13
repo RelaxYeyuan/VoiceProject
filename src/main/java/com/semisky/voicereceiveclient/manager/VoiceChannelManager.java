@@ -7,7 +7,6 @@ import android.util.Log;
 
 import com.iflytek.platform.type.PlatformCode;
 import com.iflytek.platformservice.PlatformService;
-import com.semisky.voicereceiveclient.model.VoiceKeyModel;
 
 import java.lang.ref.WeakReference;
 
@@ -76,11 +75,9 @@ public class VoiceChannelManager {
             switch (msg.what) {
                 case WAKEUP_VOICE:
                     voiceChannelManager.wakeupVoice();
-                    VoiceKeyModel.getInstance(voiceChannelManager.context).registerOnKeyListener();
                     break;
                 case CLOSE_VOICE:
                     voiceChannelManager.closeVoice();
-                    VoiceKeyModel.getInstance(voiceChannelManager.context).unregisterOnKeyListener();
                     break;
                 case CLOSE_VOICE_ACTIVITY:
                     voiceChannelManager.closeVoiceActivity();

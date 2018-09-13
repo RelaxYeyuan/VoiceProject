@@ -9,6 +9,7 @@ import com.semisky.autoservice.aidl.IShouldEnableIflytek;
 import com.semisky.autoservice.manager.AutoManager;
 import com.semisky.voicereceiveclient.manager.VoiceChannelManager;
 import com.semisky.voicereceiveclient.model.KWMusicAPI;
+import com.semisky.voicereceiveclient.model.VoiceKeyModel;
 import com.semisky.voicereceiveclient.model.XMLYApi;
 
 public class BinderPoolService extends Service {
@@ -26,6 +27,8 @@ public class BinderPoolService extends Service {
     @Override
     public void onCreate() {
         super.onCreate();
+
+        VoiceKeyModel.getInstance(this).registerOnKeyListener();
 
         Log.d(TAG, "onCreate: ");
 

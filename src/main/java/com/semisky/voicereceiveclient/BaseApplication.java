@@ -6,7 +6,6 @@ import android.content.Intent;
 import android.util.Log;
 
 import com.iflytek.platformservice.PlatformHelp;
-import com.semisky.voicereceiveclient.model.VoiceKeyModel;
 import com.semisky.voicereceiveclient.service.BinderPoolService;
 import com.ximalaya.speechcontrol.SpeechControler;
 
@@ -48,8 +47,6 @@ public class BaseApplication extends Application {
         VoiceReceiveClient testClient = new VoiceReceiveClient(this);
         PlatformHelp.getInstance().setPlatformClient(testClient);
         Log.d(TAG, "onCreate: setPlatformClient");
-
-        VoiceKeyModel.getInstance(this).registerOnKeyListener();
 
         startService(new Intent(this, BinderPoolService.class));
     }
