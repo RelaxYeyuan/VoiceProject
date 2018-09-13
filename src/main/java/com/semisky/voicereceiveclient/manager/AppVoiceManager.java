@@ -341,7 +341,7 @@ public class AppVoiceManager {
                 return AppConstant.MUSIC_TYPE_SUCCESS;
             //进入app
             case "LAUNCH":
-                setUnMute();
+//                setUnMute();
                 startActivity(PKG_RADIO, CLS_RADIO);
                 return AppConstant.MUSIC_TYPE_SUCCESS;
             default:
