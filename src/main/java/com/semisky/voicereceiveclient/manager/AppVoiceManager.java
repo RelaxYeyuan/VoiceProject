@@ -341,7 +341,7 @@ public class AppVoiceManager {
                 return AppConstant.MUSIC_TYPE_SUCCESS;
             //进入app
             case "LAUNCH":
-//                setUnMute();
+                setUnMute();
                 startActivity(PKG_RADIO, CLS_RADIO);
                 return AppConstant.MUSIC_TYPE_SUCCESS;
             default:
@@ -350,8 +350,10 @@ public class AppVoiceManager {
     }
 
     private void setUnMute() {
-        Log.d(TAG, "setUnMute: 解除静音");
-        RadioManager.getInstance().FmVolumeMute(0);
+        if (RadioManager.getInstance().FmGetVolumeMute()) {
+            Log.d(TAG, "setUnMute: 解除静音");
+            RadioManager.getInstance().FmVolumeMute(0);
+        }
     }
 
     //{"name":"蓝牙","operation":"EXIT","focus":"app","rawText":"关闭蓝牙"}

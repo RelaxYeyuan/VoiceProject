@@ -196,12 +196,16 @@ public class RadioVoiceManager {
     }
 
     private void setMute() {
-        Log.d(TAG, "setMute: 静音");
-        RadioManager.getInstance().FmVolumeMute(1);
+        if (!RadioManager.getInstance().FmGetVolumeMute()) {
+            Log.d(TAG, "setMute: 静音");
+            RadioManager.getInstance().FmVolumeMute(1);
+        }
     }
 
     private void setUnMute() {
-        Log.d(TAG, "setUnMute: 解除静音");
-        RadioManager.getInstance().FmVolumeMute(0);
+        if (RadioManager.getInstance().FmGetVolumeMute()) {
+            Log.d(TAG, "setUnMute: 解除静音");
+            RadioManager.getInstance().FmVolumeMute(0);
+        }
     }
 }
