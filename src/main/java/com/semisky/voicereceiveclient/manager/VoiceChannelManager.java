@@ -45,7 +45,7 @@ public class VoiceChannelManager {
     }
 
     public void sendMessageWakeup() {
-        myHandler.sendEmptyMessage(WAKEUP_VOICE);
+        myHandler.sendEmptyMessageDelayed(WAKEUP_VOICE, 200);
         Log.d(TAG, "sendMessageWakeup: ");
     }
 
