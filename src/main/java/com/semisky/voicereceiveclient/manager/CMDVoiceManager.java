@@ -183,9 +183,11 @@ public class CMDVoiceManager {
                     }
                     return CMD_TYPE_SUCCESS;
                 case "静音":
+                    Log.d(TAG, "setControl: setVolumeMute true");
                     AudioManager.getInstance().setVolumeMute(true);
                     return CMD_TYPE_SUCCESS;
                 case "打开音量":
+                    Log.d(TAG, "setControl: setVolumeMute false");
                     AudioManager.getInstance().setVolumeMute(false);
                     return CMD_TYPE_SUCCESS;
                 case "关闭屏幕":
