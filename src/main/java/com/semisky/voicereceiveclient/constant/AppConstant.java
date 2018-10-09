@@ -33,6 +33,9 @@ public class AppConstant {
     public static final String PKG_VOICE = "com.iflytek.cutefly.speechclient";
     public static final String CLS_VOICE = "com.iflytek.autofly.activity.SpeechActivity";
 
+    public static final String PKG_CARLIFE = "com.semisky.carlife";
+    public static final String CLS_CARLIFE = "com.semisky.carlife.VideoActivity";
+
     /*车辆设置*/
     public static final String PKG_CAR_SETTINGS = "com.semisky.autovehicalsetting";
     public static final String CLS_CAR_SETTINGS = "com.semisky.autovehicalsetting.VehicalSettingActivity";
