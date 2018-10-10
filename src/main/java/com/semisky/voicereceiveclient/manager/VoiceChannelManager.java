@@ -7,11 +7,10 @@ import android.util.Log;
 
 import com.iflytek.platform.type.PlatformCode;
 import com.iflytek.platformservice.PlatformService;
-import com.semisky.voicereceiveclient.utils.ToolUtils;
+import com.semisky.autoservice.manager.AutoConstants;
+import com.semisky.autoservice.manager.AutoManager;
 
 import java.lang.ref.WeakReference;
-
-import static com.semisky.voicereceiveclient.constant.AppConstant.PKG_CARLIFE;
 
 /**
  * Created by chenhongrui on 2018/9/10
@@ -33,7 +32,6 @@ public class VoiceChannelManager {
         Log.d(TAG, "VoiceChannelManager: ");
         this.context = context;
         myHandler = new MyHandler(this);
-
     }
 
     public static VoiceChannelManager getInstance(Context context) {
@@ -77,8 +75,8 @@ public class VoiceChannelManager {
             VoiceChannelManager voiceChannelManager = mReference.get();
             switch (msg.what) {
                 case WAKEUP_VOICE:
-                    boolean topActivityName = ToolUtils.getTopActivityName(voiceChannelManager.context, PKG_CARLIFE);
-                    if (topActivityName) {
+                    int appStatus = AutoManager.getInstance().getAppStatus(AutoConstants.PackageName.CLASS_CARLIFE_VIDEO_ACTIVITY);
+                    if (appStatus == AutoConstants.AppStatus.RUN_FOREGROUND) {
                         Log.e(TAG, "wakeupVoice: 当前carlife栈顶，不唤醒讯飞");
                     } else {
                         voiceChannelManager.wakeupVoice();
