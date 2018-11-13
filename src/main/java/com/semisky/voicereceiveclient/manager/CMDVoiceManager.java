@@ -387,7 +387,7 @@ public class CMDVoiceManager {
 
     private void updateLightAdjustValue(int type) {
         ContentResolver contentResolver = mContext.getContentResolver();
-        int lightAdjustDayValue = Settings.System.getInt(contentResolver, KEY_LIGHT_DAY_VALUE, 7);
+        int lightAdjustDayValue = Settings.System.getInt(contentResolver, KEY_LIGHT_DAY_VALUE, 10);
         int lightAdjustNightValue = Settings.System.getInt(contentResolver, KEY_LIGHT_NIGHT_VALUE, 3);
         int lightModeValue = Settings.System.getInt(contentResolver, KEY_LIGHT_MODE, LIGHT_MODE_AUTO);
 
