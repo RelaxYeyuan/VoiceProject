@@ -323,6 +323,7 @@ public class AppVoiceManager {
         switch (operation) {
             case "EXIT":
                 skipHome();
+                sendBroadcastForNavi();
                 return AppConstant.MUSIC_TYPE_SUCCESS;
             case "LAUNCH":
                 startActivity(PKG_NAVI, CLS_NAVI);
@@ -445,6 +446,13 @@ public class AppVoiceManager {
             e.printStackTrace();
         }
         return AppConstant.MUSIC_TYPE_FAIL;
+    }
+
+    private void sendBroadcastForNavi() {
+        Log.d(TAG, "sendBroadcastForNavi: ");
+        String DAODAOTONG_NAVIGATION_FINSHED = "daodaotong_navigation_finished";
+        Intent intent = new Intent(DAODAOTONG_NAVIGATION_FINSHED);
+        mContext.sendBroadcast(intent);
     }
 
     private void openBTCallConnection() {
