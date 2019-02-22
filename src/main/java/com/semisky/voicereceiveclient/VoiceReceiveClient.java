@@ -339,8 +339,8 @@ public class VoiceReceiveClient implements PlatformClientListener {
         } catch (JSONException e) {
             e.printStackTrace();
         }
-        Log.d(TAG, "onGetLocation:latitude " + latitude);
         Log.d(TAG, "onGetLocation:longitude " + longitude);
+        Log.d(TAG, "onGetLocation:latitude " + latitude);
         return jsonObject.toString();
     }
 

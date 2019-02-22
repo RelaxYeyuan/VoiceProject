@@ -1,9 +1,17 @@
 package com.semisky.voicereceiveclient.manager;
 
 import android.content.Context;
+import android.location.Criteria;
+import android.location.GpsSatellite;
+import android.location.GpsStatus;
 import android.location.Location;
+import android.location.LocationListener;
 import android.location.LocationManager;
+import android.location.LocationProvider;
+import android.os.Bundle;
 import android.util.Log;
+
+import java.util.Iterator;
 
 public class GPSManager {
 
@@ -11,7 +19,9 @@ public class GPSManager {
 
     private static volatile GPSManager manager;
     private Context mContext;
+    //经度
     private double longitude;
+    //维度
     private double latitude;
 
     public static GPSManager getInstance(Context context) {
@@ -38,6 +48,14 @@ public class GPSManager {
         return latitude;
     }
 
+    private void setLongitude(double longitude) {
+        this.longitude = longitude;
+    }
+
+    private void setLatitude(double latitude) {
+        this.latitude = latitude;
+    }
+
     /**
      * 获取经纬度
      */
@@ -48,9 +66,12 @@ public class GPSManager {
             if (location != null) {
                 latitude = location.getLatitude();
                 longitude = location.getLongitude();
-                Log.d(TAG, "getLngAndLat: " + latitude);
-                Log.d(TAG, "getLngAndLat: " + longitude);
+                setLatitude(latitude);
+                setLongitude(longitude);
+                Log.d(TAG, "setLatitude: " + latitude);
+                Log.d(TAG, "setLongitude: " + longitude);
             }
+
         }
     }
 }
