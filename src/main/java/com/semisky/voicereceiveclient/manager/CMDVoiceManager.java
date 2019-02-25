@@ -55,6 +55,7 @@ public class CMDVoiceManager {
         //{"name":"收藏歌曲","focus":"cmd","rawText":"收藏这首歌"}
         //{"name":"收藏","focus":"cmd","rawText":"收藏"}
         //{"name":"下载歌曲","focus":"cmd","rawText":"下载这首歌"}
+        //{"name":"回拨号码","focus":"cmd","rawText":"回拨"}
 
         try {
             switch (name) {
@@ -69,6 +70,7 @@ public class CMDVoiceManager {
                     //{"name":"断开连接","focus":"cmd","rawText":"断开手机连接"}
                     AidlManager.getInstance().getBTCallListener().DisconnectThePhone();
                     return CMD_TYPE_SUCCESS;
+                case "回拨号码":
                 case "重拨号码":
                     BTCallVoiceManager btCallVoiceManager = new BTCallVoiceManager(mContext);
                     btCallVoiceManager.redialNumber();
