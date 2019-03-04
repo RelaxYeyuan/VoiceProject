@@ -49,7 +49,12 @@ public class KWMusicAPI {
         mKwapi.playClientMusics(song, artist, null);
     }
 
-    //根据专辑播放音乐
+    //根据歌手和专辑播放音乐 TODO 酷我还是会按照歌手加歌名在搜索
+    public void playByArtistAndAlbum(String artist, String album) {
+        mKwapi.playClientMusics(null, artist, album);
+    }
+
+    //根据专辑播放音乐 TODO 酷我还是按照歌曲名在搜索
     public void playByAlbum(String album) {
         mKwapi.playClientMusics(null, null, album);
     }

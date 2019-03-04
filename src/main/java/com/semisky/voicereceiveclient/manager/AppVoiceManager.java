@@ -341,7 +341,9 @@ public class AppVoiceManager {
                 skipHome();
                 return AppConstant.MUSIC_TYPE_SUCCESS;
             //进入app
+            //onNLPResult{"name":"收音机","operation":"","focus":"app","rawText":"收音机。"}
             case "LAUNCH":
+            case "":
                 setUnMute();
                 startActivity(PKG_RADIO, CLS_RADIO);
                 return AppConstant.MUSIC_TYPE_SUCCESS;

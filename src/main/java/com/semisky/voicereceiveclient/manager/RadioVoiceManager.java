@@ -58,16 +58,21 @@ public class RadioVoiceManager {
         //{"focus":"radio","rawText":"播放收音机"}
         //{"focus":"radio","rawText":"听收音机"}
         //{"focus":"radio","rawText":"关闭FM"}
+        //{"focus":"radio","rawText":"播放电台"}
+        //{"focus":"radio","rawText":"听广播。"}
+        //{"focus":"radio","rawText":"我要听电台。"}
 
-        switch (rawText) {
-            case "播放收音机":
-            case "听收音机":
-                Log.d(TAG, "听收音机");
-                startActivity(PKG_RADIO, CLS_RADIO);
-                return AppConstant.RADIO_TYPE_SUCCESS;
-            case "关闭FM":
-                Log.d(TAG, "关闭FM: ");
-                return AppConstant.RADIO_TYPE_FAIL;
+        if (rawText.contains("播放收音机")
+                || rawText.contains("听收音机")
+                || rawText.contains("播放电台")
+                || rawText.contains("我要听电台")
+                || rawText.contains("听广播")) {
+            Log.d(TAG, "听收音机");
+            startActivity(PKG_RADIO, CLS_RADIO);
+            return AppConstant.RADIO_TYPE_SUCCESS;
+        } else if (rawText.contains("关闭FM")) {
+            Log.d(TAG, "关闭FM: ");
+            return AppConstant.RADIO_TYPE_FAIL;
         }
 
         try {
