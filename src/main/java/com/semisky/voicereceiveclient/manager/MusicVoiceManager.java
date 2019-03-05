@@ -65,9 +65,11 @@ public class MusicVoiceManager {
             if (category != null) {
                 switch (category) {
                     case "音乐列表":
+                    case "播放列表":
                         int statue = checkMediaPlay();
                         if (statue == AppConstant.MUSIC_TYPE_SUCCESS) {
                             //打开音乐列表
+                            Log.d(TAG, "setActionJson: 打开音乐列表");
                             AidlManager.getInstance().getUsbMusicListener().openMusicList();
                             return statue;
                         } else {
