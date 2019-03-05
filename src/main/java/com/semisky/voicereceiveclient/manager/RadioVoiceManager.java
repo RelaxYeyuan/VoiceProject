@@ -61,11 +61,17 @@ public class RadioVoiceManager {
         //{"focus":"radio","rawText":"播放电台"}
         //{"focus":"radio","rawText":"听广播。"}
         //{"focus":"radio","rawText":"我要听电台。"}
+        //{"focus":"radio","rawText":"我想听电台。"}
+        //{"focus":"radio","rawText":"我要听无线广播。"}
+        //{"focus":"radio","rawText":"我想听无线广播。"}
 
         if (rawText.contains("播放收音机")
                 || rawText.contains("听收音机")
                 || rawText.contains("播放电台")
                 || rawText.contains("我要听电台")
+                || rawText.contains("我想听电台")
+                || rawText.contains("我要听无线广播")
+                || rawText.contains("我想听无线广播")
                 || rawText.contains("听广播")) {
             Log.d(TAG, "听收音机");
             startActivity(PKG_RADIO, CLS_RADIO);
