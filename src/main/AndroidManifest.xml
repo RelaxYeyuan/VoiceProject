@@ -56,7 +56,6 @@
                 <action android:name="com.semisky.broadcast.BASEBOARD_START_ACTIVITY"/>
                 <action android:name="com.semisky.action.MEDIA_LOAD_STATE_CHANGE"/>
                 <action android:name="com.semisky.broadcast.ACTION_MUSIC_SERVICE_STATE_CHANGE"/>
-                <action android:name="com.semisky.broadcast.POWERMODE.CHANGED"/>
                 <action android:name="com.semisky.BACKMODE_CHANGED"/>
             </intent-filter>
         </receiver>
