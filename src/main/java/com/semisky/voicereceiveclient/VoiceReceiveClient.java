@@ -347,10 +347,11 @@ public class VoiceReceiveClient implements PlatformClientListener {
     @Override
     public int onRequestAudioFocus(int streamType, int nDuration) {
         Log.d(TAG, "onRequestAudioFocus: ");
+        int focusType = requestFocus();
         // 这里使用的 android AudioFocus的音频协调机制
         com.semisky.autoservice.manager.AudioManager.getInstance().openStreamVolume(STREAM_IFLYTEK_VR);
         sendOpenVoiceBroadcast();
-        return requestFocus();
+        return focusType;
     }
 
     @Override

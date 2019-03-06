@@ -37,51 +37,59 @@ public class RadioVoiceManager {
     }
 
     public int setActionJson(Context context, RadioEntity radioEntity) {
-        Log.d(TAG, "setActionJson: ");
-        mContext = context;
-        String code = radioEntity.getCode();
-        String waveband = radioEntity.getWaveband();
-        String category = radioEntity.getCategory();
-        String rawText = radioEntity.getRawText();
-
-        //{"code":"555","waveband":"am","focus":"radio","rawText":"打开AM五五五"}
-        //{"waveband":"fm","focus":"radio","rawText":"打开fm"}
-        //{"code":"104.3","focus":"radio","rawText":"幺零四点三"}
-        //{"category":"收藏","focus":"radio","rawText":"我想听我收藏的电台。"}
-        //{"category":"收藏","focus":"radio","rawText":"我想听收藏的电台"}
-        //{"code":"87.5","waveband":"fm","focus":"radio","rawText":"调频八七点五"}
-        //{"code":"87.5","waveband":"am","focus":"radio","rawText":"调幅87.5。"}
-        //{"code":"102.9","waveband":"fm","focus":"radio","rawText":"调频幺零二九"}
-        //{"code":"1629","waveband":"am","focus":"radio","rawText":"调幅1629。"}
-        //{"focus":"radio","rawText":"关闭FM"}
-
-        //{"focus":"radio","rawText":"播放收音机"}
-        //{"focus":"radio","rawText":"听收音机"}
-        //{"focus":"radio","rawText":"关闭FM"}
-        //{"focus":"radio","rawText":"播放电台"}
-        //{"focus":"radio","rawText":"听广播。"}
-        //{"focus":"radio","rawText":"我要听电台。"}
-        //{"focus":"radio","rawText":"我想听电台。"}
-        //{"focus":"radio","rawText":"我要听无线广播。"}
-        //{"focus":"radio","rawText":"我想听无线广播。"}
-
-        if (rawText.contains("播放收音机")
-                || rawText.contains("听收音机")
-                || rawText.contains("播放电台")
-                || rawText.contains("我要听电台")
-                || rawText.contains("我想听电台")
-                || rawText.contains("我要听无线广播")
-                || rawText.contains("我想听无线广播")
-                || rawText.contains("听广播")) {
-            Log.d(TAG, "听收音机");
-            startActivity(PKG_RADIO, CLS_RADIO);
-            return AppConstant.RADIO_TYPE_SUCCESS;
-        } else if (rawText.contains("关闭FM")) {
-            Log.d(TAG, "关闭FM: ");
-            return AppConstant.RADIO_TYPE_FAIL;
-        }
-
         try {
+            Log.d(TAG, "setActionJson: ");
+            mContext = context;
+            String code = radioEntity.getCode();
+            String waveband = radioEntity.getWaveband();
+            String category = radioEntity.getCategory();
+            String rawText = radioEntity.getRawText();
+
+            //{"code":"555","waveband":"am","focus":"radio","rawText":"打开AM五五五"}
+            //{"waveband":"fm","focus":"radio","rawText":"打开fm"}
+            //{"code":"104.3","focus":"radio","rawText":"幺零四点三"}
+            //{"category":"收藏","focus":"radio","rawText":"我想听我收藏的电台。"}
+            //{"category":"收藏","focus":"radio","rawText":"我想听收藏的电台"}
+            //{"code":"87.5","waveband":"fm","focus":"radio","rawText":"调频八七点五"}
+            //{"code":"87.5","waveband":"am","focus":"radio","rawText":"调幅87.5。"}
+            //{"code":"102.9","waveband":"fm","focus":"radio","rawText":"调频幺零二九"}
+            //{"code":"1629","waveband":"am","focus":"radio","rawText":"调幅1629。"}
+            //{"focus":"radio","rawText":"关闭FM"}
+
+            //{"focus":"radio","rawText":"播放收音机"}
+            //{"focus":"radio","rawText":"听收音机"}
+            //{"focus":"radio","rawText":"关闭FM"}
+            //{"focus":"radio","rawText":"播放电台"}
+            //{"focus":"radio","rawText":"听广播。"}
+            //{"focus":"radio","rawText":"我要听电台。"}
+            //{"focus":"radio","rawText":"我想听电台。"}
+            //{"focus":"radio","rawText":"我要听无线广播。"}
+            //{"focus":"radio","rawText":"我想听无线广播。"}
+
+            if (rawText.contains("。")) {
+                rawText = rawText.replace("。", "");
+            }
+
+            Log.d(TAG, "setActionJson: " + rawText);
+            if (rawText.equals("播放收音机")
+                    || rawText.equals("听收音机")
+                    || rawText.equals("播放电台")
+                    || rawText.equals("我要听电台")
+                    || rawText.equals("我想听电台")
+                    || rawText.equals("我想听广播")
+                    || rawText.equals("我要听广播")
+                    || rawText.equals("我要听无线广播")
+                    || rawText.equals("我想听无线广播")
+                    || rawText.equals("听广播")) {
+                Log.d(TAG, "听收音机");
+                startActivity(PKG_RADIO, CLS_RADIO);
+                return AppConstant.RADIO_TYPE_SUCCESS;
+            } else if (rawText.contains("关闭FM")) {
+                Log.d(TAG, "关闭FM: ");
+                return AppConstant.RADIO_TYPE_FAIL;
+            }
+
+
             if (waveband != null) {
                 switch (waveband) {
                     case "fm":

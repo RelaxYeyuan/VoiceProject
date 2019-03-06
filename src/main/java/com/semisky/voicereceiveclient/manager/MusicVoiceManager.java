@@ -61,6 +61,21 @@ public class MusicVoiceManager {
             String category = musicEntity.getCategory();
             String source = musicEntity.getSource();
             album = musicEntity.getAlbum();
+            String rawText = musicEntity.getRawText();
+
+            //特殊处理
+            //{"operation":"","focus":"music","rawText":"歌曲"}
+            //{"operation":"SEARCH","focus":"music","rawText":"搜索歌曲。"}
+
+            if (rawText.contains("。")) {
+                Log.d(TAG, "setActionJson: rawText " + rawText);
+                rawText = rawText.replace("。", "");
+            }
+
+            if (rawText.equals("歌曲")
+                    || rawText.equals("搜索歌曲")) {
+                kwMusicAPI.startApp();
+            }
 
             if (category != null) {
                 switch (category) {
