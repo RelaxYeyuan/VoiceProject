@@ -56,6 +56,9 @@ public class BinderPoolService extends Service {
                 }
             }
         });
+
+        //默认关闭录音通道 2019年03月07日14:36:11
+        instance.sendMessageCloseVoice();
     }
 
 //    private void initBTCallStatusListener() {

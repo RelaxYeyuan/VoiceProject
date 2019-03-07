@@ -72,9 +72,14 @@ public class MusicVoiceManager {
                 rawText = rawText.replace("。", "");
             }
 
-            if (rawText.equals("歌曲")
-                    || rawText.equals("搜索歌曲")) {
-                kwMusicAPI.startApp();
+            if (rawText.equals("歌曲") || rawText.equals("搜索歌曲")) {
+                if (ToolUtils.isNetworkAvailable()) {
+                    kwMusicAPI.startApp();
+                    Log.d(TAG, "setActionJson: 打开酷我 ");
+                } else {
+                    return AppConstant.MUSIC_TYPE_NOT_CONNECTED;
+                }
+                return AppConstant.MUSIC_TYPE_SUCCESS;
             }
 
             if (category != null) {
@@ -90,15 +95,15 @@ public class MusicVoiceManager {
                         } else {
                             return statue;
                         }
-                    case "我的收藏":
+//                    case "我的收藏":
                         //{"category":"我的收藏","operation":"PLAY","focus":"music","rawText":"播放收藏的歌曲"}
                         //{"category":"我的收藏","operation":"PLAY","focus":"music","rawText":"打开我的收藏"}
-                        if (ToolUtils.isNetworkAvailable()) {
-                            Log.d(TAG, "setActionJson: 我的收藏");
-                            return AppConstant.MUSIC_TYPE_FAIL;
-                        } else {
-                            return AppConstant.MUSIC_TYPE_NOT_CONNECTED;
-                        }
+//                        if (ToolUtils.isNetworkAvailable()) {
+//                            Log.d(TAG, "setActionJson: 我的收藏");
+//                            return AppConstant.MUSIC_TYPE_FAIL;
+//                        } else {
+//                            return AppConstant.MUSIC_TYPE_NOT_CONNECTED;
+//                        }
                     case "category":
                         //onNLPResult{"artist":"周杰伦`陈奕迅","category":"合唱","operation":"SEARCH",
                         // "focus":"music","rawText":"查询周杰伦和陈奕迅的合唱。
