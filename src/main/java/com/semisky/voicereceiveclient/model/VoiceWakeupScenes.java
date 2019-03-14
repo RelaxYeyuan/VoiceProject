@@ -77,4 +77,23 @@ public class VoiceWakeupScenes {
             Log.e(TAG, "closeVoiceActivity: " + e.getLocalizedMessage());
         }
     }
+
+    /**
+     * 恢复唤醒词
+     */
+    public static void restoreWakeWord() {
+        if (PlatformService.platformCallback == null) {
+            Log.e(TAG, "phoneStateChange: platformCallback == null");
+            return;
+        }
+
+        try {
+            int flag = PlatformService.platformCallback.systemStateChange(101);
+            Log.d(TAG, "restoreWakeWord: flag " + flag);
+        } catch (Exception e) {
+            e.printStackTrace();
+            Log.e(TAG, "restoreWakeWord: " + e.getLocalizedMessage());
+        }
+    }
+
 }

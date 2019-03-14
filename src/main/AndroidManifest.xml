@@ -57,6 +57,8 @@
                 <action android:name="com.semisky.action.MEDIA_LOAD_STATE_CHANGE"/>
                 <action android:name="com.semisky.broadcast.ACTION_MUSIC_SERVICE_STATE_CHANGE"/>
                 <action android:name="com.semisky.BACKMODE_CHANGED"/>
+                <action android:name="android.intent.action.MASTER_CLEAR"/>
+                <action android:name="com.semisky.action.UPDATE_SYSTEM"/>
             </intent-filter>
         </receiver>
 

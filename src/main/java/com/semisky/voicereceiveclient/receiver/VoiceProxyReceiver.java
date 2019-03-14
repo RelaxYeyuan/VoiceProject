@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.util.Log;
 
 import com.semisky.voicereceiveclient.model.VoiceBTModel;
+import com.semisky.voicereceiveclient.model.VoiceWakeupScenes;
 
 import static android.util.Log.d;
 
@@ -54,6 +55,9 @@ public class VoiceProxyReceiver extends BroadcastReceiver {
     private static final String ACTION_MUSIC_SERVICE_STATE_CHANGE = "com.semisky.broadcast.ACTION_MUSIC_SERVICE_STATE_CHANGE";
     private static final String KEY_MUSIC_SERVICE_STATE = "state";// true ：表示音乐服务启动，false 表示音乐服务未启动。]
 
+    private static final String ACTION_WAKE_WORD = "android.intent.action.MASTER_CLEAR";
+
+    private static final String ACTION_UPDATE_SYSTEM = "com.semisky.action.UPDATE_SYSTEM";
 
     @Override
     public void onReceive(Context context, Intent intent) {
@@ -95,6 +99,11 @@ public class VoiceProxyReceiver extends BroadcastReceiver {
                 }
                 break;
 
+            case ACTION_WAKE_WORD:
+            case ACTION_UPDATE_SYSTEM:
+                Log.d(TAG, "android.intent.action.MASTER_CLEAR: ");
+                VoiceWakeupScenes.restoreWakeWord();
+                break;
         }
     }
 }
