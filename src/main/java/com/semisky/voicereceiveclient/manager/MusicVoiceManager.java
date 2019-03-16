@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.RemoteException;
 import android.util.Log;
 
+import com.google.gson.Gson;
 import com.semisky.autoservice.manager.AutoConstants;
 import com.semisky.autoservice.manager.AutoManager;
 import com.semisky.voicereceiveclient.BaseApplication;
@@ -13,7 +14,11 @@ import com.semisky.voicereceiveclient.constant.AppConstant;
 import com.semisky.voicereceiveclient.jsonEntity.MusicEntity;
 import com.semisky.voicereceiveclient.model.KWMusicAPI;
 import com.semisky.voicereceiveclient.model.VoiceBTModel;
+import com.semisky.voicereceiveclient.ManagerHandler.MessageHandler;
 import com.semisky.voicereceiveclient.utils.ToolUtils;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import static android.content.Intent.FLAG_ACTIVITY_NEW_TASK;
 import static com.semisky.voicereceiveclient.constant.AppConstant.CLS_BTMUSIC;
@@ -29,7 +34,7 @@ import static com.semisky.voicereceiveclient.constant.AppConstant.PKG_MEDIA;
  * 修改内容：
  * 修改日期
  */
-public class MusicVoiceManager {
+public class MusicVoiceManager extends MessageHandler<String> {
 
     private static final String TAG = "MusicVoiceManager";
     private static KWMusicAPI kwMusicAPI;
@@ -37,9 +42,64 @@ public class MusicVoiceManager {
     private static String artist;
     private String album;
     private MusicType musicType;
+    private Gson gson = new Gson();
 
     private MusicVoiceManager() {
         kwMusicAPI = new KWMusicAPI();
+    }
+
+    @Override
+    public JSONObject action(int cmd, String actionJson) {
+        JSONObject resultJson = new JSONObject();
+
+        if (cmd == AppConstant.MUSIC_HANDLE) {
+            try {
+                MusicEntity musicEntity = gson.fromJson(actionJson, MusicEntity.class);
+                int type = setActionJson(musicEntity);
+                if (type == AppConstant.MUSIC_TYPE_SUCCESS) {
+                    resultJson.put("status", "success");
+                    return resultJson;
+                } else if (type == AppConstant.MUSIC_TYPE_DISK_MISSING) {
+                    resultJson.put("status", "fail");
+                    resultJson.put("message", "U盘未连接，请先连接U盘");
+                    return resultJson;
+                } else if (type == AppConstant.MUSIC_TYPE_DISK_LOAD_DATA) {
+                    resultJson.put("status", "fail");
+                    resultJson.put("message", "U盘正在加载中，请稍后重试");
+                    return resultJson;
+                } else if (type == AppConstant.MUSIC_TYPE_FAIL) {
+                    resultJson.put("status", "fail");
+                    resultJson.put("message", "抱歉，没有可处理的操作");
+                    return resultJson;
+                } else if (type == AppConstant.MUSIC_TYPE_NOT_CONNECTED) {
+                    resultJson.put("status", "fail");
+                    resultJson.put("message", "抱歉，网络未连接，没有找到相关歌曲");
+                    return resultJson;
+                } else if (type == AppConstant.BT_TYPE_NOT_CONNECTED) {
+                    resultJson.put("status", "fail");
+                    resultJson.put("message", "蓝牙电话未连接，请连接后重试");
+                    return resultJson;
+                } else if (type == AppConstant.MUSIC_TYPE_SERVICE_STATUS) {
+                    resultJson.put("status", "fail");
+                    resultJson.put("message", "抱歉，多媒体未启动");
+                    return resultJson;
+                }
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+
+        } else if (nextHandler != null) {
+            nextHandler.action(cmd, actionJson);
+        }
+
+        //如果出现超出范围的语义，不作处理，默认返回成功
+        try {
+            resultJson.put("status", "success");
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        return resultJson;
     }
 
     private static class SingletonHolder {
@@ -53,7 +113,7 @@ public class MusicVoiceManager {
     /**
      * 多媒体播放都是 operation = play
      */
-    public int setActionJson(MusicEntity musicEntity) {
+    private int setActionJson(MusicEntity musicEntity) {
         try {
             String operation = musicEntity.getOperation();
             song = musicEntity.getSong();

@@ -6,14 +6,20 @@ import android.content.Intent;
 import android.provider.Settings;
 import android.util.Log;
 
+import com.google.gson.Gson;
 import com.semisky.autoservice.manager.AudioManager;
 import com.semisky.autoservice.manager.AutoManager;
 import com.semisky.autoservice.manager.CarCtrlManager;
 import com.semisky.voicereceiveclient.appAidl.AidlManager;
+import com.semisky.voicereceiveclient.constant.AppConstant;
 import com.semisky.voicereceiveclient.jsonEntity.CMDEntity;
 import com.semisky.voicereceiveclient.model.KWMusicAPI;
 import com.semisky.voicereceiveclient.model.VoiceWakeupScenes;
+import com.semisky.voicereceiveclient.ManagerHandler.MessageHandler;
 import com.semisky.voicereceiveclient.utils.ToolUtils;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import static android.content.Intent.FLAG_ACTIVITY_NEW_TASK;
 import static com.semisky.voicereceiveclient.constant.AppConstant.CLS_BTCALL;
@@ -35,17 +41,60 @@ import static com.semisky.voicereceiveclient.constant.AppConstant.SINGLE_PLAY;
  * 修改内容：
  * 修改日期
  */
-public class CMDVoiceManager {
+public class CMDVoiceManager extends MessageHandler<String> {
 
     private static final String TAG = "CMDVoiceManager";
     private Context mContext;
     private KWMusicAPI kwMusicAPI;
+    private Gson gson = new Gson();
 
     public CMDVoiceManager() {
         kwMusicAPI = new KWMusicAPI();
     }
 
-    public int setActionJson(CMDEntity cmdEntity, Context context) {
+    @Override
+    public JSONObject action(int cmd, String actionJson) {
+        JSONObject resultJson = new JSONObject();
+
+        if (cmd == AppConstant.CMD_HANDLE) {
+            try {
+                CMDEntity cmdEntity = gson.fromJson(actionJson, CMDEntity.class);
+                int type = setActionJson(cmdEntity, mContext);
+                if (type == AppConstant.CMD_TYPE_SUCCESS) {
+                    resultJson.put("status", "success");
+                    return resultJson;
+                } else if (type == AppConstant.CMD_TYPE_FAIL) {
+                    resultJson.put("status", "fail");
+                    resultJson.put("message", "抱歉，没有可处理的操作");
+                    return resultJson;
+                } else if (type == AppConstant.CMD_ENGINE_TRUE) {
+                    resultJson.put("status", "fail");
+                    resultJson.put("message", "发动机已启动");
+                    return resultJson;
+                } else if (type == AppConstant.CMD_ENGINE_FALSE) {
+                    resultJson.put("status", "fail");
+                    resultJson.put("message", "即将为您启动发动机");
+                    return resultJson;
+                }
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+
+        } else if (nextHandler != null) {
+            nextHandler.action(cmd, actionJson);
+        }
+
+        //如果出现超出范围的语义，不作处理，默认返回成功
+        try {
+            resultJson.put("status", "success");
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        return resultJson;
+    }
+
+    private int setActionJson(CMDEntity cmdEntity, Context context) {
         mContext = context;
         String category = cmdEntity.getCategory();
         String name = cmdEntity.getName();

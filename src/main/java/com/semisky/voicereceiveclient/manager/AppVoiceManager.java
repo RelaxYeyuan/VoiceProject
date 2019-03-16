@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.os.RemoteException;
 import android.util.Log;
 
+import com.google.gson.Gson;
 import com.semisky.autoservice.manager.ACManager;
 import com.semisky.autoservice.manager.AudioManager;
 import com.semisky.autoservice.manager.AutoConstants;
@@ -17,7 +18,11 @@ import com.semisky.voicereceiveclient.jsonEntity.AppEntity;
 import com.semisky.voicereceiveclient.model.KWMusicAPI;
 import com.semisky.voicereceiveclient.model.VoiceBTModel;
 import com.semisky.voicereceiveclient.model.XMLYApi;
+import com.semisky.voicereceiveclient.ManagerHandler.MessageHandler;
 import com.semisky.voicereceiveclient.utils.ToolUtils;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import static android.content.Intent.FLAG_ACTIVITY_NEW_TASK;
 import static com.semisky.autoservice.manager.ACManager.DEFROST_MODE_REAR;
@@ -48,18 +53,61 @@ import static com.semisky.voicereceiveclient.constant.AppConstant.PKG_SETTINGS;
  * 修改内容：
  * 修改日期
  */
-public class AppVoiceManager {
+public class AppVoiceManager extends MessageHandler<String> {
 
     private static final String TAG = "AppVoiceManager";
 
     private Context mContext;
     private KWMusicAPI kwMusicAPI;
+    private Gson gson = new Gson();
 
     public AppVoiceManager() {
         kwMusicAPI = new KWMusicAPI();
     }
 
-    public int setActionJson(AppEntity actionJson, Context context) {
+    @Override
+    public JSONObject action(int cmd, String actionJson) {
+        JSONObject resultJson = new JSONObject();
+
+        if (cmd == AppConstant.APP_HANDLE) {
+            try {
+                AppEntity appEntity = gson.fromJson(actionJson, AppEntity.class);
+                int type = setActionJson(appEntity, mContext);
+                if (type == AppConstant.MUSIC_TYPE_SUCCESS) {
+                    resultJson.put("status", "success");
+                    return resultJson;
+                } else if (type == AppConstant.MUSIC_TYPE_DISK_MISSING) {
+                    resultJson.put("status", "fail");
+                    resultJson.put("message", "U盘未连接，请先连接U盘");
+                    return resultJson;
+                } else if (type == AppConstant.MUSIC_TYPE_FAIL) {
+                    resultJson.put("status", "fail");
+                    resultJson.put("message", "抱歉，没有可处理的操作");
+                    return resultJson;
+                } else if (type == AppConstant.BT_TYPE_NOT_CONNECTED) {
+                    resultJson.put("status", "fail");
+                    resultJson.put("message", "蓝牙电话未连接，请连接后重试");
+                    return resultJson;
+                }
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+
+        } else if (nextHandler != null) {
+            nextHandler.action(cmd, actionJson);
+        }
+
+        //如果出现超出范围的语义，不作处理，默认返回成功
+        try {
+            resultJson.put("status", "success");
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        return resultJson;
+    }
+
+    private int setActionJson(AppEntity actionJson, Context context) {
         this.mContext = context;
         String name = actionJson.getName();
         String operation = actionJson.getOperation();

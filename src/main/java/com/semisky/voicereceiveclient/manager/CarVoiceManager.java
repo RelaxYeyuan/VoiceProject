@@ -2,8 +2,14 @@ package com.semisky.voicereceiveclient.manager;
 
 import android.util.Log;
 
+import com.google.gson.Gson;
 import com.semisky.autoservice.manager.CarCtrlManager;
+import com.semisky.voicereceiveclient.constant.AppConstant;
 import com.semisky.voicereceiveclient.jsonEntity.CarControlEntity;
+import com.semisky.voicereceiveclient.ManagerHandler.MessageHandler;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import static com.semisky.autoservice.manager.CarCtrlManager.POSITION_FL;
 import static com.semisky.autoservice.manager.CarCtrlManager.POSITION_FR;
@@ -38,11 +44,46 @@ import static com.semisky.voicereceiveclient.constant.AppConstant.CAR_TYPE_SUCCE
  * {"level":"大一点","name":"左前车窗","operation":"OPEN","focus":"carControl","rawText":"打开大一点左前门车窗"}
  * {"level":"小一点","name":"左前车窗","operation":"OPEN","focus":"carControl","rawText":"打开小一点左前门车窗"}
  */
-public class CarVoiceManager {
+public class CarVoiceManager extends MessageHandler<String> {
 
     private static final String TAG = "CarVoiceManager";
+    private Gson gson = new Gson();
 
-    public int setActionJson(CarControlEntity carControlEntity) {
+    @Override
+    public JSONObject action(int cmd, String actionJson) {
+        JSONObject resultJson = new JSONObject();
+
+        if (cmd == AppConstant.CAR_CONTROL_HANDLE) {
+            try {
+                CarControlEntity carEntity = gson.fromJson(actionJson, CarControlEntity.class);
+                int type = setActionJson(carEntity);
+                if (type == AppConstant.CAR_TYPE_SUCCESS) {
+                    resultJson.put("status", "success");
+                    return resultJson;
+                } else if (type == AppConstant.CAR_TYPE_FAIL) {
+                    resultJson.put("status", "fail");
+                    resultJson.put("message", "抱歉，没有可处理的操作");
+                    return resultJson;
+                }
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+
+        } else if (nextHandler != null) {
+            nextHandler.action(cmd, actionJson);
+        }
+
+        //如果出现超出范围的语义，不作处理，默认返回成功
+        try {
+            resultJson.put("status", "success");
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        return resultJson;
+    }
+
+    private int setActionJson(CarControlEntity carControlEntity) {
         String name = carControlEntity.getName();
         String operation = carControlEntity.getOperation();
         String level = carControlEntity.getLevel();
@@ -219,4 +260,5 @@ public class CarVoiceManager {
             Log.d(TAG, "setRRWindow: 关闭");
         }
     }
+
 }

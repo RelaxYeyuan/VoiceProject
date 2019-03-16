@@ -68,6 +68,13 @@ public class AppConstant {
     public static final int CARLIFE_BINDER = 8;
     public static final int VOICE_SPEECH_BINDER = 9;
 
+    public static final int APP_HANDLE = 1;
+    public static final int RADIO_HANDLE = 2;
+    public static final int MUSIC_HANDLE = 3;
+    public static final int CMD_HANDLE = 4;
+    public static final int AIR_CONTROL_HANDLE = 5;
+    public static final int CAR_CONTROL_HANDLE = 6;
+
     //循环播放
     public static final int LOOP_PLAY = 1;
     //单曲播放

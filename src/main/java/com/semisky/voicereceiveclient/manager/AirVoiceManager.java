@@ -2,8 +2,14 @@ package com.semisky.voicereceiveclient.manager;
 
 import android.util.Log;
 
+import com.google.gson.Gson;
 import com.semisky.autoservice.manager.ACManager;
+import com.semisky.voicereceiveclient.constant.AppConstant;
 import com.semisky.voicereceiveclient.jsonEntity.AirControlEntity;
+import com.semisky.voicereceiveclient.ManagerHandler.MessageHandler;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import static com.semisky.autoservice.manager.ACManager.AIR_WORKING_OFF;
 import static com.semisky.autoservice.manager.ACManager.AIR_WORKING_ON;
@@ -28,11 +34,46 @@ import static com.semisky.voicereceiveclient.constant.AppConstant.AIR_TYPE_SUCCE
  * 修改内容：
  * 修改日期
  */
-public class AirVoiceManager {
+public class AirVoiceManager extends MessageHandler<String> {
 
     private static final String TAG = "AirVoiceManager";
+    private Gson gson = new Gson();
 
-    public int setActionJson(AirControlEntity airEntity) {
+    @Override
+    public JSONObject action(int cmd, String actionJson) {
+        JSONObject resultJson = new JSONObject();
+
+        if (cmd == AppConstant.AIR_CONTROL_HANDLE) {
+            try {
+                AirControlEntity airEntity = gson.fromJson(actionJson, AirControlEntity.class);
+                int type = setActionJson(airEntity);
+                if (type == AppConstant.AIR_TYPE_SUCCESS) {
+                    resultJson.put("status", "success");
+                    return resultJson;
+                } else if (type == AppConstant.AIR_TYPE_FAIL) {
+                    resultJson.put("status", "fail");
+                    resultJson.put("message", "抱歉，没有可处理的操作");
+                    return resultJson;
+                }
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+
+        } else if (nextHandler != null) {
+            nextHandler.action(cmd, actionJson);
+        }
+
+        //如果出现超出范围的语义，不作处理，默认返回成功
+        try {
+            resultJson.put("status", "success");
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        return resultJson;
+    }
+
+    private int setActionJson(AirControlEntity airEntity) {
         String airflow_direction = airEntity.getAirflow_direction();
         String device = airEntity.getDevice();
         String fan_speed = airEntity.getFan_speed();
@@ -246,4 +287,6 @@ public class AirVoiceManager {
             ACManager.getInstance().setAirConditionerWindValue(fanSpeed - 1);
         }
     }
+
+
 }

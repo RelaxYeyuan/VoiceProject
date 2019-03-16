@@ -13,14 +13,7 @@ import com.iflytek.platformservice.PlatformService;
 import com.semisky.autoservice.manager.AutoConstants;
 import com.semisky.autoservice.manager.AutoManager;
 import com.semisky.voicereceiveclient.appAidl.VoiceSpeechManager;
-import com.semisky.voicereceiveclient.constant.AppConstant;
-import com.semisky.voicereceiveclient.jsonEntity.AirControlEntity;
-import com.semisky.voicereceiveclient.jsonEntity.AppEntity;
-import com.semisky.voicereceiveclient.jsonEntity.CMDEntity;
 import com.semisky.voicereceiveclient.jsonEntity.CallEntity;
-import com.semisky.voicereceiveclient.jsonEntity.CarControlEntity;
-import com.semisky.voicereceiveclient.jsonEntity.MusicEntity;
-import com.semisky.voicereceiveclient.jsonEntity.RadioEntity;
 import com.semisky.voicereceiveclient.manager.AirVoiceManager;
 import com.semisky.voicereceiveclient.manager.AppVoiceManager;
 import com.semisky.voicereceiveclient.manager.BTCallVoiceManager;
@@ -31,12 +24,19 @@ import com.semisky.voicereceiveclient.manager.MusicVoiceManager;
 import com.semisky.voicereceiveclient.manager.RadioVoiceManager;
 import com.semisky.voicereceiveclient.model.VoiceBTModel;
 import com.semisky.voicereceiveclient.model.VoiceWakeupScenes;
+import com.semisky.voicereceiveclient.ManagerHandler.MessageHandlerManager;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import static com.semisky.autoservice.manager.AudioManager.STREAM_IFLYTEK_VR;
 import static com.semisky.voicereceiveclient.constant.AppConstant.ACTION_START_VOICE;
+import static com.semisky.voicereceiveclient.constant.AppConstant.AIR_CONTROL_HANDLE;
+import static com.semisky.voicereceiveclient.constant.AppConstant.APP_HANDLE;
+import static com.semisky.voicereceiveclient.constant.AppConstant.CAR_CONTROL_HANDLE;
+import static com.semisky.voicereceiveclient.constant.AppConstant.CMD_HANDLE;
+import static com.semisky.voicereceiveclient.constant.AppConstant.MUSIC_HANDLE;
+import static com.semisky.voicereceiveclient.constant.AppConstant.RADIO_HANDLE;
 import static com.semisky.voicereceiveclient.constant.AppConstant.START_VOICE_FLAG;
 
 /**
@@ -53,27 +53,39 @@ public class VoiceReceiveClient implements PlatformClientListener {
 
     private AudioManager audioManager;
     private Context mContext;
-    private RadioVoiceManager radioVoiceManager;
-    private AppVoiceManager appManager;
-    private MusicVoiceManager musicVoiceManager;
-    private CMDVoiceManager cmdVoiceManager;
-    private AirVoiceManager airVoiceManager;
-    private CarVoiceManager carVoiceManager;
     private BTCallVoiceManager btCallVoiceManager;
     private GPSManager gpsManager;
+    private MessageHandlerManager<String> handlerManager;
 
     VoiceReceiveClient(Context context) {
         super();
         this.mContext = context;
         audioManager = (AudioManager) context.getSystemService(Context.AUDIO_SERVICE);
-        radioVoiceManager = new RadioVoiceManager();
-        appManager = new AppVoiceManager();
-        musicVoiceManager = MusicVoiceManager.getInstance();
-        cmdVoiceManager = new CMDVoiceManager();
-        airVoiceManager = new AirVoiceManager();
-        carVoiceManager = new CarVoiceManager();
+        RadioVoiceManager radioVoiceManager = new RadioVoiceManager();
+        AppVoiceManager appManager = new AppVoiceManager();
+        MusicVoiceManager musicVoiceManager = MusicVoiceManager.getInstance();
+        CMDVoiceManager cmdVoiceManager = new CMDVoiceManager();
+        AirVoiceManager airVoiceManager = new AirVoiceManager();
+        CarVoiceManager carVoiceManager = new CarVoiceManager();
         btCallVoiceManager = new BTCallVoiceManager(mContext);
         gpsManager = GPSManager.getInstance(mContext);
+
+        handlerManager = new MessageHandlerManager.HandlersBuilder<String>()
+                .addManager(radioVoiceManager)
+                .addManager(appManager)
+                .addManager(musicVoiceManager)
+                .addManager(cmdVoiceManager)
+                .addManager(airVoiceManager)
+                .addManager(carVoiceManager)
+                .build();
+
+    }
+
+    /**
+     * 发送指令
+     */
+    private JSONObject dispatchAction(int cmd, String data) {
+        return handlerManager.dispatchActionHandler(cmd, data);
     }
 
     /**
@@ -85,8 +97,6 @@ public class VoiceReceiveClient implements PlatformClientListener {
      */
     @Override
     public String onNLPResult(String actionJson) {
-//        mContext.sendBroadcast(new Intent("com.semisky.VOICE_PROXY_BINDER"));
-        Gson gson = new Gson();
         Log.d(TAG, "onNLPResult: " + actionJson);
         JSONObject resultJson = new JSONObject();
         if (actionJson == null) {
@@ -100,112 +110,19 @@ public class VoiceReceiveClient implements PlatformClientListener {
         } else {
             try {
                 JSONObject action = new JSONObject(actionJson);
-                if ("app".equals(action.getString("focus"))) {
-                    AppEntity appEntity = gson.fromJson(actionJson, AppEntity.class);
-                    int type = appManager.setActionJson(appEntity, mContext);
-                    if (type == AppConstant.MUSIC_TYPE_SUCCESS) {
-                        resultJson.put("status", "success");
-                        return resultJson.toString();
-                    } else if (type == AppConstant.MUSIC_TYPE_DISK_MISSING) {
-                        resultJson.put("status", "fail");
-                        resultJson.put("message", "U盘未连接，请先连接U盘");
-                        return resultJson.toString();
-                    } else if (type == AppConstant.MUSIC_TYPE_FAIL) {
-                        resultJson.put("status", "fail");
-                        resultJson.put("message", "抱歉，没有可处理的操作");
-                        return resultJson.toString();
-                    } else if (type == AppConstant.BT_TYPE_NOT_CONNECTED) {
-                        resultJson.put("status", "fail");
-                        resultJson.put("message", "蓝牙电话未连接，请连接后重试");
-                        return resultJson.toString();
-                    }
-                } else if ("radio".equals(action.getString("focus"))) {
-                    RadioEntity radioEntity = gson.fromJson(actionJson, RadioEntity.class);
-                    int type = radioVoiceManager.setActionJson(mContext, radioEntity);
-                    if (type == AppConstant.RADIO_TYPE_SUCCESS) {
-                        resultJson.put("status", "success");
-                        return resultJson.toString();
-                    } else if (type == AppConstant.RADIO_TYPE_SCOPE) {
-                        resultJson.put("status", "fail");
-                        resultJson.put("message", "频率超出范围，请重试");
-                        return resultJson.toString();
-                    } else if (type == AppConstant.RADIO_TYPE_FAIL) {
-                        resultJson.put("status", "fail");
-                        resultJson.put("message", "抱歉，没有可处理的操作");
-                        return resultJson.toString();
-                    }
-                } else if ("music".equals(action.getString("focus"))) {
-                    MusicEntity musicEntity = gson.fromJson(actionJson, MusicEntity.class);
-                    int type = musicVoiceManager.setActionJson(musicEntity);
-                    if (type == AppConstant.MUSIC_TYPE_SUCCESS) {
-                        resultJson.put("status", "success");
-                        return resultJson.toString();
-                    } else if (type == AppConstant.MUSIC_TYPE_DISK_MISSING) {
-                        resultJson.put("status", "fail");
-                        resultJson.put("message", "U盘未连接，请先连接U盘");
-                        return resultJson.toString();
-                    } else if (type == AppConstant.MUSIC_TYPE_DISK_LOAD_DATA) {
-                        resultJson.put("status", "fail");
-                        resultJson.put("message", "U盘正在加载中，请稍后重试");
-                        return resultJson.toString();
-                    } else if (type == AppConstant.MUSIC_TYPE_FAIL) {
-                        resultJson.put("status", "fail");
-                        resultJson.put("message", "抱歉，没有可处理的操作");
-                        return resultJson.toString();
-                    } else if (type == AppConstant.MUSIC_TYPE_NOT_CONNECTED) {
-                        resultJson.put("status", "fail");
-                        resultJson.put("message", "抱歉，网络未连接，没有找到相关歌曲");
-                        return resultJson.toString();
-                    } else if (type == AppConstant.BT_TYPE_NOT_CONNECTED) {
-                        resultJson.put("status", "fail");
-                        resultJson.put("message", "蓝牙电话未连接，请连接后重试");
-                        return resultJson.toString();
-                    } else if (type == AppConstant.MUSIC_TYPE_SERVICE_STATUS) {
-                        resultJson.put("status", "fail");
-                        resultJson.put("message", "抱歉，多媒体未启动");
-                        return resultJson.toString();
-                    }
-                } else if ("cmd".equals(action.getString("focus"))) {
-                    CMDEntity cmdEntity = gson.fromJson(actionJson, CMDEntity.class);
-                    int type = cmdVoiceManager.setActionJson(cmdEntity, mContext);
-                    if (type == AppConstant.CMD_TYPE_SUCCESS) {
-                        resultJson.put("status", "success");
-                        return resultJson.toString();
-                    } else if (type == AppConstant.CMD_TYPE_FAIL) {
-                        resultJson.put("status", "fail");
-                        resultJson.put("message", "抱歉，没有可处理的操作");
-                        return resultJson.toString();
-                    } else if (type == AppConstant.CMD_ENGINE_TRUE) {
-                        resultJson.put("status", "fail");
-                        resultJson.put("message", "发动机已启动");
-                        return resultJson.toString();
-                    } else if (type == AppConstant.CMD_ENGINE_FALSE) {
-                        resultJson.put("status", "fail");
-                        resultJson.put("message", "即将为您启动发动机");
-                        return resultJson.toString();
-                    }
-                } else if ("airControl".equals(action.getString("focus"))) {
-                    AirControlEntity airEntity = gson.fromJson(actionJson, AirControlEntity.class);
-                    int type = airVoiceManager.setActionJson(airEntity);
-                    if (type == AppConstant.AIR_TYPE_SUCCESS) {
-                        resultJson.put("status", "success");
-                        return resultJson.toString();
-                    } else if (type == AppConstant.AIR_TYPE_FAIL) {
-                        resultJson.put("status", "fail");
-                        resultJson.put("message", "抱歉，没有可处理的操作");
-                        return resultJson.toString();
-                    }
-                } else if ("carControl".equals(action.getString("focus"))) {
-                    CarControlEntity carEntity = gson.fromJson(actionJson, CarControlEntity.class);
-                    int type = carVoiceManager.setActionJson(carEntity);
-                    if (type == AppConstant.CAR_TYPE_SUCCESS) {
-                        resultJson.put("status", "success");
-                        return resultJson.toString();
-                    } else if (type == AppConstant.CAR_TYPE_FAIL) {
-                        resultJson.put("status", "fail");
-                        resultJson.put("message", "抱歉，没有可处理的操作");
-                        return resultJson.toString();
-                    }
+                String focus = action.getString("focus");
+                if ("app".equals(focus)) {
+                    return dispatchAction(APP_HANDLE, actionJson).toString();
+                } else if ("radio".equals(focus)) {
+                    return dispatchAction(RADIO_HANDLE, actionJson).toString();
+                } else if ("music".equals(focus)) {
+                    return dispatchAction(MUSIC_HANDLE, actionJson).toString();
+                } else if ("cmd".equals(focus)) {
+                    return dispatchAction(CMD_HANDLE, actionJson).toString();
+                } else if ("airControl".equals(focus)) {
+                    return dispatchAction(AIR_CONTROL_HANDLE, actionJson).toString();
+                } else if ("carControl".equals(focus)) {
+                    return dispatchAction(CAR_CONTROL_HANDLE, actionJson).toString();
                 }
             } catch (JSONException e) {
                 Log.e(TAG, "onNLPResult: ");
