@@ -83,6 +83,11 @@ public class VoiceReceiveClient implements PlatformClientListener {
 
     /**
      * 发送指令
+     * 0.调用者只管发送指令
+     * 1.调用者只关注dispatchAction方法
+     * 2.替代传统switch方法
+     * 3.每个管理者都有机会收到指令
+     * 4.管理者只负责处理数据
      */
     private JSONObject dispatchAction(int cmd, String data) {
         return handlerManager.dispatchActionHandler(cmd, data);
